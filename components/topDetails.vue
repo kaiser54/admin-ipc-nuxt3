@@ -127,7 +127,7 @@ input {
 
 .input-search {
   width: 100%;
-  padding-left: 52px;
+  padding-left: 52px !important;
   /* max-width: 522px; */
   max-width: 100%;
 }
