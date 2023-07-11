@@ -27,7 +27,7 @@
             </div>
           </div>
         </nuxt-link>
-        <nuxt-link to="/dashboard/products" class="exact">
+        <nuxt-link to="/dashboard/products" :class="{'innerProduct': isInnerProduct}">
           <div class="desktop-nav">
             <div class="nav-content">
               <svg
@@ -191,6 +191,8 @@
   </section>
 </template>
 
+
+
 <script>
 export default {
   props: {
@@ -205,6 +207,14 @@ export default {
     },
     logoutUser() {
       this.$emit("update:logout", !this.logout);
+    },
+  },
+  computed: {
+    isInnerProduct() {
+      return (
+        this.$route.path === '/dashboard/products/create-product' ||
+        this.$route.path === '/dashboard/products/new-product'
+      );
     },
   },
 };
