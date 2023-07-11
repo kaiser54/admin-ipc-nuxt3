@@ -1,9 +1,9 @@
 <template>
-  <div>TESTING NUXT 3</div>
+  <MainLayout>
+
+  </MainLayout>
 </template>
 
-<script>
-export default {
-  name: 'IndexPage'
-}
+<script setup>
+import MainLayout from "/layouts/MainLayout.vue";
 </script>
