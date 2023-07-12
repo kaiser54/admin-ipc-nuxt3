@@ -1,23 +1,51 @@
 <template>
-  <div :class="{ 'user-details-component': mobile }">
+  <div>
     <!-- back button -->
     <GoBackButton style="margin-top: 28px; margin-left: 16px" />
+    <DynamicButton
+      style="margin-top: 28px; margin-left: 16px"
+      @clickButton="goBack"
+      class="auto"
+      buttonText="Go back"
+      size="small"
+      type="neutral"
+      icon="icon-left"
+      v-if="showBtn"
+    >
+      <template v-slot:svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M10.6666 2.66699L5.33325 8.00033L10.6666 13.3337"
+            stroke="#303237"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </template>
+    </DynamicButton>
     <!-- ----------- -->
 
     <div class="product-detail-con">
       <div class="product__header__wrap">
         <h3>Product details</h3>
         <DynamicButton
-        @clickButton="emitFunction"
+          @clickButton="emitFunction"
           class="auto"
           :buttonText="buttonText"
           :size="size"
           :type="type"
           :icon="icon"
         >
-        <template v-slot:svg>
-          <slot name="svg"/>
-        </template>
+          <template v-slot:svg>
+            <slot name="svg" />
+          </template>
         </DynamicButton>
       </div>
       <!-- product details page for desktop view -->
@@ -69,7 +97,6 @@
             </p>
             <div class="product-details-price-grp">
               <h3 class="h3-bold"># {{ product.price }}</h3>
-              <tags />
             </div>
 
             <!-- -------------------------------- -->
@@ -82,123 +109,35 @@
   </div>
 </template>
     
-    <script>
-export default {
-  name: "product",
-  layout: "dashboardview",
-  // Other component properties and methods
-  props: {
-    buttonText: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    icon: {
-      type: String,
-    },
-    product: {
-      type: Object,
-      default: false,
-    },
+<script setup>
+const props = defineProps({
+  product: {
+    type: Array,
+    required: true,
   },
-  data() {
-    return {
-      pageTitle: "IPC | Market",
-      mobile: false,
-      productId: null,
-      productTitle: null,
-      product: {},
-      productImage: 0,
-      currentPage: "",
-      testPage: "", //be sure to remove this and from the computed
-      inCart: false,
-      loading: false,
-    };
+  showBtn: {
+    type: Boolean,
+    default: false,
   },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  buttonText: {
+    type: String,
   },
-  computed: {},
-  async mounted() {
-    const pathArray = this.$route.path.split("~");
-    const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
-    this.currentPage = lastSegment;
-    this.testPage = '6';
-    console.log(this.currentPage);
-    // this.productId = this.$route.params.id;
-    // this.productTitle = this.$route.params.title;
-    // console.log(this.productId);
-    try {
-      this.loading = true;
-      // const response = await this.$axios.$get(`https://fakestoreapi.com/products/${this.productId}`);
-      // const response = await this.$axios.$get(
-      //   `https://fakestoreapi.com/products/${this.currentPage}`
-      // );
-      const response = await this.$axios.$get(
-        `https://fakestoreapi.com/products/${this.testPage}`
-      );
-      this.product = response;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      this.loading = false;
-    }
-    this.checkScreenSize();
-    window.addEventListener("resize", this.checkScreenSize);
-    const zoomLevel = 2; // Change this value to adjust the zoom level
-    const addZoomListeners = () => {
-      const zoomImage = this.$refs.zoomImage;
-      const zoomContainer = this.$refs.zoomContainer;
-      if (!zoomImage) {
-        return;
-      }
-      zoomImage.addEventListener("mousemove", (e) => {
-        const mouseX = e.offsetX / zoomContainer.offsetWidth;
-        const mouseY = e.offsetY / zoomContainer.offsetHeight;
-        zoomImage.style.transformOrigin = `${mouseX * 100}% ${mouseY * 100}%`;
-        zoomImage.style.transform = `scale(${zoomLevel})`;
-      });
-      zoomImage.addEventListener("mouseleave", () => {
-        zoomImage.style.transform = "scale(1)";
-      });
-    };
-    addZoomListeners();
-    this.zoomInterval = setInterval(() => {
-      addZoomListeners();
-    }, 1000 * 60); // Check every minute
+  size: {
+    type: String,
+    required: true,
   },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.checkScreenSize);
-    clearInterval(this.zoomInterval);
+  type: {
+    type: String,
+    required: true,
   },
-  methods: {
-    checkScreenSize() {
-      if (window.innerWidth <= 951) {
-        this.mobile = true;
-      } else {
-        this.mobile = false;
-      }
-    },
-    changeImage(index) {
-      this.productImage = index;
-    },
-    emitFunction() {
-      this.$emit("post");
-    },
+  icon: {
+    type: String,
   },
-};
+});
 </script>
-    
-    <style scoped>
+
+
+<style scoped>
 .zoom-container {
   position: relative;
   overflow: hidden;
@@ -485,4 +424,3 @@ p.product-details-snippet {
   stroke: #fff !important;
 }
 </style>
-    

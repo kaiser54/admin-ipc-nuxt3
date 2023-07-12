@@ -14,6 +14,8 @@
         size="standard"
         buttonText="Post product"
         type="primary"
+        :showBtn="true"
+        :product= []
       >
         <template v-slot:svg>
           <svg
@@ -48,7 +50,7 @@ export default {
   components: { MainLayout },
   data() {
     return {
-      passed: false,
+      passed: true,
       alertMessage: "",
       alertType: "",
     };
