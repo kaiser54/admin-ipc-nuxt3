@@ -1,10 +1,11 @@
 <template>
   <div>
     <!-- back button -->
-    <GoBackButton style="margin-top: 28px; margin-left: 16px" />
+    <GoBackButton style="margin-top: 28px; margin-left: 16px" 
+      v-if="!showBtn"/>
     <DynamicButton
       style="margin-top: 28px; margin-left: 16px"
-      @clickButton="goBack"
+      @clickButton="$emit('back')"
       class="auto"
       buttonText="Go back"
       size="small"
@@ -36,7 +37,7 @@
       <div class="product__header__wrap">
         <h3>Product details</h3>
         <DynamicButton
-          @clickButton="emitFunction"
+          @clickButton="$emit('buttonClick')"
           class="auto"
           :buttonText="buttonText"
           :size="size"
@@ -112,7 +113,7 @@
 <script setup>
 const props = defineProps({
   product: {
-    type: Array,
+    type: Object,
     required: true,
   },
   showBtn: {

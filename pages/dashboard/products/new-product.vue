@@ -8,14 +8,15 @@
       />
       <ProductForm @goRoute="goRoute" v-if="!passed" />
       <ProductDetails
-        @post="showAlertPrompt"
+        @buttonClick="postProduct"
+        @back="goRoute"
         v-else
         icon="icon-right"
         size="standard"
         buttonText="Post product"
         type="primary"
         :showBtn="true"
-        :product= []
+        :product="product"
       >
         <template v-slot:svg>
           <svg
@@ -44,25 +45,32 @@
 </template>
 
 
+<script setup>
+const productID = Math.floor(Math.random() * 20) + 1;
+
+const uri = "https://fakestoreapi.com/products/" + productID;
+
+// fetching the products
+const { data: product } = await useFetch(uri);
+</script>
+
+
 <script>
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
   data() {
     return {
-      passed: true,
+      passed: false,
       alertMessage: "",
       alertType: "",
     };
   },
   methods: {
     goRoute() {
-      // this.$router.push(
-      //   "/dashboard/products/Fjallraven%20-%20Foldsack%20No.%201%20Backpack,%20Fits%2015%20Laptops~1"
-      // );
       this.passed = !this.passed;
     },
-    showAlertPrompt() {
+    postProduct() {
       this.alertType = "success";
       this.alertMessage = "Successfully added to product list";
       this.$refs.alertPrompt.showAlert("This is an example alert.", "success");
