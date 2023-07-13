@@ -6,7 +6,11 @@
         :message="alertMessage"
         :alertType="alertType"
       />
-      <ProductForm @goRoute="goRoute" v-if="!passed" />
+      <ProductForm
+        @nextEvent="nextEvent"
+        v-if="!passed"
+        headingText="Add new product"
+      />
       <ProductDetails
         @buttonClick="postProduct"
         @back="goRoute"
@@ -17,6 +21,7 @@
         type="primary"
         :showBtn="true"
         :product="product"
+        :formData="formData"
       >
         <template v-slot:svg>
           <svg
@@ -47,11 +52,18 @@
 
 <script setup>
 const productID = Math.floor(Math.random() * 20) + 1;
+const formData = ref(null);
 
 const uri = "https://fakestoreapi.com/products/" + productID;
 
 // fetching the products
 const { data: product } = await useFetch(uri);
+
+// const nextEvent = (formData) => {
+//   // Access the submitted data from the child component
+//   console.log("Form Data:", formData);
+//   // Perform further actions with the data
+// };
 </script>
 
 
@@ -67,13 +79,20 @@ export default {
     };
   },
   methods: {
-    goRoute() {
+    nextEvent(formData) {
       this.passed = !this.passed;
+      this.formData = formData;
+      // Access the submitted data from the child component
+      console.log("Form Data:", formData);
+      // Perform further actions with the data
     },
     postProduct() {
       this.alertType = "success";
       this.alertMessage = "Successfully added to product list";
       this.$refs.alertPrompt.showAlert("This is an example alert.", "success");
+    },
+    goRoute() {
+      this.passed = !this.passed;
     },
   },
 };

@@ -99,7 +99,7 @@ export default {
     handleFileUpload(event) {
       const file = event.target.files[0];
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      const maxSize = 300 * 1024; // Maximum size in bytes (300KB)
+      const maxSize = 1000 * 1024; // Maximum size in bytes (300KB)
 
       if (file) {
         if (!allowedTypes.includes(file.type)) {
@@ -108,7 +108,7 @@ export default {
           this.selectedFile = null;
         } else if (file.size > maxSize) {
           // Show error message for oversized file
-          this.errorMessage = "The image size should not exceed 300KB";
+          this.errorMessage = "The image size should not exceed 1MB";
           this.selectedFile = null;
         } else {
           // Reset error message and store the selected file
@@ -122,6 +122,9 @@ export default {
             this.imageUrl = reader.result;
           };
           reader.readAsDataURL(file);
+          // Emit the image to the parent component
+          this.$emit("image-selected", this.selectedFile);
+          console.log(file)
         }
       } else {
         // Reset error message and clear the selection
@@ -141,7 +144,7 @@ export default {
       if (fileInput) {
         fileInput.value = "";
       }
-      console.log('deleted')
+      console.log("deleted");
     },
     uploadImage() {
       // Add your API request logic here

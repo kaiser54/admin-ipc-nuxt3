@@ -134,6 +134,10 @@ const props = defineProps({
   icon: {
     type: String,
   },
+  formData: {
+    type: Object,
+    default: null
+  }
 });
 </script>
 

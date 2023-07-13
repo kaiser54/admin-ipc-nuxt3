@@ -47,54 +47,42 @@
         <form action="">
           <div class="top flex">
             <div class="form__field">
-              <div class="input-field">
-                <label for="id">Product's name</label>
-                <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    id=""
-                    placeholder="Ex: Mama’s pride rice"
-                    required
-                    v-model="productName"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="ProductName"
+                label="Product's name"
+                v-model="productName"
+                type="text"
+                placeholder="Ex: Mama’s pride rice"
+                :required="true"
+                :invalid="invalidName"
+                :errorMessage="nameErrorMessage"
+              />
             </div>
             <div class="form__field">
-              <div class="input-field">
-                <label for="price">IPC’s price</label>
-                <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="price"
-                    id=""
-                    placeholder="₦70,000"
-                    required
-                    v-model="price"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="price"
+                label="IPC’s price"
+                v-model="price"
+                :value="priceValue"
+                type="text"
+                :required="true"
+                placeholder="₦70,000"
+                :invalid="invalidPrice"
+                :errorMessage="priceErrorMessage"
+              />
             </div>
             <div class="form__field">
-              <div class="input-field">
-                <label for="slash">Market slash price</label>
-                <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="slash"
-                    id=""
-                    placeholder="₦80,000"
-                    required
-                    v-model="slash"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="slash"
+                label="Market slash price"
+                v-model="slash"
+                :value="slashValue"
+                type="text"
+                :required="true"
+                placeholder="₦80,000"
+                :invalid="invalidSlash"
+                :errorMessage="slashErrorMessage"
+              />
             </div>
           </div>
           <div class="second flex">
@@ -109,21 +97,17 @@
               ></textarea>
             </div>
             <div class="form__field">
-              <div class="input-field">
-                <label for="brand">Brand’s name</label>
-                <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="brand"
-                    id=""
-                    placeholder="Mama’s rice"
-                    required
-                    v-model="brand"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="brand"
+                label="Brand’s name"
+                type="text"
+                v-model="brand"
+                :value="brandValue"
+                :required="true"
+                placeholder="Mama’s rice"
+                :invalid="invalidBrand"
+                :errorMessage="brandErrorMessage"
+              />
             </div>
           </div>
           <div class="third flex">
@@ -163,30 +147,26 @@
               </select>
             </div>
             <div class="form__field">
-              <div class="input-field">
-                <label for="weight">Weight (kg) (Optional)</label>
-                <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="weight"
-                    id=""
-                    placeholder="5kg"
-                    required
-                    v-model="weight"
-                  />
-                </div>
-              </div>
+              <InputField
+                id="weight"
+                label="Weight (kg) (Optional)"
+                type="nunmber"
+                v-model="weight"
+                :value="weightValue"
+                :required="false"
+                placeholder="5kg"
+                :invalid="invalidWeight"
+                :errorMessage="weightErrorMessage"
+              />
             </div>
           </div>
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="flex">
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
+              <ImageUpload />
+              <ImageUpload />
+              <ImageUpload />
+              <ImageUpload />
             </div>
           </div>
         </form>
@@ -194,10 +174,10 @@
     </div>
   </div>
 </template>
-
-
-
-<script>
+  
+  
+  
+  <script>
 export default {
   props: {
     headingText: {
@@ -213,8 +193,17 @@ export default {
       slash: "",
       description: "",
       brand: "",
+      invalidName: false,
+      nameErrorMessage: "",
+      invalidPrice: false,
+      priceErrorMessage: "",
+      invalidSlash: false,
+      slashErrorMessage: "",
+      invalidBrand: false,
+      brandErrorMessage: "",
       weight: "",
-      invalid: false,
+      invalidWeight: false,
+      weightErrorMessage: "",
 
       status: [
         { label: "In stock", value: "option1" },
@@ -228,8 +217,49 @@ export default {
         { label: "Category 3", value: "option3" },
       ],
       categoryValue: "",
-      selectedImages: [],
     };
+  },
+  computed: {
+    productValue: {
+      get() {
+        return this.productName;
+      },
+      set(newValue) {
+        this.productName = newValue;
+      },
+    },
+    priceValue: {
+      get() {
+        return this.price;
+      },
+      set(newValue) {
+        this.price = newValue;
+      },
+    },
+    brandValue: {
+      get() {
+        return this.brand;
+      },
+      set(newValue) {
+        this.brand = newValue;
+      },
+    },
+    slashValue: {
+      get() {
+        return this.slash;
+      },
+      set(newValue) {
+        this.slash = newValue;
+      },
+    },
+    weightValue: {
+      get() {
+        return this.weight;
+      },
+      set(newValue) {
+        this.weight = newValue;
+      },
+    },
   },
   methods: {
     emitFunction() {
@@ -243,21 +273,14 @@ export default {
         statusValue: this.statusValue,
         categoryValue: this.categoryValue,
         weight: this.weight,
-        selectedImages: this.selectedImages,
       };
-      this.$emit("nextEvent", data);
-      // console.log(data);
-    },
-    handleImageSelected(image) {
-      // Push the selected image data into the array
-      this.selectedImages.push(image);
-      // console.log("Selected images:", this.selectedImages);
+      console.log(data);
     },
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 h3 {
   color: var(--grey-grey1, #303237);
   font-size: 24px;
@@ -306,9 +329,6 @@ form {
   margin-top: 40px;
   margin-inline: auto;
 }
-.input-field {
-  width: 100%;
-}
 .form__field {
   display: flex;
   flex-direction: column;
@@ -351,9 +371,9 @@ select {
   -moz-appearance: none;
   appearance: none;
 
-  color: var(--grey-grey1);
+  color: var(--grey-grey3, #7e8494);
 
-  background: url(/assets-chevron-down-arrow.png);
+  background-image: url(../static/assets-chevron-down-arrow.png);
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 20px; /* Adjust as needed */
@@ -361,7 +381,6 @@ select {
   /* Previous CSS properties */
   background-size: 20px;
 }
-
 option {
   color: var(--grey-grey1, #7e8494);
 
