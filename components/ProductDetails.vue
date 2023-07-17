@@ -83,7 +83,7 @@
               <!-- product title, brand name and like button -->
               <div class="product-details-title">
                 <h3 class="h3-small-medium">
-                  {{ product.title }}
+                  {{ dataProp.productName }}
                 </h3>
                 <p class="product-details-brand">
                   Brand: <span>Mama’s Choice</span>
@@ -93,10 +93,10 @@
             <!-- ------------------------------- -->
 
             <p class="product-details-snippet">
-              {{ product.description }}
+              {{ dataProp.description }}
             </p>
             <div class="product-details-price-grp">
-              <h3 class="h3-bold"># {{ product.price }}</h3>
+              <h3 class="h3-bold"># {{ dataProp.price }}</h3>
             </div>
 
             <!-- -------------------------------- -->
@@ -146,7 +146,7 @@ export default {
   methods: {
     lol() 
     {
-      console.log(this.dataProp)
+      console.log(this.dataProp.productName)
     }
   }
 }
