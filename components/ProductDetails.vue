@@ -1,8 +1,7 @@
 <template>
   <div>
     <!-- back button -->
-    <GoBackButton style="margin-top: 28px; margin-left: 16px" 
-      v-if="!showBtn"/>
+    <GoBackButton style="margin-top: 28px; margin-left: 16px" v-if="!showBtn" />
     <DynamicButton
       style="margin-top: 28px; margin-left: 16px"
       @clickButton="$emit('back')"
@@ -107,6 +106,7 @@
       </div>
       <!-- ---------------------------------- -->
     </div>
+    <button @click="lol">lolllllll</button>
   </div>
 </template>
     
@@ -134,11 +134,22 @@ const props = defineProps({
   icon: {
     type: String,
   },
-  formData: {
-    type: Object,
-    default: null
-  }
+  dataProp: {
+    type: Object
+  },
 });
+
+</script>
+
+<script>
+export default {
+  methods: {
+    lol() 
+    {
+      console.log(this.dataProp)
+    }
+  }
+}
 </script>
 
 

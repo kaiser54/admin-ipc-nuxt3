@@ -14,14 +14,14 @@
       <ProductDetails
         @buttonClick="postProduct"
         @back="goRoute"
-        v-else
+        v-if="passed && product"
         icon="icon-right"
         size="standard"
         buttonText="Post product"
         type="primary"
         :showBtn="true"
         :product="product"
-        :formData="formData"
+        :dataProp="productData"
       >
         <template v-slot:svg>
           <svg
@@ -52,17 +52,19 @@
 
 <script setup>
 const productID = Math.floor(Math.random() * 20) + 1;
-const formData = ref(null);
 
 const uri = "https://fakestoreapi.com/products/" + productID;
 
 // fetching the products
 const { data: product } = await useFetch(uri);
 
+// -------------------------------
+// const productData = ref(null);
+// const passed = ref(false);
 // const nextEvent = (formData) => {
-//   // Access the submitted data from the child component
-//   console.log("Form Data:", formData);
-//   // Perform further actions with the data
+//   productData.value = formData;
+//   console.log(productData.value);
+//   passed = !passed;
 // };
 </script>
 
@@ -76,14 +78,15 @@ export default {
       passed: false,
       alertMessage: "",
       alertType: "",
+      productData: null
     };
   },
   methods: {
     nextEvent(formData) {
       this.passed = !this.passed;
-      this.formData = formData;
+      this.productData = formData;
       // Access the submitted data from the child component
-      console.log("Form Data:", formData);
+      // console.log("Form Data:", formData);
       // Perform further actions with the data
     },
     postProduct() {
