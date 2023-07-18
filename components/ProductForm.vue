@@ -246,11 +246,11 @@ export default {
         selectedImages: this.selectedImages,
       };
       this.$emit("nextEvent", data);
-      // console.log(data);
+      // console.log(data.selectedImages);
     },
-    handleImageSelected(image) {
+    handleImageSelected(file) {
       // Push the selected image data into the array
-      this.selectedImages.push(image);
+      this.selectedImages.push(file);
       // console.log("Selected images:", this.selectedImages);
     },
   },

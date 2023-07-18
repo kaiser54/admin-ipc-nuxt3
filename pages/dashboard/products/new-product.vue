@@ -22,6 +22,7 @@
         :showBtn="true"
         :product="product"
         :dataProp="productData"
+        :productImage="imageArray"
       >
         <template v-slot:svg>
           <svg
@@ -61,8 +62,8 @@ const { data: product } = await useFetch(uri);
 // -------------------------------
 // const productData = ref(null);
 // const passed = ref(false);
-// const nextEvent = (formData) => {
-//   productData.value = formData;
+// const nextEvent = (data) => {
+//   productData.value = data;
 //   console.log(productData.value);
 //   passed = !passed;
 // };
@@ -78,15 +79,23 @@ export default {
       passed: false,
       alertMessage: "",
       alertType: "",
-      productData: null
+      productData: null,
+      imageArray: [],
     };
   },
   methods: {
-    nextEvent(formData) {
+    nextEvent(data) {
       this.passed = !this.passed;
-      this.productData = formData;
+      this.productData = data;
+      for (const image of data.selectedImages) {
+        if (image) {
+          const url = URL.createObjectURL(image);
+          this.imageArray.push(url);
+          console.log(this.imageArray);
+        }
+      }
       // Access the submitted data from the child component
-      // console.log("Form Data:", formData);
+      // console.log("Form Data:", data);
       // Perform further actions with the data
     },
     postProduct() {

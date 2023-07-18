@@ -54,26 +54,19 @@
           <div class="product-img-thumb">
             <!-- image container -->
             <div class="product-img zoom-container" ref="zoomContainer">
-              <!-- <img :src="require(`~/assets/images/${product.images[productImage]}`)
-                    " class="zoom-image" ref="zoomImage" /> -->
               <img
-                :src="product.image"
+                :src="mainImage"
                 alt="Product Image"
                 class="zoom-image"
                 ref="zoomImage"
               />
-              <!-- <img src="~/assets/images/p1.png" alt="" /> -->
             </div>
             <!-- --------------- -->
 
             <!-- product thumbnail under the main product image -->
             <div class="product-thumb">
-              <div
-                class="thumb"
-                v-for="(image, index) in product.images"
-                :key="index"
-              >
-                <!-- <img :src="require(`~/assets/images/${image}`)" alt="" @click="changeImage(index)" /> -->
+              <div class="thumb" v-for="(image, index) in productImage" :key="index">
+                <img :src="image" @click="replaceProductImage(image)" />
               </div>
               <!-- -------------------------------------------- -->
             </div>
@@ -106,7 +99,6 @@
       </div>
       <!-- ---------------------------------- -->
     </div>
-    <button @click="lol">lolllllll</button>
   </div>
 </template>
     
@@ -135,21 +127,32 @@ const props = defineProps({
     type: String,
   },
   dataProp: {
-    type: Object
+    type: Object,
+  },
+  productImage: {
+    type: Array,
   },
 });
-
 </script>
 
 <script>
 export default {
-  methods: {
-    lol() 
-    {
-      console.log(this.dataProp.productName)
+  data() {
+    return {
+      mainImage: "", // Initially empty or provide a default image URL
+    };
+  },
+  created() {
+    if (this.productImage.length > 0) {
+      this.mainImage = this.productImage[0]; // Set the first thumbnail as the initial product image
     }
-  }
-}
+  },
+  methods: {
+    replaceProductImage(image) {
+      this.mainImage = image;
+    },
+  },
+};
 </script>
 
 
