@@ -1,8 +1,7 @@
 <template>
   <div>
     <!-- back button -->
-    <GoBackButton style="margin-top: 28px; margin-left: 16px" 
-      v-if="!showBtn"/>
+    <GoBackButton style="margin-top: 28px; margin-left: 16px" v-if="!showBtn" />
     <DynamicButton
       style="margin-top: 28px; margin-left: 16px"
       @clickButton="$emit('back')"
@@ -55,26 +54,19 @@
           <div class="product-img-thumb">
             <!-- image container -->
             <div class="product-img zoom-container" ref="zoomContainer">
-              <!-- <img :src="require(`~/assets/images/${product.images[productImage]}`)
-                    " class="zoom-image" ref="zoomImage" /> -->
               <img
-                :src="product.image"
+                :src="mainImage"
                 alt="Product Image"
                 class="zoom-image"
                 ref="zoomImage"
               />
-              <!-- <img src="~/assets/images/p1.png" alt="" /> -->
             </div>
             <!-- --------------- -->
 
             <!-- product thumbnail under the main product image -->
             <div class="product-thumb">
-              <div
-                class="thumb"
-                v-for="(image, index) in product.images"
-                :key="index"
-              >
-                <!-- <img :src="require(`~/assets/images/${image}`)" alt="" @click="changeImage(index)" /> -->
+              <div class="thumb" v-for="(image, index) in productImage" :key="index">
+                <img :src="image" @click="replaceProductImage(image)" />
               </div>
               <!-- -------------------------------------------- -->
             </div>
@@ -84,7 +76,7 @@
               <!-- product title, brand name and like button -->
               <div class="product-details-title">
                 <h3 class="h3-small-medium">
-                  {{ product.title }}
+                  {{ dataProp.productName }}
                 </h3>
                 <p class="product-details-brand">
                   Brand: <span>Mama’s Choice</span>
@@ -94,10 +86,10 @@
             <!-- ------------------------------- -->
 
             <p class="product-details-snippet">
-              {{ product.description }}
+              {{ dataProp.description }}
             </p>
             <div class="product-details-price-grp">
-              <h3 class="h3-bold"># {{ product.price }}</h3>
+              <h3 class="h3-bold"># {{ dataProp.price }}</h3>
             </div>
 
             <!-- -------------------------------- -->
@@ -134,11 +126,33 @@ const props = defineProps({
   icon: {
     type: String,
   },
-  formData: {
+  dataProp: {
     type: Object,
-    default: null
-  }
+  },
+  productImage: {
+    type: Array,
+  },
 });
+</script>
+
+<script>
+export default {
+  data() {
+    return {
+      mainImage: "", // Initially empty or provide a default image URL
+    };
+  },
+  created() {
+    if (this.productImage.length > 0) {
+      this.mainImage = this.productImage[0]; // Set the first thumbnail as the initial product image
+    }
+  },
+  methods: {
+    replaceProductImage(image) {
+      this.mainImage = image;
+    },
+  },
+};
 </script>
 
 

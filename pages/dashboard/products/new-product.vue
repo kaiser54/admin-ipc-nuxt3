@@ -1,10 +1,29 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
-      <ProductForm @nextEvent="nextEvent" v-if="!passed" headingText="Add new product" :categories="categories" />
-      <ProductDetails @buttonClick="postProduct" @back="goRoute" v-else icon="icon-right" size="standard"
-        buttonText="Post product" type="primary" :showBtn="true" :product="product" :formData="formData">
+      <AlertPrompt
+        ref="alertPrompt"
+        :message="alertMessage"
+        :alertType="alertType"
+      />
+      <ProductForm
+        @nextEvent="nextEvent"
+        v-if="!passed"
+        headingText="Add new product"
+      />
+      <ProductDetails
+        @buttonClick="postProduct"
+        @back="goRoute"
+        v-if="passed && product"
+        icon="icon-right"
+        size="standard"
+        buttonText="Post product"
+        type="primary"
+        :showBtn="true"
+        :product="product"
+        :dataProp="productData"
+        :productImage="imageArray"
+      >
         <template v-slot:svg>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="arrow-top-right">
@@ -23,61 +42,20 @@
 
 <script setup>
 const productID = Math.floor(Math.random() * 20) + 1;
-const productData = ref(null)
-// const categories = ref([])
-const alert = reactive({
-  passed: false,
-  alertMessage: "",
-  alertType: "",
-})
 
 const uri = "https://fakestoreapi.com/products/" + productID;
 
 // fetching the products
 const { data: product } = await useFetch(uri);
 
-const nextEvent = (formData) => {
-  productData.value = formData;
-  console.log(productData.value);
-  passed = !passed;
-};
-
-async function fetchCategories() {
-  try {
-    const res = await this.$axios.get("http://localhost:8000/api/v1/categories")
-    if (res?.data) {
-      console.log(res, "hjnjhknjk")
-    }
-  } catch (err) {
-    alert.alertType = "error";
-    alert.alertMessage = `${err.message || err}`;
-    alert.$refs.alertPrompt.showAlert("This is an example alert.", "error");
-  }
-}
-
-onMounted(() => {
-  fetchCategories()
-})
-
-const postProduct = async () => {
-  try {
-    // Set the loader to true before the api call
-
-    const res = await this.$axios.post("http://localhost:8000/api/v1/products", { ...productData })
-    if (res) {
-      alert.alertType = "success";
-      alert.alertMessage = "Successfully added to product list";
-      alert.$refs.alertPrompt.showAlert("This is an example alert.", "success");
-    }
-  } catch (err) {
-    alert.alertType = "error";
-    alert.alertMessage = `${err.message || err}`;
-    alert.$refs.alertPrompt.showAlert("This is an example alert.", "error");
-  } finally {
-    // Runs the code in this block whether or not there is an error or success
-  }
-}
-
+// -------------------------------
+// const productData = ref(null);
+// const passed = ref(false);
+// const nextEvent = (data) => {
+//   productData.value = data;
+//   console.log(productData.value);
+//   passed = !passed;
+// };
 </script>
 
 <script>
@@ -89,7 +67,8 @@ export default {
       passed: false,
       alertMessage: "",
       alertType: "",
-      categories: [],
+      productData: null,
+      imageArray: [],
     };
   },
   mounted() {
@@ -97,6 +76,20 @@ export default {
     this.fetchCategories()
   },
   methods: {
+    nextEvent(data) {
+      this.passed = !this.passed;
+      this.productData = data;
+      for (const image of data.selectedImages) {
+        if (image) {
+          const url = URL.createObjectURL(image);
+          this.imageArray.push(url);
+          console.log(this.imageArray);
+        }
+      }
+      // Access the submitted data from the child component
+      // console.log("Form Data:", data);
+      // Perform further actions with the data
+    },
     postProduct() {
       this.alertType = "success";
       this.alertMessage = "Successfully added to product list";
