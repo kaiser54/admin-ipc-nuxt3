@@ -57,7 +57,7 @@
           </div>
           <div class="second flex">
             <div class="form__field">
-              <label for="description">Product’s description</label>
+              <label for="description">Product’s name</label>
               <textarea class="input" name="description" id="" v-model="description"
                 placeholder="Enter the product description"></textarea>
             </div>
@@ -78,8 +78,8 @@
                 <option disabled selected value="">
                   Please select a category
                 </option>
-                <option v-for="option in categories" :key="option._id" :value="option.name">
-                  {{ option.name }}
+                <option v-for="option in categories" :key="option?._id" :value="option?.name">
+                  {{ option?.name }}
                 </option>
               </select>
             </div>
@@ -106,11 +106,21 @@
           </div>
           <div class="fourth">
             <div class="form__heading">Add product images</div>
-            <div class="flex">
+            <div class="imgg">
+              <p><strong>NOTE: </strong>Only maximum of 4 images to be selected</p>
+              <input type="file" ref="fileInput" multiple @change="handleFileChange" />
+              <!-- <button @click="uploadImages">Upload Images</button> -->
+            </div>
+            <!-- <div class="flex">
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
+            </div> -->
+            <div v-if="previewImages.length" class="flex">
+              <div v-for="image in previewImages" :key="image.name" class="upload-box">
+                <img :src="image.url" :alt="image.name" />
+              </div>
             </div>
           </div>
         </form>
@@ -136,9 +146,9 @@ export default {
 
   data() {
     return {
-      name: "", // Set initial values for data properties
-      discountPrice: "",
-      actualPrice: "",
+      productName: "", // Set initial values for data properties
+      price: "",
+      slash: "",
       description: "",
       brand: "",
       weight: "",
@@ -157,6 +167,8 @@ export default {
       // ],
       categoryValue: "",
       selectedImages: [],
+      selectedFiles: [],
+      previewImages: [], // Array to store image previews
     };
   },
   methods: {
@@ -168,18 +180,32 @@ export default {
         slash: this.slash,
         description: this.description,
         brand: this.brand,
-        statusValue: true,
-        category: this.categoryValue,
+        statusValue: this.statusValue,
+        categoryValue: this.categoryValue,
         weight: this.weight,
-        selectedImages: this.selectedImages,
+        selectedImages: this.selectedFiles,
       };
       this.$emit("nextEvent", data);
       // console.log(data.selectedImages);
     },
-    handleImageSelected(file) {
-      // Push the selected image data into the array
-      this.selectedImages.push(file);
-      // console.log("Selected images:", this.selectedImages);
+    // handleImageSelected(file) {
+    //   // Push the selected image data into the array
+    //   this.selectedImages.push(file);
+    //   // console.log("Selected images:", this.selectedImages);
+    // },
+    handleFileChange(event) {
+      const maxImages = 4;
+      this.selectedFiles = Array.from(event.target.files).slice(0, maxImages);
+      this.previewImages = []; // Clear previous previews
+
+      for (const file of this.selectedFiles) {
+        // Create a preview URL for each selected image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImages.push({ url: e.target.result, name: file.name });
+        };
+        reader.readAsDataURL(file);
+      }
     },
   },
 };
@@ -318,5 +344,27 @@ option {
   flex-direction: column;
   align-items: flex-start;
   gap: 48px;
+}
+
+.imgg {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upload-box {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+
+  display: flex;
+  width: 102px;
+  height: 102px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+
+  border-radius: 16px;
+  border: 1px dashed var(--grey-grey4, #bdc0ce);
 }
 </style>

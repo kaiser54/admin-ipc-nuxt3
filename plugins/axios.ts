@@ -1,26 +1,31 @@
 import axios from "axios";
 
+const API_URL = "http://localhost:8000/api/v1";
+
+let devInstance = axios.create({
+    baseURL: API_URL,
+});
+
+devInstance.interceptors.response.use(
+    async (config: any) => {
+        config.headers = {
+            "Content-Type": "application/json",
+            ...config.headers,
+        };
+        return config;
+    },
+    (error: any) => {
+        if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default defineNuxtPlugin(async () => {
     return {
         provide: {
-            axios: axios,
+            devInstance: devInstance,
         },
     };
 });
-
-// import axios from "axios";
-// export default defineNuxtPlugin((nuxtApp) => {
-//     const defaultUrl = "https://localhost:8000/api/v1";
-
-//     let api = axios.create({
-//         baseURL: defaultUrl,
-//         headers: {
-//             common: {},
-//         },
-//     });
-//     return {
-//         provide: {
-//             api: api,
-//         },
-//     };
-// });

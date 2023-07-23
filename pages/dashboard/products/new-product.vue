@@ -1,29 +1,11 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt
-        ref="alertPrompt"
-        :message="alertMessage"
-        :alertType="alertType"
-      />
-      <ProductForm
-        @nextEvent="nextEvent"
-        v-if="!passed"
-        headingText="Add new product"
-      />
-      <ProductDetails
-        @buttonClick="postProduct"
-        @back="goRoute"
-        v-if="passed && product"
-        icon="icon-right"
-        size="standard"
-        buttonText="Post product"
-        type="primary"
-        :showBtn="true"
-        :product="product"
-        :dataProp="productData"
-        :productImage="imageArray"
-      >
+      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
+      <ProductForm @nextEvent="nextEvent" v-show="!passed" headingText="Add new product" :categories="categories" />
+      <ProductDetails @buttonClick="postProduct" @back="goRoute" v-if="passed" icon="icon-right" size="standard"
+        buttonText="Post product" type="primary" :showBtn="true" :product="product" :dataProp="productData"
+        :productImage="imageArray">
         <template v-slot:svg>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="arrow-top-right">
@@ -34,7 +16,6 @@
           </svg>
         </template>
       </ProductDetails>
-      <!-- in this code, ive created a new product details component, so ill save all the inputed data in an array inside the product from before sending it to this parent page, then the product details will pick up the said array into the product details component, now i need to edit the dynamic _product page in the pages folder to use the productdetails component-->
     </div>
   </MainLayout>
 </template>
@@ -58,7 +39,9 @@ const { data: product } = await useFetch(uri);
 // };
 </script>
 
+
 <script>
+// import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -69,10 +52,10 @@ export default {
       alertType: "",
       productData: null,
       imageArray: [],
+      categories: []
     };
   },
-  mounted() {
-    // this.fetchProducts();
+  created() {
     this.fetchCategories()
   },
   methods: {
@@ -91,59 +74,57 @@ export default {
       // Perform further actions with the data
     },
     postProduct() {
-      this.alertType = "success";
-      this.alertMessage = "Successfully added to product list";
-      this.$refs.alertPrompt.showAlert("This is an example alert.", "success");
+      console.log(this.productData);
+    },
+    async postProduct() {
+      const data = new FormData();
+
+      // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
+      data.append("name", this.productData.productName)
+      data.append("description", this.productData.description)
+      data.append("actualPrice", this.productData.slash)
+      data.append("discountPrice", this.productData.price)
+      data.append("brand", this.productData.brand)
+      data.append("weight", this.productData.weight)
+      data.append("category", this.productData.categoryValue)
+      for (let i = 0; i < this.productData.selectedImages.length; i++) {
+        data.append("image", this.productData.selectedImages[i]);
+        // formData.append(`image_${i}`, this.productData.selectedImages[i]); //USING DIFF KEY NAMES
+      }
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: '/products',
+        data: data
+      }
+
+      this.$devInstance(config).then((res) => {
+        // Handle the success response here or update the component state as needed
+        this.alertType = "success";
+        this.alertMessage = "Successfully added to the product list";
+        this.$refs.alertPrompt.showAlert(
+          "product data uploaded successfully",
+          "success"
+        );
+      }).catch((err) => {
+        console.error("Error uploading product data:", err);
+
+        // Handle the error response here or update the component state as needed
+        this.alertType = "error";
+        this.alertMessage = "Error uploading product data. Please try again later.";
+        this.$refs.alertPrompt.showAlert("Error uploading product data", "error");
+      })
     },
     goRoute() {
       this.passed = !this.passed;
+      this.imageArray = [];
     },
-
     fetchCategories() {
-      this.$axios.get("http://localhost:8000/api/v1/categories").then((res) => {
-        console.log(res)
-        this.categories = res?.data?.data?.categories
-      }).catch((err) => console.log(err))
-      // try {
-      //   const res = await this.$axios.get("http://localhost:8000/api/v1/categories")
-      //   if (res?.data) {
-      //     console.log(res)
-      //     // categories.value = res?.data?.categories
-      //   }
-      // } catch (err) {
-      //   alert.alertType = "error";
-      //   alert.alertMessage = `${err.message || err}`;
-      //   alert.$refs.alertPrompt.showAlert("This is an example alert.", "error");
-      // }
+      this.$devInstance.get("/categories").then((res) => this.categories = res?.data?.data?.categories)
     }
   },
 };
-
-// const formChange = (e) => {
-//   setLoading(true);
-//   const data = new FormData();
-//   data.append("file", e.target.files[0]);
-//   data.append("upload_preset", "assetmanagement");
-//   fetch("https://api.cloudinary.com/v1_1/hammy06/image/upload", {
-//     method: "post",
-//     mode: "cors",
-//     body: data,
-//   })
-//     .then((res) => res.json())
-//     .then((data) => {
-//       console.log(data.secure_url);
-//       setFormData({
-//         ...formData,
-//         [e.target.name]: data.secure_url,
-//       });
-//       // console.log(formData);
-//     })
-//     .catch((err) => {
-//       setLoading(false);
-//       toast.error(`${err}`);
-//     })
-//     .finally(() => setLoading(false));
-// };
 </script>
 
 <style  scoped></style>
