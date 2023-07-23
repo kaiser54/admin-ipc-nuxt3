@@ -17,6 +17,7 @@
         </template>
       </ProductDetails>
     </div>
+    <LoaderComponent v-if="loading" />
   </MainLayout>
 </template>
 
@@ -43,6 +44,7 @@ const { data: product } = await useFetch(uri);
 <script>
 // import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
+import LoaderComponent from "/components/LoaderComponent.vue"
 export default {
   components: { MainLayout },
   data() {
@@ -52,7 +54,8 @@ export default {
       alertType: "",
       productData: null,
       imageArray: [],
-      categories: []
+      categories: [],
+      loading: false
     };
   },
   created() {
@@ -77,6 +80,7 @@ export default {
       console.log(this.productData);
     },
     async postProduct() {
+      this.loading = true
       const data = new FormData();
 
       // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
@@ -108,20 +112,21 @@ export default {
           "success"
         );
       }).catch((err) => {
-        console.error("Error uploading product data:", err);
+        console.error("Error uploading product data:", err)
 
         // Handle the error response here or update the component state as needed
         this.alertType = "error";
         this.alertMessage = "Error uploading product data. Please try again later.";
         this.$refs.alertPrompt.showAlert("Error uploading product data", "error");
-      })
+      }).finally(() => this.loading = false);
     },
     goRoute() {
       this.passed = !this.passed;
       this.imageArray = [];
     },
     fetchCategories() {
-      this.$devInstance.get("/categories").then((res) => this.categories = res?.data?.data?.categories)
+      this.loading = true
+      this.$devInstance.get("/categories").then((res) => this.categories = res?.data?.data?.categories).finally(() => this.loading = false)
     }
   },
 };

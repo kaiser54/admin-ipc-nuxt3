@@ -82,13 +82,15 @@
         </div>
       </div>
     </div>
+    <LoaderComponent v-if="loading" />
   </MainLayout>
 </template>
   
 <script>
 import MainLayout from "/layouts/MainLayout.vue";
+import LoaderComponent from "/components/LoaderComponent.vue"
 export default {
-  components: { MainLayout },
+  components: { MainLayout, LoaderComponent },
   data() {
     return {
       products: [],
@@ -96,6 +98,7 @@ export default {
       productsCount: 0,
       inStock: 0,
       outOfStock: 0,
+      loading: false
     };
   },
   created() {
@@ -108,17 +111,19 @@ export default {
       this.$router.push("/dashboard/products/new-product");
     },
     fetchCategories() {
-      this.$devInstance.get("/categories").then((res) => this.categoriesCount = res?.data?.results).catch((err) => console.log(err))
+      this.$devInstance.get("/categories").then((res) => this.categoriesCount = res?.data?.results).catch((err) => console.log(err)).finally(() => this.loading = false)
     },
     fetchProductsCount() {
+      this.loading = true
       this.$devInstance.get("/products/total-product-count").then((res) => {
         this.productsCount = res?.data?.data?.productsCount
         this.inStock = res?.data?.data?.productCountInStock
         this.outOfStock = res?.data?.data?.productCountNotInStock
-      }).catch((err) => consolee.log(err))
+      }).catch((err) => consolee.log(err)).finally(() => this.loading = false)
     },
     fetchProducts() {
-      this.$devInstance.get("/products").then((res) => this.products = res?.data?.data?.products).catch((err) => console.log(err))
+      this.loading = true
+      this.$devInstance.get("/products").then((res) => this.products = res?.data?.data?.products).catch((err) => console.log(err)).finally(() => this.loading = false)
     }
   },
 };
