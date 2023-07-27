@@ -1,25 +1,87 @@
 <template>
-  <div style="
+  <div
+    style="
       max-width: 990px;
       margin-left: 21px;
       margin-top: 16px;
       margin-bottom: 50px;
-    ">
+    "
+  >
     <GoBackButton style="margin-bottom: 24px" />
     <div class="heading flex">
       <h3>{{ headingText }}</h3>
-      <DynamicButton @clickButton="emitFunction" class="auto" buttonText="Continue" size="standard" type="primary"
-        icon="icon-right">
+      <div class="" style="display: flex; align-items: center; gap: 16px;">
+        <DynamicButton
+        v-if="showButton"
+        @clickButton="emitDelete"
+        class="auto"
+        buttonText="Delete product"
+        size="standard"
+        type="neutral"
+        icon="icon-left"
+      >
         <template v-slot:svg>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M6.66667 4.99984V3.33317C6.66667 2.4127 7.41286 1.6665 8.33333 1.6665H11.6667C12.5872 1.6665 13.3333 2.4127 13.3333 3.33317V4.99984M2.5 4.99984H17.5H2.5ZM4.16667 4.99984V16.6665C4.16667 17.587 4.91286 18.3332 5.83333 18.3332H14.1667C15.0872 18.3332 15.8333 17.587 15.8333 16.6665V4.99984H4.16667Z"
+              stroke="#565C69"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M11.667 9.1665V14.1665"
+              stroke="#303237"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.33301 9.1665V14.1665"
+              stroke="#303237"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </template>
+      </DynamicButton>
+      <DynamicButton
+        @clickButton="emitFunction"
+        class="auto"
+        buttonText="Continue"
+        size="standard"
+        type="primary"
+        icon="icon-right"
+      >
+        <template v-slot:svg>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g id="arrow-right">
-              <path id="Vector"
+              <path
+                id="Vector"
                 d="M17.5 9.99984L11.6667 15.8332M2.5 9.99984H17.5H2.5ZM17.5 9.99984L11.6667 4.1665L17.5 9.99984Z"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </g>
           </svg>
         </template>
       </DynamicButton>
+      </div>
     </div>
     <div class="form__wrapper">
       <!-- <div class="form__heading">{{ formHeading }}</div> -->
@@ -31,8 +93,15 @@
               <div class="input-field">
                 <label for="id">Product's name</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': invalid }" type="text" id=""
-                    placeholder="Ex: Mama’s pride rice" required v-model="productName" />
+                  <input
+                    class="input"
+                    :class="{ 'input-error': invalid }"
+                    type="text"
+                    id=""
+                    placeholder="Ex: Mama’s pride rice"
+                    required
+                    v-model="productName"
+                  />
                 </div>
               </div>
             </div>
@@ -40,8 +109,16 @@
               <div class="input-field">
                 <label for="price">IPC’s price</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': invalid }" type="text" name="price" id=""
-                    placeholder="₦70,000" required v-model="price" />
+                  <input
+                    class="input"
+                    :class="{ 'input-error': invalid }"
+                    type="text"
+                    name="price"
+                    id=""
+                    placeholder="₦70,000"
+                    required
+                    v-model="price"
+                  />
                 </div>
               </div>
             </div>
@@ -49,8 +126,16 @@
               <div class="input-field">
                 <label for="slash">Market slash price</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': invalid }" type="text" name="slash" id=""
-                    placeholder="₦80,000" required v-model="slash" />
+                  <input
+                    class="input"
+                    :class="{ 'input-error': invalid }"
+                    type="text"
+                    name="slash"
+                    id=""
+                    placeholder="₦80,000"
+                    required
+                    v-model="slash"
+                  />
                 </div>
               </div>
             </div>
@@ -58,15 +143,28 @@
           <div class="second flex">
             <div class="form__field">
               <label for="description">Product’s description</label>
-              <textarea class="input" name="description" id="" v-model="description"
-                placeholder="Enter the product description"></textarea>
+              <textarea
+                class="input"
+                name="description"
+                id=""
+                v-model="description"
+                placeholder="Enter the product description"
+              ></textarea>
             </div>
             <div class="form__field">
               <div class="input-field">
                 <label for="brand">Brand’s name</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': invalid }" type="text" name="brand" id=""
-                    placeholder="Mama’s rice" required v-model="brand" />
+                  <input
+                    class="input"
+                    :class="{ 'input-error': invalid }"
+                    type="text"
+                    name="brand"
+                    id=""
+                    placeholder="Mama’s rice"
+                    required
+                    v-model="brand"
+                  />
                 </div>
               </div>
             </div>
@@ -74,11 +172,20 @@
           <div class="third flex">
             <div class="form__field">
               <label for="category">Category</label>
-              <select class="input" name="category" id="" v-model="categoryValue">
+              <select
+                class="input"
+                name="category"
+                id=""
+                v-model="categoryValue"
+              >
                 <option disabled selected value="">
                   Please select a category
                 </option>
-                <option v-for="option in categories" :key="option?._id" :value="option?.name">
+                <option
+                  v-for="option in categories"
+                  :key="option?._id"
+                  :value="option?.name"
+                >
                   {{ option?.name }}
                 </option>
               </select>
@@ -89,7 +196,11 @@
                 <option disabled selected value="">
                   Please select a status
                 </option>
-                <option v-for="option in status" :key="option.value" :value="option.value">
+                <option
+                  v-for="option in status"
+                  :key="option.value"
+                  :value="option.value"
+                >
                   {{ option.label }}
                 </option>
               </select>
@@ -98,8 +209,16 @@
               <div class="input-field">
                 <label for="weight">Measurement (Optional)</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': invalid }" type="text" name="weight" id=""
-                    placeholder="5kg" required v-model="weight" />
+                  <input
+                    class="input"
+                    :class="{ 'input-error': invalid }"
+                    type="text"
+                    name="weight"
+                    id=""
+                    placeholder="5kg"
+                    required
+                    v-model="weight"
+                  />
                 </div>
               </div>
             </div>
@@ -107,8 +226,15 @@
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
-              <p><strong>NOTE: </strong>Only maximum of 4 images to be selected</p>
-              <input type="file" ref="fileInput" multiple @change="handleFileChange" />
+              <p>
+                <strong>NOTE: </strong>Only maximum of 4 images to be selected
+              </p>
+              <input
+                type="file"
+                ref="fileInput"
+                multiple
+                @change="handleFileChange"
+              />
               <!-- <button @click="uploadImages">Upload Images</button> -->
             </div>
             <!-- <div class="flex">
@@ -118,7 +244,11 @@
               <ImageUpload @image-selected="handleImageSelected" />
             </div> -->
             <div v-if="previewImages.length" class="flex">
-              <div v-for="image in previewImages" :key="image.name" class="upload-box">
+              <div
+                v-for="image in previewImages"
+                :key="image.name"
+                class="upload-box"
+              >
                 <img :src="image.url" :alt="image.name" />
               </div>
             </div>
@@ -140,8 +270,12 @@ export default {
     },
     categories: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
+    showButton: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
