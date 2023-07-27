@@ -57,7 +57,7 @@
           </div>
           <div class="second flex">
             <div class="form__field">
-              <label for="description">Product’s name</label>
+              <label for="description">Product’s description</label>
               <textarea class="input" name="description" id="" v-model="description"
                 placeholder="Enter the product description"></textarea>
             </div>
@@ -96,7 +96,7 @@
             </div>
             <div class="form__field">
               <div class="input-field">
-                <label for="weight">Weight (kg) (Optional)</label>
+                <label for="weight">Measurement (Optional)</label>
                 <div class="input-container">
                   <input class="input" :class="{ 'input-error': invalid }" type="text" name="weight" id=""
                     placeholder="5kg" required v-model="weight" />

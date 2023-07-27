@@ -1,17 +1,46 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
-      <ProductForm @nextEvent="nextEvent" v-show="!passed" headingText="Add new product" :categories="categories" />
-      <ProductDetails @buttonClick="postProduct" @back="goRoute" v-if="passed" icon="icon-right" size="standard"
-        buttonText="Post product" type="primary" :showBtn="true" :product="product" :dataProp="productData"
-        :productImage="imageArray">
+      <AlertPrompt
+        ref="alertPrompt"
+        :message="alertMessage"
+        :alertType="alertType"
+      />
+      <ProductForm
+        @nextEvent="nextEvent"
+        v-show="!passed"
+        headingText="Add new product"
+        :categories="categories"
+      />
+      <ProductDetails
+        @buttonClick="postProduct"
+        @back="goRoute"
+        v-if="passed"
+        icon="icon-right"
+        size="standard"
+        buttonText="Post product"
+        type="primary"
+        :showBtn="true"
+        :dataProp="productData"
+        :productImage="imageArray"
+      >
         <template v-slot:svg>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g id="arrow-top-right">
-              <path id="Vector"
+              <path
+                id="Vector"
                 d="M15.3029 4.69678V12.9463M4.69629 15.3034L15.3029 4.69678L4.69629 15.3034ZM15.3029 4.69678L7.0533 4.69679L15.3029 4.69678Z"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </g>
           </svg>
         </template>
@@ -22,29 +51,11 @@
 </template>
 
 
-<script setup>
-const productID = Math.floor(Math.random() * 20) + 1;
-
-const uri = "https://fakestoreapi.com/products/" + productID;
-
-// fetching the products
-const { data: product } = await useFetch(uri);
-
-// -------------------------------
-// const productData = ref(null);
-// const passed = ref(false);
-// const nextEvent = (data) => {
-//   productData.value = data;
-//   console.log(productData.value);
-//   passed = !passed;
-// };
-</script>
-
 
 <script>
 // import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
-import LoaderComponent from "/components/LoaderComponent.vue"
+import LoaderComponent from "/components/LoaderComponent.vue";
 export default {
   components: { MainLayout },
   data() {
@@ -55,11 +66,11 @@ export default {
       productData: null,
       imageArray: [],
       categories: [],
-      loading: false
+      loading: false,
     };
   },
   created() {
-    this.fetchCategories()
+    this.fetchCategories();
   },
   methods: {
     nextEvent(data) {
@@ -80,54 +91,64 @@ export default {
       console.log(this.productData);
     },
     async postProduct() {
-      this.loading = true
+      this.loading = true;
       const data = new FormData();
 
       // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-      data.append("name", this.productData.productName)
-      data.append("description", this.productData.description)
-      data.append("actualPrice", this.productData.slash)
-      data.append("discountPrice", this.productData.price)
-      data.append("brand", this.productData.brand)
-      data.append("weight", this.productData.weight)
-      data.append("category", this.productData.categoryValue)
+      data.append("name", this.productData.productName);
+      data.append("description", this.productData.description);
+      data.append("actualPrice", this.productData.slash);
+      data.append("discountPrice", this.productData.price);
+      data.append("brand", this.productData.brand);
+      data.append("weight", this.productData.weight);
+      data.append("category", this.productData.categoryValue);
       for (let i = 0; i < this.productData.selectedImages.length; i++) {
         data.append("image", this.productData.selectedImages[i]);
         // formData.append(`image_${i}`, this.productData.selectedImages[i]); //USING DIFF KEY NAMES
       }
 
       let config = {
-        method: 'post',
+        method: "post",
         maxBodyLength: Infinity,
-        url: '/products',
-        data: data
-      }
+        url: "/products",
+        data: data,
+      };
 
-      this.$devInstance(config).then((res) => {
-        // Handle the success response here or update the component state as needed
-        this.alertType = "success";
-        this.alertMessage = "Successfully added to the product list";
-        this.$refs.alertPrompt.showAlert(
-          "product data uploaded successfully",
-          "success"
-        );
-      }).catch((err) => {
-        console.error("Error uploading product data:", err)
+      this.$devInstance(config)
+        .then((res) => {
+          // Handle the success response here or update the component state as needed
+          this.alertType = "success";
+          this.alertMessage = "Successfully added to the product list";
+          this.$refs.alertPrompt.showAlert(
+            "product data uploaded successfully",
+            "success"
+          );
+        })
+        .catch((err) => {
+          console.error("Error uploading product data:", err);
 
-        // Handle the error response here or update the component state as needed
-        this.alertType = "error";
-        this.alertMessage = "Error uploading product data. Please try again later.";
-        this.$refs.alertPrompt.showAlert("Error uploading product data", "error");
-      }).finally(() => this.loading = false);
+          // Handle the error response here or update the component state as needed
+          this.alertType = "error";
+          this.alertMessage =
+            "Error uploading product data. Please try again later.";
+          this.$refs.alertPrompt.showAlert(
+            "Error uploading product data",
+            "error"
+          );
+        })
+        .finally(() => (this.loading = false));
     },
     goRoute() {
       this.passed = !this.passed;
       this.imageArray = [];
     },
     fetchCategories() {
-      this.loading = true
-      this.$devInstance.get("/categories").then((res) => this.categories = res?.data?.data?.categories).finally(() => this.loading = false)
-    }
+      this.loading = true;
+      this.$devInstance
+        .get("/categories")
+        .then((res) => (this.categories = res?.data?.data?.categories))
+        .finally(() => (this.loading = false));
+    },
   },
 };
 </script>

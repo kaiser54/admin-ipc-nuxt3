@@ -104,10 +104,6 @@
     
 <script setup>
 const props = defineProps({
-  product: {
-    type: Object,
-    required: true,
-  },
   showBtn: {
     type: Boolean,
     default: false,

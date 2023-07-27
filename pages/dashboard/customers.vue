@@ -1,15 +1,14 @@
 <template>
-  <div>
-
-  </div>
+  <MainLayout></MainLayout>
 </template>
 
 <script>
-  export default {
-    layout: "dashboardview",
-  }
+import MainLayout from "/layouts/MainLayout.vue";
+export default {
+  components: { MainLayout },
+  layout: "dashboardview",
+};
 </script>
 
 <style scoped>
-
 </style>

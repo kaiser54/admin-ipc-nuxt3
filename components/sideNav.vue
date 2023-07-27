@@ -213,7 +213,9 @@ export default {
     isInnerProduct() {
       return (
         this.$route.path === '/dashboard/products/create-product' ||
-        this.$route.path === '/dashboard/products/new-product'
+        this.$route.path === '/dashboard/products/new-product' ||
+        this.$route.path.includes('[id]') ||
+        this.$route.path === '/dashboard/products/[id].vue' 
       );
     },
   },

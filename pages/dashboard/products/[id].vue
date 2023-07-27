@@ -54,7 +54,9 @@
                 <!-- <img :src="require(`~/assets/images/${product.images[productImage]}`)
                     " class="zoom-image" ref="zoomImage" /> -->
                 <img
-                  :src="product.image"
+                  :src="
+                    product?.data?.product?.images[`${this.productImage}`].url
+                  "
                   alt="Product Image"
                   class="zoom-image"
                   ref="zoomImage"
@@ -67,10 +69,11 @@
               <div class="product-thumb">
                 <div
                   class="thumb"
-                  v-for="(image, index) in product.images"
+                  v-for="(image, index) in product?.data?.product?.images"
                   :key="index"
+                  @click="changeImage(index)"
                 >
-                  <!-- <img :src="require(`~/assets/images/${image}`)" alt="" @click="changeImage(index)" /> -->
+                  <img :src="image.url" alt="Product Image" />
                 </div>
                 <!-- -------------------------------------------- -->
               </div>
@@ -80,21 +83,25 @@
                 <!-- product title, brand name and like button -->
                 <div class="product-details-title">
                   <h3 class="h3-small-medium">
-                    {{ product.title }}
+                    {{ product?.data?.product?.name }}
                   </h3>
                   <p class="product-details-brand">
-                    Brand: <span>Mama’s Choice</span>
+                    Brand: <span>{{ product?.data?.product?.brand }}</span>
                   </p>
                 </div>
               </div>
               <!-- ------------------------------- -->
 
               <p class="product-details-snippet">
-                {{ product.description }}
+                {{ product?.data?.product?.description }}
               </p>
               <div class="product-details-price-grp">
-                <h3 class="h3-bold"># {{ product.price }}</h3>
-                <tags />
+                <h3 class="h3-bold">
+                  # {{ product?.data?.product?.actualPrice }}
+                </h3>
+                <h3 class="slash">
+                  # {{ product?.data?.product?.discountPrice }}
+                </h3>
               </div>
 
               <!-- -------------------------------- -->
@@ -104,7 +111,6 @@
         </div>
         <!-- ---------------------------------- -->
       </div>
-      <ProductDetails />
     </div>
   </MainLayout>
 </template>
@@ -116,10 +122,13 @@ const pathArray = id.split("~");
 const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
 const productID = lastSegment;
 
-const uri = 'https://fakestoreapi.com/products/' + productID
+const uri =
+  "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" + productID;
+console.log(uri);
+console.log(productID);
 
 // fetching the products
-const { data: product } = await useFetch(uri)
+const { data: product } = await useFetch(uri);
 </script>
 
 
@@ -132,9 +141,9 @@ export default {
     return {
       pageTitle: "IPC | Market",
       mobile: false,
-    //   productId: null,
-    //   productTitle: null,
-    //   product: {},
+      //   productId: null,
+      //   productTitle: null,
+      //   product: {},
       productImage: 0,
       currentPage: "",
       inCart: false,
@@ -147,27 +156,7 @@ export default {
     };
   },
   computed: {},
-//   async mounted() {
-    mounted() {
-    // const pathArray = this.$route.path.split("~");
-    // const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
-    // this.currentPage = lastSegment;
-    // console.log(this.currentPage);
-    // this.productId = this.$route.params.id;
-    // this.productTitle = this.$route.params.title;
-    // console.log(this.productId);
-    // try {
-    //   this.loading = true;
-    //   // const response = await this.$axios.$get(`https://fakestoreapi.com/products/${this.productId}`);
-    //   const response = await this.$axios.$get(
-    //     `https://fakestoreapi.com/products/${this.currentPage}`
-    //   );
-    //   this.product = response;
-    // } catch (error) {
-    //   console.error("Error fetching products:", error);
-    // } finally {
-    //   this.loading = false;
-    // }
+  mounted() {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
     const zoomLevel = 2; // Change this value to adjust the zoom level
@@ -454,6 +443,14 @@ p.product-details-snippet {
 
   color: var(--grey-grey1);
 }
+.slash {
+  color: var(--grey-grey3, #7e8494);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  /* text-decoration-line: strikethrough; */
+  text-decoration-line: line-through;
+}
 
 @media (min-width: 950px) {
   .webskeleton {
@@ -495,6 +492,24 @@ p.product-details-snippet {
 }
 
 .exact.nuxt-link-active .desktop-nav .nav-content svg path {
+  stroke: #fff !important;
+}
+</style>
+
+<style>
+.innerProduct .desktop-nav {
+  background: var(--primary-p300);
+}
+
+.innerProduct .desktop-nav p {
+  color: #fff;
+}
+
+.innerProduct .desktop-nav svg {
+  stroke: #fff;
+}
+
+.innerProduct .desktop-nav .nav-content svg path {
   stroke: #fff !important;
 }
 </style>

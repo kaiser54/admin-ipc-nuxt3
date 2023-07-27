@@ -3,7 +3,7 @@
 
   <div class="product-card">
     <!-- <nuxt-link :to="{ name: 'product', params: { id: product.id, title: product.title } }"> -->
-    <nuxt-link to="/dashboard/products/Fjallraven%20-%20Foldsack%20No.%201%20Backpack,%20Fits%2015%20Laptops~1">
+    <nuxt-link :to="`/dashboard/products/${product.name}~${product._id}`">
       <div class="product-img-grp">
         <!-- <img :src="product.image" alt="" /> -->
 
@@ -43,7 +43,8 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+    };
   },
   props: {
     product: {
