@@ -175,10 +175,10 @@
 </template>
   
   <script>
-  import MainLayout from "/layouts/MainLayout.vue";
+import MainLayout from "/layouts/MainLayout.vue";
 export default {
   layout: "dashboardview",
-  components: {MainLayout},
+  components: { MainLayout },
   data() {
     return {
       rotate: false,
@@ -205,9 +205,52 @@ export default {
           status: "Completed",
         },
       ],
+      products: [],
+      categoriesCount: 0,
+      productsCount: 0,
+      inStock: 0,
+      outOfStock: 0,
+      loading: false,
     };
   },
+  created() {
+    this.fetchCategories(); // convert all this to fetch orders
+    this.fetchProductsCount();
+    this.fetchProducts();
+  },
   methods: {
+    fetchCategories() {
+      this.$devInstance
+        .get("/categories")
+        .then((res) => (this.categoriesCount = res?.data?.results))
+        .catch((err) => console.log(err))
+        .finally(() => (this.loading = false));
+    },
+    fetchProductsCount() {
+      this.loading = true;
+      this.$devInstance
+        .get("/products/total-product-count")
+        .then((res) => {
+          this.productsCount = res?.data?.data?.productsCount;
+          this.inStock = res?.data?.data?.productCountInStock;
+          this.outOfStock = res?.data?.data?.productCountNotInStock;
+        })
+        .catch((err) => consolee.log(err))
+        .finally(() => (this.loading = false));
+    },
+    fetchProducts() {
+      this.loading = true;
+      this.$devInstance
+        .get("/products")
+        .then(
+          (res) => (
+            (this.products = res?.data?.data?.products),
+            console.log(this.products)
+          )
+        )
+        .catch((err) => console.log(err))
+        .finally(() => (this.loading = false));
+    },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
       this.rotate = !this.rotate;

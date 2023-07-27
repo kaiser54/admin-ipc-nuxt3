@@ -709,6 +709,11 @@ label.label {
   line-height: 21px;
 }
 
+.border {
+  border-radius: 16px;
+  border: 1px solid var(--grey-grey-5, #E5E7EF);
+}
+
 .text-container {
   display: -webkit-box;
   /* For Safari and old versions of Chrome */
