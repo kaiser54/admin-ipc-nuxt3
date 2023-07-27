@@ -71,14 +71,15 @@
         </DynamicButton>
       </div>
       <div class="dash__button flex__row">
-        <OrderProduct />
+        <OrderProduct :tagText="tagText" :size="size" :type="type" />
         <UserInfo
           :data="data"
           style="max-width: 387px; width: 100%; margin-left: 20px"
         >
           <template v-slot:button>
             <div class="dash__button bdr">
-              <div class="order__processing">Order Processing</div>
+              <DynamicTags :tagText="tagText" :size="size" :type="type"/>
+              <!-- <div class="order__processing">Order Processing</div> -->
               <DynamicButton
                 @clickButton="changeOrderStatus"
                 size="small"
@@ -101,14 +102,55 @@
           buttonText2="Change"
           buttonClass="neutral-btn"
           buttonClass2="primary-btn"
+          @okModal="okOrderStatus"
           @closeModal="changeOrderStatus"
           @closeModalBG="changeOrderStatus"
         >
-        <template v-slot:selection>
-          <div>
-            
-          </div>
-        </template>
+          <template v-slot:selection>
+            <div class="content-select">
+              <div
+                class="list-select border"
+                :class="{ clicked: selectedItem === index }"
+                v-for="(item, index) in listSelect"
+                :key="index"
+                @click="selectItem(index)"
+              >
+                <div class="list-select-header">
+                  <DynamicTags
+                    :tagText="item.title"
+                    :size="item.size"
+                    :type="item.type"
+                  >
+                  </DynamicTags>
+                  <label>
+                    <input
+                      type="radio"
+                      :value="item.title"
+                      v-model="selectedItem"
+                      hidden
+                    />
+                    <svg
+                      :class="{ selected: selectedItem === index }"
+                      viewBox="0 0 25 25"
+                      width="25"
+                      height="25"
+                    >
+                      <circle cx="12" cy="12" r="11" />
+                      <path
+                        v-if="selectedItem === index"
+                        d="M8.5,12l2.5,2.5L15.5,10"
+                        fill="none"
+                        stroke="#fff"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </template>
         </PopupModal>
       </transition>
     </div>
@@ -116,7 +158,6 @@
 </template>
   
   <script>
-import "animate.css";
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -127,11 +168,50 @@ export default {
         loll: "loading",
       },
       orderSatatus: false,
+      animate: null,
+      selectedItem: null,
+      selectedIndex: 0,
+      listSelect: [
+        {
+          title: "Order procesing",
+          type: "warning",
+          size: "small",
+        },
+        {
+          title: "Shipped",
+          type: "info",
+          size: "small",
+        },
+        {
+          title: "Delivered",
+          type: "positive",
+          size: "small",
+        },
+      ],
     };
+  },
+  computed: {
+    tagText() {
+      return this.listSelect[this.selectedIndex].title;
+    },
+    type() {
+      return this.listSelect[this.selectedIndex].type;
+    },
+    size() {
+      return this.listSelect[this.selectedIndex].size;
+    },
   },
   methods: {
     changeOrderStatus() {
+      this.animate = "animate__zoomIn";
       this.orderSatatus = !this.orderSatatus;
+    },
+    okOrderStatus() {
+      this.selectedIndex = this.selectedItem;
+      this.orderSatatus = false;
+    },
+    selectItem(value) {
+      this.selectedItem = value;
     },
   },
 };
@@ -153,5 +233,62 @@ export default {
 .flex__row {
   flex-direction: row !important;
   align-items: flex-start;
+}
+.content-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.list-select {
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 8px;
+
+  /* max-width: 400px; */
+  width: 100%;
+
+  /* White */
+
+  background: #ffffff;
+  /* Grey/Grey4 */
+
+  border: 1px solid var(--grey-grey4);
+  border-radius: 16px;
+}
+
+.clicked,
+.list-select:hover {
+  background: var(--grey-grey6, #f4f5f8);
+}
+
+.list-select-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.list-select-header label {
+  margin-bottom: 0 !important;
+}
+svg circle {
+  stroke: var(--grey-grey4);
+  stroke-width: 2px;
+  fill: none;
+}
+
+/* Checked styling */
+.selected circle {
+  stroke: none;
+  fill: var(--primary-p300);
+}
+.title {
+  /* Body Micro/Body Micro Regular */
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 150% */
 }
 </style>

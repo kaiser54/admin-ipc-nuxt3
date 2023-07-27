@@ -12,7 +12,7 @@
             <div class="order-qty">Qty: 1</div>
           </div>
           <div class="order-price">#75,000</div>
-          <div class="tag pending tag-small">Ready for delivery</div>
+          <DynamicTags :tagText="tagText" :size="size" :type="type" />
         </div>
 
         <div class="price-qty">
@@ -34,6 +34,17 @@ export default {
     showSvg: {
       type: Boolean,
       default: true,
+    },
+    tagText: {
+      type: String,
+    },
+    size: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
     },
   },
 };

@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in tableData" :key="item.id">
+          <tr v-for="item in tableData" :key="item.id" @click="userRoute(item.name)">
             <td style="display: flex; align-items: center; gap: 5px">
               <div class="img">
                 <img src="@/assets/images/p1.png" alt="" />
@@ -89,6 +89,12 @@ export default {
       default: true,
     },
   },
+  methods: {
+    userRoute(value) {
+      // this.$router.push('/dashboard/orders/'`${value}`);
+      this.$router.push('/dashboard/orders/2');
+    }
+  }
 };
 </script>
 

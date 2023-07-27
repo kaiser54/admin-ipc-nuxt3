@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="logout-modal" style="z-index: 2;">
+    <div class="logout-modal" style="z-index: 2">
       <div class="WH-auto animate__animated" :class="animate">
         <div class="modal">
           <div class="modal-msg">
@@ -25,19 +25,21 @@
               </svg>
             </div>
           </div>
-          <slot name="selection"/>
+          <slot name="selection" />
           <div class="button-grp">
             <button @click="closeModal" class="btn" :class="buttonClass">
               {{ buttonText }}
             </button>
-            <nuxt-link :to="{ name: 'index' }"
-              ><button class="btn" :class="buttonClass2">
-                {{ buttonText2 }}
-              </button></nuxt-link
-            >
+            <button @click="okModal" class="btn" :class="buttonClass2">
+              {{ buttonText2 }}
+            </button>
           </div>
         </div>
-        <div class="modalbg WH-auto logout-modal" ref="modalRef" @click="closeModal"></div>
+        <div
+          class="modalbg WH-auto logout-modal"
+          ref="modalRef"
+          @click="closeModal"
+        ></div>
       </div>
     </div>
   </div>
@@ -91,6 +93,9 @@ export default {
     closeModal() {
       this.$emit("closeModal");
     },
+    okModal() {
+      this.$emit("okModal");
+    },
   },
 };
 </script>
@@ -115,7 +120,7 @@ export default {
 .modal {
   display: flex;
   flex-direction: column;
-  justify-content:space-between;
+  justify-content: space-between;
   /* align-items: flex-end; */
   padding: 24px;
   gap: 32px;
@@ -126,7 +131,7 @@ export default {
   transform: translate(-50%, -50%);
   max-width: 432px;
   width: 100%;
-  height: 220px;
+  /* height: 220px; */
 
   /* White */
 
