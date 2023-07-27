@@ -221,29 +221,6 @@
           </div>
         </template>
       </TableComp>
-      <ImageUpload />
-      <div>
-        <MyInput
-          id="username"
-          label="Username"
-          placeholder="Enter your username"
-          :modelValue="username"
-          @update:modelValue="username = $event"
-          :error-message="usernameError"
-        />
-
-        <MyInput
-          id="password"
-          label="Password"
-          placeholder="Enter your password"
-          :modelValue="password"
-          @update:modelValue="password = $event"
-          type="password"
-          :error-message="passwordError"
-        />
-
-        <button @click="login">Login</button>
-      </div>
     </div>
   </MainLayout>
 </template>
