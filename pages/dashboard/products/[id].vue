@@ -118,18 +118,47 @@
     
 
 <script setup>
-const { id } = useRoute().params;
-const pathArray = id.split("~");
-const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
-const productID = lastSegment;
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 
-const uri =
-  "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" + productID;
-console.log(uri);
-console.log(productID);
+const id = ref("");
+const product = ref(null);
 
-// fetching the products
-const { data: product } = await useFetch(uri);
+onMounted(async () => {
+  const { params } = useRoute();
+  if (params.id) {
+    const pathArray = params.id.split("~");
+    const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
+    id.value = lastSegment;
+
+    const uri =
+      "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" +
+      id.value;
+
+    try {
+      const response = await fetch(uri);
+      if (response.ok) {
+        product.value = await response.json();
+      } else {
+        console.error("Failed to fetch data:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+});
+// const { id } = useRoute().params;
+// const pathArray = id.split("~");
+// const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
+// const productID = lastSegment;
+
+// const uri =
+//   "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" + productID;
+// console.log(uri);
+// console.log(productID);
+
+// // fetching the products
+// const { data: product } = await useFetch(uri);
 </script>
 
 
