@@ -10,7 +10,18 @@
     </div>
     <div class="group">
       <div class="title">Account type</div>
-      <div class="subject">Business</div>
+      <div class="subject flex">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="9"
+          height="8"
+          viewBox="0 0 9 8"
+          fill="none"
+        >
+          <circle cx="4.5" cy="4" r="4" fill="#20AF0B" />
+        </svg>
+        Business
+      </div>
     </div>
     <div class="group">
       <div class="title">Total orders</div>
@@ -58,5 +69,9 @@ export default {};
   font-style: normal;
   font-weight: 500;
   line-height: 24px; /* 150% */
+}
+.flex {
+  align-items: center;
+  gap: 7px;
 }
 </style>

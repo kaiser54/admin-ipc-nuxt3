@@ -72,11 +72,15 @@
       </div>
       <div class="dash__button flex__row">
         <OrderProduct />
-        <UserInfo :data="data" style="max-width: 387px; width: 100%; margin-left: 20px; ">
+        <UserInfo
+          :data="data"
+          style="max-width: 387px; width: 100%; margin-left: 20px"
+        >
           <template v-slot:button>
             <div class="dash__button bdr">
               <div class="order__processing">Order Processing</div>
               <DynamicButton
+                @clickButton="changeOrderStatus"
                 size="small"
                 type="ghost"
                 buttonText="Change"
@@ -86,11 +90,33 @@
           </template>
         </UserInfo>
       </div>
+      <transition name="modal-fade">
+        <!-- enter the PopModal an add router push to the button and remove the nuxt link -->
+        <PopupModal
+          v-if="orderSatatus"
+          :animate="animate"
+          title="Change order status"
+          snippet="We have sent a secured reset link to your email. Click on the link to verify your email."
+          buttonText="Cancel"
+          buttonText2="Change"
+          buttonClass="neutral-btn"
+          buttonClass2="primary-btn"
+          @closeModal="changeOrderStatus"
+          @closeModalBG="changeOrderStatus"
+        >
+        <template v-slot:selection>
+          <div>
+            
+          </div>
+        </template>
+        </PopupModal>
+      </transition>
     </div>
   </MainLayout>
 </template>
   
   <script>
+import "animate.css";
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -98,10 +124,16 @@ export default {
   data() {
     return {
       data: {
-        loll: 'loading'
+        loll: "loading",
       },
-    }
-  }
+      orderSatatus: false,
+    };
+  },
+  methods: {
+    changeOrderStatus() {
+      this.orderSatatus = !this.orderSatatus;
+    },
+  },
 };
 </script>
   

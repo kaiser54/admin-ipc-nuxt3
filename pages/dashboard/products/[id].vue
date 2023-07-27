@@ -55,7 +55,7 @@
                     " class="zoom-image" ref="zoomImage" /> -->
                 <img
                   :src="
-                    product?.data?.product?.images[`${this.productImage}`].url
+                    product?.data?.product?.images[`${this.productImage}`]?.url
                   "
                   alt="Product Image"
                   class="zoom-image"
@@ -73,7 +73,7 @@
                   :key="index"
                   @click="changeImage(index)"
                 >
-                  <img :src="image.url" alt="Product Image" />
+                  <img :src="image?.url" alt="Product Image" />
                 </div>
                 <!-- -------------------------------------------- -->
               </div>

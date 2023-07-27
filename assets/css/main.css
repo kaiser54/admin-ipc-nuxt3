@@ -726,6 +726,10 @@ label.label {
   border-radius: 16px;
 }
 
+.flex {
+  display: flex;
+}
+
 .text-container {
   display: -webkit-box;
   /* For Safari and old versions of Chrome */
