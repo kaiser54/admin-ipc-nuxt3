@@ -714,6 +714,18 @@ label.label {
   border: 1px solid var(--grey-grey-5, #E5E7EF);
 }
 
+
+.bdr {
+  display: flex;
+  padding: 16px;
+  gap: 8px;
+
+  /* Grey/Grey5 */
+
+  border: 1px solid var(--grey-grey5);
+  border-radius: 16px;
+}
+
 .text-container {
   display: -webkit-box;
   /* For Safari and old versions of Chrome */

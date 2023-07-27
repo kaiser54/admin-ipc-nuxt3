@@ -70,6 +70,22 @@
           </template>
         </DynamicButton>
       </div>
+      <div class="dash__button flex__row">
+        <OrderProduct />
+        <UserInfo :data="data" style="max-width: 387px; width: 100%; margin-left: 20px; ">
+          <template v-slot:button>
+            <div class="dash__button bdr">
+              <div class="order__processing">Order Processing</div>
+              <DynamicButton
+                size="small"
+                type="ghost"
+                buttonText="Change"
+                class="auto"
+              ></DynamicButton>
+            </div>
+          </template>
+        </UserInfo>
+      </div>
     </div>
   </MainLayout>
 </template>
@@ -79,17 +95,31 @@ import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
+  data() {
+    return {
+      data: {
+        loll: 'loading'
+      },
+    }
+  }
 };
 </script>
   
   <style scoped>
 .wrapper {
   margin: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
 }
 .dash__button {
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
+}
+.flex__row {
+  flex-direction: row !important;
+  align-items: flex-start;
 }
 </style>
