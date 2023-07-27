@@ -139,6 +139,7 @@ onMounted(async () => {
       const response = await fetch(uri);
       if (response.ok) {
         product.value = await response.json();
+        console.log(product.value)
       } else {
         console.error("Failed to fetch data:", response.status);
       }
