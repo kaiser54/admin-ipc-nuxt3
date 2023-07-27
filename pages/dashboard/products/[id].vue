@@ -54,6 +54,7 @@
                 <!-- <img :src="require(`~/assets/images/${product.images[productImage]}`)
                     " class="zoom-image" ref="zoomImage" /> -->
                 <img
+                  v-if="product"
                   :src="
                     product?.data?.product?.images[`${this.productImage}`]?.url
                   "
