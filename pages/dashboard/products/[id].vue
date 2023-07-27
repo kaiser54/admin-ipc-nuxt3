@@ -56,7 +56,7 @@
                 <img
                   v-if="product"
                   :src="
-                    product?.data?.product?.images[`${this.productImage}`]?.url
+                    product?.data?.product?.images[`${productImage}`]?.url
                   "
                   alt="Product Image"
                   class="zoom-image"
