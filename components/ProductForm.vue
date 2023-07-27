@@ -322,6 +322,9 @@ export default {
       this.$emit("nextEvent", data);
       // console.log(data.selectedImages);
     },
+    emitDelete() {
+      this.$emit("deleteProduct");
+    },
     // handleImageSelected(file) {
     //   // Push the selected image data into the array
     //   this.selectedImages.push(file);

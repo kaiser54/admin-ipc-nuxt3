@@ -24,6 +24,7 @@
                 />
               </svg>
             </div>
+            <p class="snippet" v-if="showSnippet">{{ snippet }}</p>
           </div>
           <slot name="selection" />
           <div class="button-grp">
@@ -72,6 +73,13 @@ export default {
     buttonClass2: {
       type: String,
       required: true,
+    },
+    snippet: {
+      type: String,
+    },
+    showSnippet: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted() {
