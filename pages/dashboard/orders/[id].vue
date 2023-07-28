@@ -33,7 +33,7 @@
           </template>
         </DynamicButton>
       </div>
-      <CustomerInfo></CustomerInfo>
+      <CustomerInfo :tagText="statusTagText" :type="statusTagType" />
       <div class="dash__button">
         <h3>Order details</h3>
         <DynamicButton
@@ -171,6 +171,8 @@ export default {
       animate: null,
       selectedItem: null,
       selectedIndex: 0,
+      statusTagText: 'Active',
+      statusTagType: null,
       listSelect: [
         {
           title: "Order procesing",
@@ -199,6 +201,13 @@ export default {
     },
     size() {
       return this.listSelect[this.selectedIndex].size;
+    },
+    statusTagType() {
+      if (this.statusTagText === 'In Active') {
+        return 'warning';
+      } else {
+        return 'info';
+      }
     },
   },
   methods: {

@@ -12,6 +12,7 @@
     <div class="heading flex">
       <h3>Customer information</h3>
     </div>
+    <CustomerInfo :tagText="statusTagText" :type="statusTagType" />
   </div>
   </MainLayout>
 </template>
@@ -21,8 +22,24 @@ import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
+  data() {
+    return {
+      statusTagText: 'Not verified',
+      statusTagType: null,
+
+    }
+  },
+  computed: {
+    statusTagType() {
+      if (this.statusTagText === 'Not verified') {
+        return 'negative';
+      } else {
+        return 'positive';
+      }
+    },
+  },
 };
 </script>
     
-    <style scoped>
+<style scoped>
 </style>
