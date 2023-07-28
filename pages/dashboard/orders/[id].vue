@@ -33,7 +33,7 @@
           </template>
         </DynamicButton>
       </div>
-      <CustomerInfo :tagText="statusTagText" :type="statusTagType" />
+      <CustomerInfo :tagText="statusTagText" :type="statusTagType" :showMore="false"/>
       <div class="dash__button">
         <h3>Order details</h3>
         <DynamicButton

@@ -36,7 +36,7 @@
         <div class="subject">daniel@gmail.com</div>
       </div>
     </div>
-    <div class="customer__info">
+    <div class="customer__info" v-if="showMore">
       <div class="group">
         <div class="title">Email verification</div>
         <!-- <div class="subject">Status</div> -->
@@ -69,6 +69,10 @@ export default {
       type: String,
       required: true,
     },
+    showMore: {
+      type: Boolean,
+      default: true,
+    },
   },
 };
 </script>
@@ -84,9 +88,9 @@ export default {
   /* gap: 16px; */
   flex-wrap: wrap;
 }
-.customer__info > * {
-  /* flex: 1 1 139px; */
-}
+/* .customer__info > * {
+  flex: 1 1 139px;
+} */
 .group {
   display: flex;
   flex-direction: column;
