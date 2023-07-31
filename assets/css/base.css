@@ -548,7 +548,7 @@ button {
 
   /* Grey/Grey3 */
 
-  color: var(--grey-grey3);
+   color: var(--grey-grey3);
   transition: all 0.2s ease-in;
 }
 
@@ -582,6 +582,7 @@ button {
   padding: 0px;
   gap: 8px;
   margin-top: 8px;
+  color: red
 }
 
 .error p {

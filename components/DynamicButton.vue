@@ -1,11 +1,5 @@
 <template>
-  <button
-    @click="emitFunction"
-    class="btn"
-    :class="buttonClasses"
-    :style="buttonStyles"
-    :disabled="disabled"
-  >
+  <button @click="emitFunction" class="btn" :class="buttonClasses" :style="buttonStyles" :disabled="disabled">
     <div class="">{{ buttonText }}</div>
     <slot name="svg"></slot>
   </button>
@@ -69,6 +63,7 @@ button {
   border-radius: 100px;
   transition: 0.3s;
 }
+
 button.standard {
   display: flex;
   height: 48px;
@@ -82,6 +77,7 @@ button.standard {
   font-weight: 600;
   line-height: 24px;
 }
+
 button.small {
   display: flex;
   height: 32px;
@@ -95,28 +91,35 @@ button.small {
   font-weight: 500;
   line-height: 18px;
 }
+
 button.primary {
   color: var(--white, #fff);
   background: var(--primary-p300, #0009b3);
 }
+
 button.primary:hover {
   color: var(--white, #fff);
   background-color: var(--primary-p400);
 }
+
 button.primary:focus,
 button.primary:active {
   background-color: var(--primary-p500);
 }
+
 button.primary:disabled {
   background-color: var(--primary-p75);
 }
+
 button.secondary {
   color: var(--primary-p-300, #0009b3);
   border: 1px solid var(--primary-p75, #969ae0);
 }
+
 button.secondary:hover {
   background-color: var(--primary-p50);
 }
+
 button.secondary:active,
 button.secondary:focus {
   background-color: var(--primary-p75);
@@ -127,12 +130,15 @@ button.secondary:disabled {
   color: var(--primary-p100);
   background-color: var(--white);
 }
+
 button.ghost {
   color: var(--primary-p-300, #0009b3);
 }
+
 button.ghost:hover {
   color: var(--primary-p400);
 }
+
 button.ghost:active,
 button.ghost:focus {
   color: var(--primary-p500);
@@ -167,10 +173,12 @@ button.neutral:disabled {
   background-color: var(--white);
   border: 1px solid var(--grey-grey4);
 }
+
 button.negative {
   color: var(--white, #fff);
   background: var(--negative-n-300, #ff3b2d);
 }
+
 button.negative:hover {
   background-color: var(--negative-n400);
 }
@@ -183,10 +191,11 @@ button.negative:focus {
 button.negative:disabled {
   background-color: var(--negative-n75);
 }
+
 button.icon-right {
   flex-direction: row;
 }
+
 button.icon-left {
   flex-direction: row-reverse;
-}
-</style>
+}</style>

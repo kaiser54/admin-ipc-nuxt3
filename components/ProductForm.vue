@@ -59,6 +59,7 @@
                     required
                     v-model="productName"
                   />
+                  <div v-if="continueBtnClicked && !productName" class="error">Product Name is required</div>
                 </div>
               </div>
             </div>
@@ -76,6 +77,7 @@
                     required
                     v-model="price"
                   />
+                  <div v-if="continueBtnClicked && !price" class="error">Product Price is required</div>
                 </div>
               </div>
             </div>
@@ -93,6 +95,7 @@
                     required
                     v-model="slash"
                   />
+                  <div v-if="continueBtnClicked && !slash" class="error">Slash price is required</div>
                 </div>
               </div>
             </div>
@@ -107,6 +110,7 @@
                 v-model="description"
                 placeholder="Enter the product description"
               ></textarea>
+              <div v-if="continueBtnClicked && !description" class="error">description is required</div>
             </div>
             <div class="form__field">
               <div class="input-field">
@@ -122,6 +126,7 @@
                     required
                     v-model="brand"
                   />
+                  <div v-if="continueBtnClicked && !brand" class="error">Brand's Name is required</div>
                 </div>
               </div>
             </div>
@@ -138,6 +143,7 @@
                 <option disabled selected value="">
                   Please select a category
                 </option>
+               
                 <option
                   v-for="option in categories"
                   :key="option.value"
@@ -145,7 +151,9 @@
                 >
                   {{ option.label }}
                 </option>
+                
               </select>
+              <div v-if="continueBtnClicked && !categoryValue" class="error">Select Category</div>
             </div>
             <div class="form__field">
               <label for="status">Status</label>
@@ -160,7 +168,9 @@
                 >
                   {{ option.label }}
                 </option>
+             
               </select>
+              <div v-if="continueBtnClicked && !statusValue" class="error">Select Status</div>
             </div>
             <div class="form__field">
               <div class="input-field">
@@ -176,6 +186,7 @@
                     required
                     v-model="weight"
                   />
+                  <div v-if="continueBtnClicked && !weight" class="error">Weight is required</div>
                 </div>
               </div>
             </div>
@@ -209,13 +220,14 @@ export default {
   data() {
     return {
       productName: "", // Set initial values for data properties
+      productNameError: "",
       price: "",
       slash: "",
       description: "",
       brand: "",
       weight: "",
       invalid: false,
-
+      continueBtnClicked: false,
       status: [
         { label: "In stock", value: "option1" },
         { label: "Out of stock", value: "option2" },
@@ -231,8 +243,19 @@ export default {
       selectedImages: [],
     };
   },
+  computed: {
+    allFieldsValid () {
+      return (this.productName && this.price && this.slash && this.description && this.brand && this.statusValue
+      && this.categoryValue && this.weight && this.selectedImages
+      )
+    }
+  },
   methods: {
     emitFunction() {
+      this.continueBtnClicked = true
+      if (!this.allFieldsValid) {
+        return
+      }
       // Emit the inputted data to the parent component
       const data = {
         productName: this.productName,
@@ -272,7 +295,6 @@ h3 {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
 }
 .form__wrapper {
   max-width: 987px;
