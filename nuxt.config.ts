@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       noscript: [
         // <noscript>JavaScript is required</noscript>
         { children: 'JavaScript is required' }
-      ]
+      ],
     }
   },
   pages: true,

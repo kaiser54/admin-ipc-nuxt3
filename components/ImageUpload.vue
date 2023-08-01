@@ -123,8 +123,8 @@ export default {
           };
           reader.readAsDataURL(file);
           // Emit the image to the parent component
-          this.$emit("image-selected", this.selectedFile);
-          console.log(file)
+          this.$emit("image-selected", file);
+          // console.log(file)
         }
       } else {
         // Reset error message and clear the selection

@@ -8,9 +8,11 @@
       />
       <ProductForm
         @nextEvent="nextEvent"
+        @deleteProduct="deleteProduct"
         v-show="!passed"
         headingText="Add new product"
         :categories="categories"
+        :showButton="true"
       />
       <ProductDetails
         @buttonClick="postProduct"
@@ -47,12 +49,30 @@
       </ProductDetails>
     </div>
     <LoaderComponent v-if="loading" />
+    <transition name="modal-fade">
+      <!-- enter the PopModal an add router push to the button and remove the nuxt link -->
+      <PopupModal
+        v-if="showDelete"
+        :showSnippet="true"
+        :animate="animate"
+        title="Delete product?"
+        snippet="Are you sure you want to delete this product?"
+        buttonText="Don’t delete"
+        buttonText2="Confirm"
+        buttonClass="neutral-btn"
+        buttonClass2="negative-btn"
+        @okModal="okOrderStatus"
+        @closeModal="changeOrderStatus"
+        @closeModalBG="changeOrderStatus"
+      >
+      </PopupModal>
+    </transition>
   </MainLayout>
 </template>
-
-
-
-<script>
+  
+  
+  
+  <script>
 // import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
 import LoaderComponent from "/components/LoaderComponent.vue";
@@ -67,6 +87,8 @@ export default {
       imageArray: [],
       categories: [],
       loading: false,
+      showDelete: false,
+      animate: null,
     };
   },
   created() {
@@ -149,12 +171,22 @@ export default {
         .then((res) => (this.categories = res?.data?.data?.categories))
         .finally(() => (this.loading = false));
     },
+    deleteProduct() {
+      this.showDelete = !this.showDelete;
+      this.animate = "animate__zoomIn";
+    },
+    changeOrderStatus() {
+      this.showDelete = !this.showDelete;
+    },
+    okOrderStatus() {
+      this.showDelete = false;
+    },
   },
 };
 </script>
-
-<style  scoped></style>
-<style>
+  
+  <style  scoped></style>
+  <style>
 .innerProduct .desktop-nav {
   background: var(--primary-p300);
 }

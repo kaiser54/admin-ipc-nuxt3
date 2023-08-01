@@ -3,9 +3,7 @@
 
   <div class="product-card">
     <!-- <nuxt-link :to="{ name: 'product', params: { id: product.id, title: product.title } }"> -->
-    <nuxt-link
-      to="/dashboard/products/Fjallraven%20-%20Foldsack%20No.%201%20Backpack,%20Fits%2015%20Laptops~1"
-    >
+    <nuxt-link :to="`/dashboard/products/${product.name}~${product._id}`">
       <div class="product-img-grp">
         <!-- <img :src="product.image" alt="" /> -->
 
@@ -13,7 +11,7 @@
         <div class="image-container">
           <!-- <img :src="require(`~/assets/images/${product.image}`)" /> -->
           <!-- <img :src="product.image" alt="Product Image" /> -->
-          <img :src="product.thumbnail" alt="Product Image" />
+          <img :src="product?.images[1]?.url" alt="Product Image" />
         </div>
         <!-- -------------------------------- -->
       </div>
@@ -23,11 +21,11 @@
 
     <div class="productcard-details">
       <div class="productcard-name text-container">
-        <p>{{ product.title }}</p>
+        <p>{{ product?.name }}</p>
       </div>
       <div class="productcard-price">
-        <p>$ {{ product.price }}</p>
-        <p class="slashprice">$ {{ product.price }}</p>
+        <p>$ {{ product?.discountPrice }}</p>
+        <p class="slashprice">$ {{ product?.actualPrice }}</p>
       </div>
     </div>
 
@@ -42,10 +40,11 @@
   </div>
 </template>
   
-  <script>
+<script>
 export default {
   data() {
-    return {};
+    return {
+    };
   },
   props: {
     product: {
@@ -58,7 +57,7 @@ export default {
 };
 </script>
   
-  <style scoped>
+<style scoped>
 a {
   width: 100%;
 }
@@ -252,6 +251,7 @@ button p {
   .image-container {
     height: 118px;
   }
+
   .product-card {
     width: 167px;
     /* height: 287px; */
@@ -293,6 +293,7 @@ button p {
   .productcard-name p {
     width: 100px;
   }
+
   .productcard-price {
     gap: 0;
     flex-direction: column;
@@ -308,6 +309,7 @@ button p {
   .productcard-name p {
     width: 100px;
   }
+
   .product-card {
     height: auto;
   }

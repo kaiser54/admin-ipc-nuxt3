@@ -10,6 +10,48 @@
     <GoBackButton style="margin-bottom: 24px" />
     <div class="heading flex">
       <h3>{{ headingText }}</h3>
+      <div class="" style="display: flex; align-items: center; gap: 16px;">
+        <DynamicButton
+        v-if="showButton"
+        @clickButton="emitDelete"
+        class="auto"
+        buttonText="Delete product"
+        size="standard"
+        type="neutral"
+        icon="icon-left"
+      >
+        <template v-slot:svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M6.66667 4.99984V3.33317C6.66667 2.4127 7.41286 1.6665 8.33333 1.6665H11.6667C12.5872 1.6665 13.3333 2.4127 13.3333 3.33317V4.99984M2.5 4.99984H17.5H2.5ZM4.16667 4.99984V16.6665C4.16667 17.587 4.91286 18.3332 5.83333 18.3332H14.1667C15.0872 18.3332 15.8333 17.587 15.8333 16.6665V4.99984H4.16667Z"
+              stroke="#565C69"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M11.667 9.1665V14.1665"
+              stroke="#303237"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.33301 9.1665V14.1665"
+              stroke="#303237"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </template>
+      </DynamicButton>
       <DynamicButton
         @clickButton="emitFunction"
         class="auto"
@@ -39,6 +81,7 @@
           </svg>
         </template>
       </DynamicButton>
+      </div>
     </div>
     <div class="form__wrapper">
       <!-- <div class="form__heading">{{ formHeading }}</div> -->
@@ -59,7 +102,6 @@
                     required
                     v-model="productName"
                   />
-                  <div v-if="continueBtnClicked && !productName" class="error">Product Name is required</div>
                 </div>
               </div>
             </div>
@@ -70,14 +112,13 @@
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="number"
+                    type="text"
                     name="price"
                     id=""
                     placeholder="₦70,000"
                     required
                     v-model="price"
                   />
-                  <div v-if="continueBtnClicked && !price" class="error">Product Price is required</div>
                 </div>
               </div>
             </div>
@@ -88,21 +129,20 @@
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="number"
+                    type="text"
                     name="slash"
                     id=""
                     placeholder="₦80,000"
                     required
                     v-model="slash"
                   />
-                  <div v-if="continueBtnClicked && !slash" class="error">Slash price is required</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="second flex">
             <div class="form__field">
-              <label for="description">Product’s name</label>
+              <label for="description">Product’s description</label>
               <textarea
                 class="input"
                 name="description"
@@ -110,7 +150,6 @@
                 v-model="description"
                 placeholder="Enter the product description"
               ></textarea>
-              <div v-if="continueBtnClicked && !description" class="error">description is required</div>
             </div>
             <div class="form__field">
               <div class="input-field">
@@ -126,7 +165,6 @@
                     required
                     v-model="brand"
                   />
-                  <div v-if="continueBtnClicked && !brand" class="error">Brand's Name is required</div>
                 </div>
               </div>
             </div>
@@ -143,17 +181,14 @@
                 <option disabled selected value="">
                   Please select a category
                 </option>
-               
                 <option
                   v-for="option in categories"
-                  :key="option.value"
-                  :value="option.value"
+                  :key="option?._id"
+                  :value="option?.name"
                 >
-                  {{ option.label }}
+                  {{ option?.name }}
                 </option>
-                
               </select>
-              <div v-if="continueBtnClicked && !categoryValue" class="error">Select Category</div>
             </div>
             <div class="form__field">
               <label for="status">Status</label>
@@ -168,36 +203,54 @@
                 >
                   {{ option.label }}
                 </option>
-             
               </select>
-              <div v-if="continueBtnClicked && !statusValue" class="error">Select Status</div>
             </div>
             <div class="form__field">
               <div class="input-field">
-                <label for="weight">Weight (kg) (Optional)</label>
+                <label for="weight">Measurement (Optional)</label>
                 <div class="input-container">
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="number"
+                    type="text"
                     name="weight"
                     id=""
                     placeholder="5kg"
                     required
                     v-model="weight"
                   />
-                  <div v-if="continueBtnClicked && !weight" class="error">Weight is required</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="fourth">
             <div class="form__heading">Add product images</div>
-            <div class="flex">
+            <div class="imgg">
+              <p>
+                <strong>NOTE: </strong>Only maximum of 4 images to be selected
+              </p>
+              <input
+                type="file"
+                ref="fileInput"
+                multiple
+                @change="handleFileChange"
+              />
+              <!-- <button @click="uploadImages">Upload Images</button> -->
+            </div>
+            <!-- <div class="flex">
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
               <ImageUpload @image-selected="handleImageSelected" />
+            </div> -->
+            <div v-if="previewImages.length" class="flex">
+              <div
+                v-for="image in previewImages"
+                :key="image.name"
+                class="upload-box"
+              >
+                <img :src="image.url" :alt="image.name" />
+              </div>
             </div>
           </div>
         </form>
@@ -215,47 +268,45 @@ export default {
       type: String,
       required: true,
     },
+    categories: {
+      type: Array,
+      required: true,
+    },
+    showButton: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
     return {
       productName: "", // Set initial values for data properties
-      productNameError: "",
       price: "",
       slash: "",
       description: "",
       brand: "",
       weight: "",
       invalid: false,
-      continueBtnClicked: false,
+
       status: [
         { label: "In stock", value: "option1" },
         { label: "Out of stock", value: "option2" },
       ],
       statusValue: "",
 
-      categories: [
-        { label: "Category 1", value: "option1" },
-        { label: "Category 2", value: "option2" },
-        { label: "Category 3", value: "option3" },
-      ],
+      // categories: [
+      //   { label: "Category 1", value: "option1" },
+      //   { label: "Category 2", value: "option2" },
+      //   { label: "Category 3", value: "option3" },
+      // ],
       categoryValue: "",
       selectedImages: [],
+      selectedFiles: [],
+      previewImages: [], // Array to store image previews
     };
-  },
-  computed: {
-    allFieldsValid () {
-      return (this.productName && this.price && this.slash && this.description && this.brand && this.statusValue
-      && this.categoryValue && this.weight && this.selectedImages
-      )
-    }
   },
   methods: {
     emitFunction() {
-      this.continueBtnClicked = true
-      if (!this.allFieldsValid) {
-        return
-      }
       // Emit the inputted data to the parent component
       const data = {
         productName: this.productName,
@@ -266,15 +317,32 @@ export default {
         statusValue: this.statusValue,
         categoryValue: this.categoryValue,
         weight: this.weight,
-        selectedImages: this.selectedImages,
+        selectedImages: this.selectedFiles,
       };
       this.$emit("nextEvent", data);
-      // console.log(data);
+      // console.log(data.selectedImages);
     },
-    handleImageSelected(image) {
-      // Push the selected image data into the array
-      this.selectedImages.push(image);
-      // console.log("Selected images:", this.selectedImages);
+    emitDelete() {
+      this.$emit("deleteProduct");
+    },
+    // handleImageSelected(file) {
+    //   // Push the selected image data into the array
+    //   this.selectedImages.push(file);
+    //   // console.log("Selected images:", this.selectedImages);
+    // },
+    handleFileChange(event) {
+      const maxImages = 4;
+      this.selectedFiles = Array.from(event.target.files).slice(0, maxImages);
+      this.previewImages = []; // Clear previous previews
+
+      for (const file of this.selectedFiles) {
+        // Create a preview URL for each selected image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImages.push({ url: e.target.result, name: file.name });
+        };
+        reader.readAsDataURL(file);
+      }
     },
   },
 };
@@ -288,14 +356,18 @@ h3 {
   line-height: 36px;
   letter-spacing: -0.5px;
 }
+
 .heading {
   margin-bottom: 32px;
 }
+
 .flex {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  align-items: center;
 }
+
 .form__wrapper {
   max-width: 987px;
   /* height: 775px; */
@@ -304,6 +376,7 @@ h3 {
   border: 1px solid var(--grey-grey5, #e5e7ef);
   background: #fff;
 }
+
 .form__heading {
   color: var(--grey-grey1, #303237);
 
@@ -312,6 +385,7 @@ h3 {
   line-height: 30px;
   letter-spacing: -0.5px;
 }
+
 .border {
   width: 100%;
   padding-left: 32px;
@@ -319,6 +393,7 @@ h3 {
   padding-bottom: 25px;
   border-bottom: 1px solid var(--grey-grey5, #e5e7ef);
 }
+
 form {
   display: flex;
   flex-direction: column;
@@ -328,9 +403,11 @@ form {
   margin-top: 40px;
   margin-inline: auto;
 }
+
 .input-field {
   width: 100%;
 }
+
 .form__field {
   display: flex;
   flex-direction: column;
@@ -338,9 +415,11 @@ form {
   /* gap: 8px; */
   flex: 1 0 0;
 }
+
 form .flex {
   gap: 24px;
 }
+
 label {
   color: var(--grey-grey1, #303237);
 
@@ -349,6 +428,7 @@ label {
   font-weight: 500;
   /* line-height: 21px; */
 }
+
 textarea {
   display: flex;
   height: 96px;
@@ -368,6 +448,7 @@ textarea {
     0px 2px 0px 0px rgba(234, 234, 234, 0.25) inset;
   resize: none;
 }
+
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -378,7 +459,8 @@ select {
   background: url(/assets-chevron-down-arrow.png);
   background-repeat: no-repeat;
   background-position: right 16px center;
-  padding-right: 20px; /* Adjust as needed */
+  padding-right: 20px;
+  /* Adjust as needed */
 
   /* Previous CSS properties */
   background-size: 20px;
@@ -391,6 +473,7 @@ option {
   font-weight: 400;
   line-height: 21px;
 }
+
 .fourth {
   margin-top: 32px;
   margin-bottom: 32px;
@@ -398,5 +481,27 @@ option {
   flex-direction: column;
   align-items: flex-start;
   gap: 48px;
+}
+
+.imgg {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upload-box {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+
+  display: flex;
+  width: 102px;
+  height: 102px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+
+  border-radius: 16px;
+  border: 1px dashed var(--grey-grey4, #bdc0ce);
 }
 </style>

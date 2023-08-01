@@ -1,70 +1,10 @@
 <template>
   <MainLayout>
     <div>
-      <div class="dash__button">
-        <DynamicButton
-          class="auto"
-          buttonText="Create new category"
-          size="standard"
-          type="neutral"
-          icon="icon-left"
-          :disabled="true"
-        >
-          <template v-slot:svg>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="add-plus">
-                <path
-                  id="Vector"
-                  d="M4.1665 9.99984H15.8332M9.99984 4.1665V15.8332V4.1665Z"
-                  stroke="#BDC0CE"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </g>
-            </svg>
-          </template>
-        </DynamicButton>
-        <DynamicButton
-          @clickButton="redirectToCreateProductPage"
-          class="auto"
-          buttonText="Add new product"
-          size="standard"
-          type="primary"
-          icon="icon-left"
-        >
-          <template v-slot:svg>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="add-plus">
-                <path
-                  id="Vector"
-                  d="M4.1665 9.99984H15.8332M9.99984 4.1665V15.8332V4.1665Z"
-                  stroke="#BDC0CE"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </g>
-            </svg>
-          </template>
-        </DynamicButton>
-      </div>
       <div class="dash__container">
         <div class="dash__card">
           <DynamicDashCard
-            cardName="Total products"
+            cardName="Total customers"
             :counterName="productsCount"
           >
             <template v-slot:svg>
@@ -96,11 +36,7 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard
-            cardName="Categories"
-            :counterName="categoriesCount"
-            :active="true"
-          >
+          <DynamicDashCard cardName="Business" :counterName="categoriesCount">
             <template v-slot:svg>
               <svg
                 width="20"
@@ -138,7 +74,7 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Instock" :counterName="inStock">
+          <DynamicDashCard cardName="Individual" :counterName="inStock">
             <template v-slot:svg>
               <svg
                 width="20"
@@ -160,43 +96,34 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Out of stock" :counterName="outOfStock">
-            <template v-slot:svg>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+        </div>
+        <TableComp
+          heading="New Customers"
+          :tableData="tableData"
+          :showBtn="false"
+          :tableHeaders="tableHeaders"
+        >
+          <template v-slot:tableFilter>
+            <div class="filter__tabs">
+              <div
+                v-for="(tab, index) in tabs"
+                :key="index"
+                class="tab tab-standard"
+                @click="toggleTab(index)"
+                :class="{ clicked: activeTab === index }"
               >
-                <g id="arrow-top-right">
-                  <path
-                    id="Vector"
-                    d="M15.3034 4.69678V12.9463M4.69678 15.3034L15.3034 4.69678L4.69678 15.3034ZM15.3034 4.69678L7.05379 4.69679L15.3034 4.69678Z"
-                    stroke="#565C69"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </g>
-              </svg>
-            </template>
-          </DynamicDashCard>
-        </div>
-        <div class="product__listing">
-          <ProductCard
-            :product="product"
-            v-for="product in products"
-            :key="product._id"
-          ></ProductCard>
-        </div>
+                {{ tab }}
+              </div>
+            </div>
+          </template>
+        </TableComp>
       </div>
     </div>
     <LoaderComponent v-if="loading" />
   </MainLayout>
 </template>
-  
-<script>
+    
+  <script>
 import MainLayout from "/layouts/MainLayout.vue";
 import LoaderComponent from "/components/LoaderComponent.vue";
 export default {
@@ -209,6 +136,28 @@ export default {
       inStock: 0,
       outOfStock: 0,
       loading: false,
+      displayText: "All",
+      tabs: ["All", "Business", "Individual"],
+      activeTab: 0, // set the default active tab to be "All"
+      tableHeaders: [
+        "Product’s name",
+        "Date",
+        "Order ID",
+        "Quantity",
+        "Price",
+        "Status",
+      ],
+      tableData: [
+        {
+          id: 1,
+          name: "Mama’s pride rice",
+          date: "2022-05-01",
+          orderId: "12345",
+          quantity: 2,
+          price: 10.99,
+          status: "Completed",
+        },
+      ],
     };
   },
   created() {
@@ -217,6 +166,9 @@ export default {
     this.fetchProducts();
   },
   methods: {
+    toggleTab(index) {
+      this.activeTab = index;
+    },
     redirectToCreateProductPage() {
       this.$router.push("/dashboard/products/new-product");
     },
@@ -243,16 +195,20 @@ export default {
       this.loading = true;
       this.$devInstance
         .get("/products")
-        .then((res) => (this.products = res?.data?.data?.products,
-        console.log(this.products)))
+        .then(
+          (res) => (
+            (this.products = res?.data?.data?.products),
+            console.log(this.products)
+          )
+        )
         .catch((err) => console.log(err))
         .finally(() => (this.loading = false));
     },
   },
 };
 </script>
-  
-<style scoped>
+    
+  <style scoped>
 .dash__button {
   display: flex;
   align-items: flex-start;
@@ -263,7 +219,8 @@ export default {
 }
 
 .dash__card {
-  margin-top: 40px;
+  width: fit-content;
+  gap: 20px;
 }
 
 .product__listing {

@@ -34,7 +34,7 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Customers" counterName="328">
+        <DynamicDashCard cardName="Customers" :counterName="showCustomersCount">
           <template v-slot:svg>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="user-group-accounts">
@@ -80,7 +80,7 @@
             </div>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Total products" counterName="1,298">
+        <DynamicDashCard cardName="Total products" :counterName="productsCount">
           <template v-slot:svg>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="tag-price-discount">
@@ -105,16 +105,6 @@
           </div>
         </template>
       </TableComp>
-      <ImageUpload />
-      <div>
-        <MyInput id="username" label="Username" placeholder="Enter your username" :modelValue="username"
-          @update:modelValue="username = $event" :error-message="usernameError" />
-
-        <MyInput id="password" label="Password" placeholder="Enter your password" :modelValue="password"
-          @update:modelValue="password = $event" type="password" :error-message="passwordError" />
-
-        <button @click="login">Login</button>
-      </div>
     </div>
   </MainLayout>
 </template>
@@ -155,8 +145,27 @@ export default {
           status: "Completed",
         },
       ],
+      customersCount: 0,
+      productsCount: 0,
+      individualCustomersCount: 0,
+      businessCustomersCount: 0,
     };
   },
+  created() {
+    this.fetchCustomersCount();
+    this.fetchProductsCount();
+  },
+
+  computed: {
+    showCustomersCount() {
+      return this.displayText.toLowerCase() === "business"
+        ? this.businessCustomersCount
+        : this.displayText.toLowerCase() === "individual"
+        ? this.individualCustomersCount
+        : this.customersCount;
+    },
+  },
+
   methods: {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
@@ -175,6 +184,22 @@ export default {
         password: this.password,
       };
       console.log(data);
+    },
+    fetchCustomersCount() {
+      this.$devInstance
+        .get("/customers/total-customer-count")
+        .then((res) => {
+          this.customersCount = res?.data?.data?.customersCount;
+          this.individualCustomersCount = res?.data?.data?.customersI;
+          this.businessCustomersCount = res?.data?.data?.customersB;
+        })
+        .catch((err) => consolee.log(err));
+    },
+    fetchProductsCount() {
+      this.$devInstance
+        .get("/products/total-product-count")
+        .then((res) => (this.productsCount = res?.data?.data?.productsCount))
+        .catch((err) => console.log(err));
     },
   },
 };
