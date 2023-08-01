@@ -70,7 +70,7 @@
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="text"
+                    type="number"
                     name="price"
                     id=""
                     placeholder="₦70,000"
@@ -88,7 +88,7 @@
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="text"
+                    type="number"
                     name="slash"
                     id=""
                     placeholder="₦80,000"
@@ -179,7 +179,7 @@
                   <input
                     class="input"
                     :class="{ 'input-error': invalid }"
-                    type="text"
+                    type="number"
                     name="weight"
                     id=""
                     placeholder="5kg"

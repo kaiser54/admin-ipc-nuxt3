@@ -75,7 +75,7 @@ export default {
     return {
       passed: false,
       alertMessage: "",
-      alertType: "",
+      alertType:"",
     };
   },
   methods: {
@@ -99,8 +99,7 @@ export default {
 </script>
 
 <style  scoped>
-</style>
-<style>
+
 .innerProduct .desktop-nav {
   background: var(--primary-p300);
 }

@@ -2,7 +2,8 @@
   <div class="table__container">
     <div class="table__header">
       <h3>{{ heading }}</h3>
-      <DynamicButton
+      <nuxt-link to="/dashboard/orders">
+        <DynamicButton
         v-if="showBtn"
         class="d__btn"
         buttonText="View all"
@@ -31,6 +32,7 @@
           </svg>
         </template>
       </DynamicButton>
+      </nuxt-link>
     </div>
     <slot name="tableFilter" />
     <div class="table__wrapper">
