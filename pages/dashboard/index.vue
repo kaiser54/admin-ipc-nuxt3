@@ -94,8 +94,8 @@
           </template>
         </DynamicDashCard>
       </div>
-      <TableComp heading="New orders" :tableData="tableData" :tableHeaders="tableHeaders" />
-      <TableComp heading="New Customers" :tableData="tableData" :tableHeaders="tableHeaders">
+      <TableComp heading="New orders" :tableData="tableData" :tableHeaders="tableHeaders" @goToRoutePage="goToRoutePage" />
+      <TableComp heading="New Customers" :tableData="tableData" :tableHeaders="tableHeaders" @goToRoutePage="goToRoutePageCustomers">
         <template v-slot:tableFilter>
           <div class="filter__tabs">
             <div v-for="(tab, index) in tabs" :key="index" class="tab tab-standard" @click="toggleTab(index)"
@@ -193,7 +193,7 @@ export default {
           this.individualCustomersCount = res?.data?.data?.customersI;
           this.businessCustomersCount = res?.data?.data?.customersB;
         })
-        .catch((err) => consolee.log(err));
+        .catch((err) => console.log(err));
     },
     fetchProductsCount() {
       this.$devInstance
@@ -201,6 +201,12 @@ export default {
         .then((res) => (this.productsCount = res?.data?.data?.productsCount))
         .catch((err) => console.log(err));
     },
+    goToRoutePage(){
+      this.$router.push('/dashboard/orders')
+    },
+    goToRoutePageCustomers(){
+      this.$router.push('/dashboard/customers')
+    }
   },
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="table__container">
     <div class="table__header">
       <h3>{{ heading }}</h3>
-      <nuxt-link to="/dashboard/orders">
+
         <DynamicButton
         v-if="showBtn"
         class="d__btn"
@@ -10,6 +10,7 @@
         icon="icon-right"
         size="small"
         type="neutral"
+        @clickButton="goToRoutePage"
       >
         <template v-slot:svg>
           <svg
@@ -32,7 +33,6 @@
           </svg>
         </template>
       </DynamicButton>
-      </nuxt-link>
     </div>
     <slot name="tableFilter" />
     <div class="table__wrapper">
@@ -95,6 +95,9 @@ export default {
     userRoute(value) {
       // this.$router.push('/dashboard/orders/'`${value}`);
       this.$router.push('/dashboard/orders/2');
+    },
+    goToRoutePage(){
+      this.$emit("goToRoutePage")
     }
   }
 };

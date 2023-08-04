@@ -1,86 +1,40 @@
 <template>
-  <div
-    style="
+  <div style="
       max-width: 990px;
       margin-left: 21px;
       margin-top: 16px;
       margin-bottom: 50px;
-    "
-  >
+    ">
     <GoBackButton style="margin-bottom: 24px" />
     <div class="heading flex">
       <h3>{{ headingText }}</h3>
       <div class="" style="display: flex; align-items: center; gap: 16px;">
-        <DynamicButton
-        v-if="showButton"
-        @clickButton="emitDelete"
-        class="auto"
-        buttonText="Delete product"
-        size="standard"
-        type="neutral"
-        icon="icon-left"
-      >
-        <template v-slot:svg>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M6.66667 4.99984V3.33317C6.66667 2.4127 7.41286 1.6665 8.33333 1.6665H11.6667C12.5872 1.6665 13.3333 2.4127 13.3333 3.33317V4.99984M2.5 4.99984H17.5H2.5ZM4.16667 4.99984V16.6665C4.16667 17.587 4.91286 18.3332 5.83333 18.3332H14.1667C15.0872 18.3332 15.8333 17.587 15.8333 16.6665V4.99984H4.16667Z"
-              stroke="#565C69"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M11.667 9.1665V14.1665"
-              stroke="#303237"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M8.33301 9.1665V14.1665"
-              stroke="#303237"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </template>
-      </DynamicButton>
-      <DynamicButton
-        @clickButton="emitFunction"
-        class="auto"
-        buttonText="Continue"
-        size="standard"
-        type="primary"
-        icon="icon-right"
-      >
-        <template v-slot:svg>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g id="arrow-right">
+        <DynamicButton v-if="showButton" @clickButton="emitDelete" class="auto" buttonText="Delete product"
+          size="standard" type="neutral" icon="icon-left">
+          <template v-slot:svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
-                id="Vector"
-                d="M17.5 9.99984L11.6667 15.8332M2.5 9.99984H17.5H2.5ZM17.5 9.99984L11.6667 4.1665L17.5 9.99984Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-          </svg>
-        </template>
-      </DynamicButton>
+                d="M6.66667 4.99984V3.33317C6.66667 2.4127 7.41286 1.6665 8.33333 1.6665H11.6667C12.5872 1.6665 13.3333 2.4127 13.3333 3.33317V4.99984M2.5 4.99984H17.5H2.5ZM4.16667 4.99984V16.6665C4.16667 17.587 4.91286 18.3332 5.83333 18.3332H14.1667C15.0872 18.3332 15.8333 17.587 15.8333 16.6665V4.99984H4.16667Z"
+                stroke="#565C69" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M11.667 9.1665V14.1665" stroke="#303237" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M8.33301 9.1665V14.1665" stroke="#303237" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </template>
+        </DynamicButton>
+    <DynamicBtn @clickButton="emitFunction" class="auto" buttonText="Continue" size="standard" type="primary"
+          icon="icon-right">
+          <template v-slot:svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="arrow-right">
+                <path id="Vector"
+                  d="M17.5 9.99984L11.6667 15.8332M2.5 9.99984H17.5H2.5ZM17.5 9.99984L11.6667 4.1665L17.5 9.99984Z"
+                  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </g>
+            </svg>
+          </template>
+        </DynamicBtn>
       </div>
     </div>
     <div class="form__wrapper">
@@ -93,132 +47,83 @@
               <div class="input-field">
                 <label for="id">Product's name</label>
                 <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    id=""
-                    placeholder="Ex: Mama’s pride rice"
-                    required
-                    v-model="productName"
-                  />
+                  <input class="input" :class="{ 'input-error': continueClicked && !productName }" type="text" id=""
+                    placeholder="Ex: Mama’s pride rice" required v-model="productName" />
                 </div>
               </div>
+              <ErrorMsg v-if="continueClicked && !productName" description="Please enter the product's name" />
             </div>
+
             <div class="form__field">
               <div class="input-field">
                 <label for="price">IPC’s price</label>
                 <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="price"
-                    id=""
-                    placeholder="₦70,000"
-                    required
-                    v-model="price"
-                  />
+                  <input class="input" :class="{ 'input-error': continueClicked && !price }" type="number" name="price" id=""
+                    placeholder="₦70,000" required v-model="price" />
                 </div>
               </div>
+              <ErrorMsg v-if="continueClicked && !price" description="Please enter the product's price" />
             </div>
             <div class="form__field">
               <div class="input-field">
                 <label for="slash">Market slash price</label>
                 <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="slash"
-                    id=""
-                    placeholder="₦80,000"
-                    required
-                    v-model="slash"
-                  />
+                  <input class="input" :class="{ 'input-error': continueClicked && (!slash)}" type="number" name="slash" id=""
+                    placeholder="₦80,000" required v-model="slash" />
                 </div>
               </div>
+              <ErrorMsg v-if="continueClicked && !slash" description="Please enter a slash price" />
             </div>
           </div>
           <div class="second flex">
             <div class="form__field">
               <label for="description">Product’s description</label>
-              <textarea
-                class="input"
-                name="description"
-                id=""
-                v-model="description"
-                placeholder="Enter the product description"
-              ></textarea>
+              <textarea class="input" name="description" id="" v-model="description" 
+                placeholder="Enter the product description" :class="{ 'input-error': continueClicked && !description }" ></textarea>
+                <ErrorMsg v-if="continueClicked && !description" description="Please enter description" />
             </div>
             <div class="form__field">
               <div class="input-field">
                 <label for="brand">Brand’s name</label>
                 <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="brand"
-                    id=""
-                    placeholder="Mama’s rice"
-                    required
-                    v-model="brand"
-                  />
+                  <input class="input" :class="{ 'input-error': continueClicked && !brand }" type="text" name="brand" id=""
+                    placeholder="Mama’s rice" required v-model="brand" />
                 </div>
               </div>
+           <ErrorMsg v-if="continueClicked && !brand" description="Please enter a brand name" />
             </div>
           </div>
           <div class="third flex">
             <div class="form__field">
               <label for="category">Category</label>
-              <select
-                class="input"
-                name="category"
-                id=""
-                v-model="categoryValue"
-              >
+              <select class="input" name="category" id="" v-model="categoryValue" :class="{ 'input-error': continueClicked && !categoryValue }">
                 <option disabled selected value="">
                   Please select a category
                 </option>
-                <option
-                  v-for="option in categories"
-                  :key="option?._id"
-                  :value="option?.name"
-                >
+                <option v-for="option in categories" :key="option?._id" :value="option?.name" >
                   {{ option?.name }}
                 </option>
               </select>
+              <ErrorMsg v-if="continueClicked && !categoryValue" description="Please select a category" />
             </div>
             <div class="form__field">
               <label for="status">Status</label>
-              <select class="input" name="status" id="" v-model="statusValue">
+              <select class="input" name="status" id="" v-model="statusValue" :class="{ 'input-error': continueClicked && !statusValue }" >
                 <option disabled selected value="">
                   Please select a status
                 </option>
-                <option
-                  v-for="option in status"
-                  :key="option.value"
-                  :value="option.value"
-                >
+                <option v-for="option in status" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </option>
               </select>
+              <ErrorMsg v-if="continueClicked && !statusValue" description="Please enter a status" />
             </div>
             <div class="form__field">
               <div class="input-field">
                 <label for="weight">Measurement (Optional)</label>
                 <div class="input-container">
-                  <input
-                    class="input"
-                    :class="{ 'input-error': invalid }"
-                    type="text"
-                    name="weight"
-                    id=""
-                    placeholder="5kg"
-                    required
-                    v-model="weight"
-                  />
+                  <input class="input"  type="number" name="weight" id=""
+                    placeholder="5kg" required v-model="weight" />
                 </div>
               </div>
             </div>
@@ -229,12 +134,7 @@
               <p>
                 <strong>NOTE: </strong>Only maximum of 4 images to be selected
               </p>
-              <input
-                type="file"
-                ref="fileInput"
-                multiple
-                @change="handleFileChange"
-              />
+              <input type="file" ref="fileInput" multiple @change="handleFileChange" />
               <!-- <button @click="uploadImages">Upload Images</button> -->
             </div>
             <!-- <div class="flex">
@@ -244,11 +144,7 @@
               <ImageUpload @image-selected="handleImageSelected" />
             </div> -->
             <div v-if="previewImages.length" class="flex">
-              <div
-                v-for="image in previewImages"
-                :key="image.name"
-                class="upload-box"
-              >
+              <div v-for="image in previewImages" :key="image.name" class="upload-box">
                 <img :src="image.url" :alt="image.name" />
               </div>
             </div>
@@ -287,6 +183,8 @@ export default {
       brand: "",
       weight: "",
       invalid: false,
+      continueClicked: false,
+
 
       status: [
         { label: "In stock", value: "option1" },
@@ -305,10 +203,32 @@ export default {
       previewImages: [], // Array to store image previews
     };
   },
+  computed: {
+    allFieldsValid () {
+      if (!this.productName && !this.price && !this.slash && !this.description && !this.brand && !this.categoryValue && !this.statusValue) {
+        return false
+      } else {
+        return true
+      }
+
+    },
+    isSlashGreaterThanPrice() {
+    if (this.price === "" || this.slash === "") {
+      // If either price or slash is empty, no need to validate
+      return true;
+    }
+    return parseFloat(this.slash) > parseFloat(this.price);
+  }
+  },
   methods: {
     emitFunction() {
+      this.continueClicked = true;
+      if (!this.allFieldsValid) {
+        return
+      }
       // Emit the inputted data to the parent component
       const data = {
+
         productName: this.productName,
         price: this.price,
         slash: this.slash,
@@ -322,6 +242,8 @@ export default {
       this.$emit("nextEvent", data);
       // console.log(data.selectedImages);
     },
+
+
     emitDelete() {
       this.$emit("deleteProduct");
     },
@@ -344,7 +266,8 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-  },
+  }
+  
 };
 </script>
 
@@ -365,7 +288,7 @@ h3 {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .form__wrapper {
@@ -440,8 +363,6 @@ textarea {
   align-self: stretch;
 
   border-radius: 8px;
-  border: 1px solid var(--grey-grey-4, #bdc0ce);
-  background: var(--white, #fff);
 
   /* Neutral Button shadow */
   box-shadow: 0px 1px 3px 0px rgba(47, 43, 67, 0.1),
@@ -503,5 +424,18 @@ option {
 
   border-radius: 16px;
   border: 1px dashed var(--grey-grey4, #bdc0ce);
+}
+
+
+.error-message p {
+  color: red;
+}
+
+.error-message {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 </style>
