@@ -172,7 +172,7 @@ export default {
       selectedItem: null,
       selectedIndex: 0,
       statusTagText: 'Active',
-      statusTagType: null,
+      // statusTagType: null,
       listSelect: [
         {
           title: "Order procesing",
@@ -209,6 +209,9 @@ export default {
         return 'info';
       }
     },
+  },
+  mounted() {
+    this.selectedItem = this.selectedIndex
   },
   methods: {
     changeOrderStatus() {

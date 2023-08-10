@@ -24,8 +24,8 @@
         <p>{{ product?.name }}</p>
       </div>
       <div class="productcard-price">
-        <p>$ {{ product?.discountPrice }}</p>
-        <p class="slashprice">$ {{ product?.actualPrice }}</p>
+        <p> <span class="naira">₦</span> {{ product?.discountPrice }}</p>
+        <p class="slashprice"><span class="naira">₦</span> {{ product?.actualPrice }}</p>
       </div>
     </div>
 

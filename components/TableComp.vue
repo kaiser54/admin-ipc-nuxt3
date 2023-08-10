@@ -45,7 +45,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in tableData" :key="item.id" @click="userRoute(item.name)">
+          <tr
+            v-for="item in tableData"
+            :key="item.id"
+            @click="userRoute(item.name)"
+          >
             <td style="display: flex; align-items: center; gap: 5px">
               <div class="img">
                 <img src="@/assets/images/p1.png" alt="" />
@@ -57,12 +61,14 @@
             <td>{{ item.quantity }}</td>
             <td>{{ item.price }}</td>
             <td style="text-align: -webkit-right">
-              <span
+              <!-- <span
                 v-if="item.status === 'Pending'"
                 :class="['tag', 'pending']"
                 >{{ item.status }}</span
               >
-              <span v-else :class="['tag', 'verified']">{{ item.status }}</span>
+              <span v-else :class="['tag', 'verified']">{{ item.status }}</span> -->
+              <DynamicTags tagText="Compleated" size="small" type="warning" />
+              <!-- <DynamicTags :tagText="tagText" :size="size" :type="type"/> -->
             </td>
           </tr>
         </tbody>
@@ -91,15 +97,52 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      selectedIndex: 2,
+      listSelect: [
+        {
+          title: "Order procesing",
+          type: "warning",
+          size: "small",
+        },
+        {
+          title: "Shipped",
+          type: "info",
+          size: "small",
+        },
+        {
+          title: "Delivered",
+          type: "positive",
+          size: "small",
+        },
+      ],
+    };
+  },
   methods: {
     userRoute(value) {
       // this.$router.push('/dashboard/orders/'`${value}`);
-      this.$router.push('/dashboard/orders/2');
+      this.$router.push("/dashboard/orders/2");
     },
-    goToRoutePage(){
-      this.$emit("goToRoutePage")
-    }
-  }
+  },
+  computed: {
+    tagText() {
+      return this.listSelect[this.selectedIndex].title;
+    },
+    type() {
+      return this.listSelect[this.selectedIndex].type;
+    },
+    size() {
+      return this.listSelect[this.selectedIndex].size;
+    },
+    statusTagType() {
+      if (this.statusTagText === "In Active") {
+        return "warning";
+      } else {
+        return "info";
+      }
+    },
+  },
 };
 </script>
 
@@ -157,7 +200,7 @@ tr {
 }
 
 tr:hover {
-  background-color:  var(--grey-grey6);
+  background-color: var(--grey-grey6);
 }
 
 thead tr:hover {

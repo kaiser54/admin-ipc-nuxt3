@@ -27,7 +27,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #0009B380;
+    background: #0000005d;
 }
 
 .lds-spinner {

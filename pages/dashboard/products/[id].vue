@@ -55,9 +55,7 @@
                     " class="zoom-image" ref="zoomImage" /> -->
                 <img
                   v-if="product"
-                  :src="
-                    product?.data?.product?.images[`${productImage}`]?.url
-                  "
+                  :src="product?.data?.product?.images[`${productImage}`]?.url"
                   alt="Product Image"
                   class="zoom-image"
                   ref="zoomImage"
@@ -98,10 +96,12 @@
               </p>
               <div class="product-details-price-grp">
                 <h3 class="h3-bold">
-                  # {{ product?.data?.product?.actualPrice }}
+                  <span class="naira">₦</span>
+                  {{ product?.data?.product?.actualPrice }}
                 </h3>
                 <h3 class="slash">
-                  # {{ product?.data?.product?.discountPrice }}
+                  <span class="naira">₦</span>
+                  {{ product?.data?.product?.discountPrice }}
                 </h3>
               </div>
 
@@ -139,7 +139,7 @@ onMounted(async () => {
       const response = await fetch(uri);
       if (response.ok) {
         product.value = await response.json();
-        console.log(product.value)
+        console.log(product.value);
       } else {
         console.error("Failed to fetch data:", response.status);
       }
