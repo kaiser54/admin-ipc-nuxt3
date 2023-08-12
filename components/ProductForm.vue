@@ -68,11 +68,14 @@
               <div class="input-field">
                 <label for="slash">Market slash price</label>
                 <div class="input-container">
-                  <input class="input" :class="{ 'input-error': continueClicked && (!slash)}" type="number" name="slash" id=""
+                  <input class="input"  
+                  :class="{ 'input-error': continueClicked && (!slash || slashError || priceGreaterThanSlashError) }" type="number" name="slash" id=""
+                  @input="handleSlashInput"
                     placeholder="₦80,000" required v-model="slash" />
                 </div>
               </div>
               <ErrorMsg v-if="continueClicked && !slash" description="Please enter a slash price" />
+              <ErrorMsg v-if="slashError" description="Slash price must be higher than price" />
             </div>
           </div>
           <div class="second flex">
@@ -184,6 +187,8 @@ export default {
       weight: "",
       invalid: false,
       continueClicked: false,
+      slashError: false,
+      priceGreaterThanSlashError: false,
 
 
       status: [
@@ -205,20 +210,14 @@ export default {
   },
   computed: {
     allFieldsValid () {
-      if (!this.productName && !this.price && !this.slash && !this.description && !this.brand && !this.categoryValue && !this.statusValue) {
+      if (!this.productName && !this.price && !this.slash ) {
         return false
       } else {
         return true
       }
 
     },
-    isSlashGreaterThanPrice() {
-    if (this.price === "" || this.slash === "") {
-      // If either price or slash is empty, no need to validate
-      return true;
-    }
-    return parseFloat(this.slash) > parseFloat(this.price);
-  }
+
   },
   methods: {
     emitFunction() {
@@ -226,9 +225,24 @@ export default {
       if (!this.allFieldsValid) {
         return
       }
+      
+  // Validate slash price
+  if (!this.slash) {
+    this.slashError = true;
+    return;
+  }
+
+  if (parseFloat(this.price) >= parseFloat(this.slash)) {
+    this.priceGreaterThanSlashError = true;
+    return;
+  }
+
+  // Reset error flags
+  this.slashError = false;
+  this.priceGreaterThanSlashError = false;
+
       // Emit the inputted data to the parent component
       const data = {
-
         productName: this.productName,
         price: this.price,
         slash: this.slash,
@@ -243,7 +257,16 @@ export default {
       // console.log(data.selectedImages);
     },
 
+    handleSlashInput() {
+    // Reset error flags
+    this.slashError = false;
+    this.priceGreaterThanSlashError = false;
 
+    // Check for slash price validity
+    if (parseFloat(this.price) >= parseFloat(this.slash)) {
+      this.slashError = true;
+    }
+  },
     emitDelete() {
       this.$emit("deleteProduct");
     },
