@@ -4,7 +4,8 @@ const API_URL = "http://localhost:8000/api/v1";
 const URL = "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1"
 
 let devInstance = axios.create({
-    baseURL: URL,
+    // baseURL: URL,
+    baseURL: API_URL,
 });
 
 devInstance.interceptors.response.use(
