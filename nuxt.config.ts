@@ -26,6 +26,19 @@ export default defineNuxtConfig({
       ],
     }
   },
+  modules: [[
+    '@pinia/nuxt',
+    {
+      autoImports: [
+        // automatically imports `defineStore`
+        'defineStore', // import { defineStore } from 'pinia'
+        'acceptHMRUpdate'
+      ],
+    } 
+  ]],
+  imports: {
+    dirs: ['stores']
+  },
   pages: true,
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
