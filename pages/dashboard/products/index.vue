@@ -65,7 +65,7 @@
         <div class="dash__card">
           <DynamicDashCard
             cardName="Total products"
-            :counterName="productsCount"
+            :counterName="IPCStore.totalProductCount.productsCount"
           >
             <template v-slot:svg>
               <svg
@@ -98,7 +98,7 @@
           </DynamicDashCard>
           <DynamicDashCard
             cardName="Categories"
-            :counterName="categoriesCount"
+            :counterName="IPCStore.categories.length"
             :active="true"
           >
             <template v-slot:svg>
@@ -138,7 +138,10 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Instock" :counterName="inStock">
+          <DynamicDashCard
+            cardName="Instock"
+            :counterName="IPCStore.totalProductCount.productCountInStock"
+          >
             <template v-slot:svg>
               <svg
                 width="20"
@@ -160,7 +163,10 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Out of stock" :counterName="outOfStock">
+          <DynamicDashCard
+            cardName="Out of stock"
+            :counterName="IPCStore.totalProductCount.productCountNotInStock"
+          >
             <template v-slot:svg>
               <svg
                 width="20"
@@ -185,72 +191,46 @@
         </div>
         <div class="product__listing">
           <ProductCard
+            v-for="product in IPCStore.products"
             :product="product"
-            v-for="product in products"
             :key="product._id"
           ></ProductCard>
         </div>
       </div>
     </div>
-    <LoaderComponent v-if="loading" />
+    <LoaderComponent v-if="IPCStore.loading" />
   </MainLayout>
 </template>
+
+
+<script setup>
+import { useIPCStore } from "/stores/index";
+
+const IPCStore = useIPCStore();
+IPCStore.fetchProducts();
+IPCStore.fetchCategories();
+IPCStore.fetchProductsCount();
+</script>
+
   
 <script>
 import MainLayout from "/layouts/MainLayout.vue";
 import LoaderComponent from "/components/LoaderComponent.vue";
+
 export default {
   components: { MainLayout, LoaderComponent },
+  setup() {},
   data() {
-    return {
-      products: [],
-      categoriesCount: 0,
-      productsCount: 0,
-      inStock: 0,
-      outOfStock: 0,
-      loading: false,
-    };
-  },
-  created() {
-    this.fetchCategories();
-    this.fetchProductsCount();
-    this.fetchProducts();
+    return {};
   },
   methods: {
     redirectToCreateProductPage() {
       this.$router.push("/dashboard/products/new-product");
     },
-    fetchCategories() {
-      this.$devInstance
-        .get("/categories")
-        .then((res) => (this.categoriesCount = res?.data?.results))
-        .catch((err) => console.log(err))
-        .finally(() => (this.loading = false));
-    },
-    fetchProductsCount() {
-      this.loading = true;
-      this.$devInstance
-        .get("/products/total-product-count")
-        .then((res) => {
-          this.productsCount = res?.data?.data?.productsCount;
-          this.inStock = res?.data?.data?.productCountInStock;
-          this.outOfStock = res?.data?.data?.productCountNotInStock;
-        })
-        .catch((err) => consolee.log(err))
-        .finally(() => (this.loading = false));
-    },
-    fetchProducts() {
-      this.loading = true;
-      this.$devInstance
-        .get("/products")
-        .then((res) => (this.products = res?.data?.data?.products,
-        console.log(this.products)))
-        .catch((err) => console.log(err))
-        .finally(() => (this.loading = false));
-    },
   },
 };
 </script>
+
   
 <style scoped>
 .dash__button {
