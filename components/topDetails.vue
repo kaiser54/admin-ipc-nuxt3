@@ -30,6 +30,9 @@
         name="search"
         id="search"
         placeholder="Search for products"
+        v-model="newQuery"
+        @input="handleSearch"
+        @keydown.enter="handleSearch"
       />
     </div>
     <section class="dashboard-profile">
@@ -46,9 +49,20 @@
   </section>
 </template>
 
-<script>
 
+<script setup>
+import { useIPCStore } from "/stores/index";
+
+const IPCStore = useIPCStore();
+const newQuery = ref("");
+const handleSearch = () => {
+  if (newQuery.value.length > 0) {
+    IPCStore.updateSearchQuery(newQuery.value);
+    console.log(newQuery.value)
+  }
+};
 </script>
+
 
 <style>
 .top-details {
@@ -193,5 +207,4 @@ input {
   max-width: 149px;
   /* or any other value you want to set */
 }
-
 </style>

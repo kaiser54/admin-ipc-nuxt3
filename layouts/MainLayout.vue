@@ -65,6 +65,7 @@ export default {
       this.$router.redirect("/dashboard/market");
     }
   },
+  created() {},
   methods: {
     toggleCart() {
       this.isCart = !this.isCart;
