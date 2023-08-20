@@ -36,7 +36,7 @@
       <div class="product__header__wrap">
         <h3>Product details</h3>
         <DynamicButton
-          @clickButton="submitData(dataProp)"
+          @clickButton="$emit('buttonClick')"
           class="auto"
           :buttonText="buttonText"
           :size="size"
@@ -80,24 +80,24 @@
               <!-- product title, brand name and like button -->
               <div class="product-details-title">
                 <h3 class="h3-small-medium">
-                  {{ dataProp?.name }}
+                  {{ dataProp.productName }}
                 </h3>
                 <p class="product-details-brand">
-                  Brand: <span>{{ dataProp?.brand }}</span>
+                  Brand: <span>Mama’s Choice</span>
                 </p>
               </div>
             </div>
             <!-- ------------------------------- -->
 
             <p class="product-details-snippet">
-              {{ dataProp?.description }}
+              {{ dataProp.description }}
             </p>
             <div class="product-details-price-grp">
-              <h3 class="h3-bold"># {{ dataProp?.actualPrice }}</h3>
+              <h3 class="h3-bold"># {{ dataProp.price }}</h3>
             </div>
 
             <!-- -------------------------------- -->
-            <Guarantee v-if="dataProp" />
+            <Guarantee />
           </div>
         </div>
       </div>
@@ -105,44 +105,44 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  props: {
-    showBtn: {
-      type: Boolean,
-      default: false,
-    },
-    buttonText: {
-      type: String,
-    },
-    size: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    icon: {
-      type: String,
-    },
-    dataProp: {
-      type: Object,
-    },
-    productImage: {
-      type: Array,
-    },
+      
+  <script setup>
+const props = defineProps({
+  showBtn: {
+    type: Boolean,
+    default: false,
   },
+  buttonText: {
+    type: String,
+  },
+  size: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: String,
+  },
+  dataProp: {
+    type: Object,
+  },
+  productImage: {
+    type: Array,
+  },
+});
+</script>
+  
+  <script>
+export default {
   data() {
     return {
       mainImage: "", // Initially empty or provide a default image URL
     };
   },
   created() {
-    // if (this.dataProp.images.length > 0) {
-    //   this.mainImage = this.dataProp.images[0].url; // Set the first thumbnail as the initial product image
-    // }
     if (this.productImage.length > 0) {
       this.mainImage = this.productImage[0]; // Set the first thumbnail as the initial product image
     }
@@ -151,16 +151,12 @@ export default {
     replaceProductImage(image) {
       this.mainImage = image;
     },
-    submitData(dataProp) {
-      this.$emit("buttonClick", dataProp);
-      console.log("dataproppppps:", this.dataProp);
-    },
   },
 };
 </script>
-
-
-<style scoped>
+  
+  
+  <style scoped>
 .zoom-container {
   position: relative;
   overflow: hidden;
@@ -429,8 +425,8 @@ p.product-details-snippet {
   }
 }
 </style>
-    
-  <style>
+      
+    <style>
 .exact.nuxt-link-active .desktop-nav {
   background: var(--primary-p300);
 }

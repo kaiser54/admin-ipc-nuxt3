@@ -33,7 +33,13 @@
           </template>
         </DynamicButton>
       </div>
-      <CustomerInfo :tagText="statusTagText" :type="statusTagType" :showMore="false"/>
+      <CustomerInfo
+        v-if="customerData"
+        :data="customerData"
+        :tagText="statusTagText"
+        :type="statusTagType"
+        :showMore="false"
+      />
       <div class="dash__button">
         <h3>Order details</h3>
         <DynamicButton
@@ -78,7 +84,7 @@
         >
           <template v-slot:button>
             <div class="dash__button bdr">
-              <DynamicTags :tagText="tagText" :size="size" :type="type"/>
+              <DynamicTags :tagText="tagText" :size="size" :type="type" />
               <!-- <div class="order__processing">Order Processing</div> -->
               <DynamicButton
                 @clickButton="changeOrderStatus"
@@ -171,7 +177,7 @@ export default {
       animate: null,
       selectedItem: null,
       selectedIndex: 0,
-      statusTagText: 'Active',
+      statusTagText: "Active",
       // statusTagType: null,
       listSelect: [
         {
@@ -190,6 +196,9 @@ export default {
           size: "small",
         },
       ],
+      orderId: null,
+      orderDetails: null,
+      customerData: null,
     };
   },
   computed: {
@@ -203,17 +212,47 @@ export default {
       return this.listSelect[this.selectedIndex].size;
     },
     statusTagType() {
-      if (this.statusTagText === 'In Active') {
-        return 'warning';
+      if (this.statusTagText === "In Active") {
+        return "warning";
       } else {
-        return 'info';
+        return "info";
       }
     },
   },
+  async created() {
+    this.orderId = this.$route.params.id; // Assuming the parameter is named "id"
+    await this.fetchOrderData(); // Fetch order details
+    await this.fetchCustomerInfo(); // Fetch customer information
+  },
+
   mounted() {
-    this.selectedItem = this.selectedIndex
+    this.selectedItem = this.selectedIndex;
   },
   methods: {
+    async fetchOrderData() {
+      try {
+        const response = await this.$devInstance.get(`/orders/${this.orderId}`);
+        this.orderDetails = response?.data?.data?.order;
+        console.log("orderDetails", this.orderDetails);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+        // Handle errors here
+      }
+    },
+    async fetchCustomerInfo() {
+      try {
+        if (this.orderDetails) {
+          const response = await this.$devInstance.get(
+            `/business-customers/${this.orderDetails?.customerId}`
+          );
+          this.customerData = response?.data?.data?.customer;
+          console.log("customerData", this.customerData);
+        }
+      } catch (error) {
+        console.error("Error fetching customer information:", error);
+        // Handle errors here
+      }
+    },
     changeOrderStatus() {
       this.animate = "animate__zoomIn";
       this.orderSatatus = !this.orderSatatus;

@@ -6,13 +6,13 @@
         :message="alertMessage"
         :alertType="alertType"
       />
-      <ProductForm
-        @nextEvent="nextEvent"
+      <EditProductForm
+        @updateProduct="nextEvent"
         @deleteProduct="deleteProduct"
         v-show="!passed"
-        headingText="Add new product"
+        headingText="Edit product"
         :categories="categories"
-        :showButton="true"
+        :editMode="true"
       />
       <ProductDetails
         @buttonClick="postProduct"
@@ -89,50 +89,48 @@ export default {
       loading: false,
       showDelete: false,
       animate: null,
+      productID: null,
     };
   },
-  created() {
-    this.fetchCategories();
+  async created() {
+    this.productID = this.$route.params.id; // Assuming the parameter is named "id"
+    await this.fetchCategories();
   },
   methods: {
-    nextEvent(data) {
+    nextEvent(formData) {
       this.passed = !this.passed;
-      this.productData = data;
-      for (const image of data.selectedImages) {
+      this.productData = formData;
+      console.log("new form data:", this.productData);
+      for (const image of formData.images) {
         if (image) {
           const url = URL.createObjectURL(image);
           this.imageArray.push(url);
           console.log(this.imageArray);
         }
       }
-      // Access the submitted data from the child component
-      // console.log("Form Data:", data);
-      // Perform further actions with the data
     },
-    postProduct() {
-      console.log(this.productData);
-    },
+
     async postProduct() {
       this.loading = true;
       const data = new FormData();
+      const productData = this.productData;
 
       // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-      data.append("name", this.productData.productName);
-      data.append("description", this.productData.description);
-      data.append("actualPrice", this.productData.slash);
-      data.append("discountPrice", this.productData.price);
-      data.append("brand", this.productData.brand);
-      data.append("weight", this.productData.weight);
-      data.append("category", this.productData.categoryValue);
-      for (let i = 0; i < this.productData.selectedImages.length; i++) {
-        data.append("image", this.productData.selectedImages[i]);
-        // formData.append(`image_${i}`, this.productData.selectedImages[i]); //USING DIFF KEY NAMES
+      data.append("name", productData.name);
+      data.append("description", productData.description);
+      data.append("actualPrice", productData.actualPrice);
+      data.append("discountPrice", productData.discountPrice);
+      data.append("brand", productData.brand);
+      data.append("weight", productData.weight);
+      data.append("category", productData.category);
+      for (let i = 0; i < productData.images.length; i++) {
+        data.append("image", productData.images[i]);
       }
 
       let config = {
-        method: "post",
+        method: "put",
         maxBodyLength: Infinity,
-        url: "/products",
+        url: `/products/${this.productID}`,
         data: data,
       };
 
@@ -145,6 +143,7 @@ export default {
             "product data uploaded successfully",
             "success"
           );
+          this.$router.push("/dashboard/products/");
         })
         .catch((err) => {
           console.error("Error uploading product data:", err);
@@ -160,11 +159,12 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+
     goRoute() {
       this.passed = !this.passed;
       this.imageArray = [];
     },
-    fetchCategories() {
+    async fetchCategories() {
       this.loading = true;
       this.$devInstance
         .get("/categories")

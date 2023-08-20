@@ -2,7 +2,10 @@
   <MainLayout>
     <div class="dash__container">
       <div class="dash__card">
-        <DynamicDashCard cardName="Total orders" counterName="1,298">
+        <DynamicDashCard
+          cardName="Total orders"
+          :counterName="orderSummary?.totalOrder"
+        >
           <template v-slot:svg>
             <svg
               width="20"
@@ -32,7 +35,10 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Pending orders" counterName="102">
+        <DynamicDashCard
+          cardName="Pending orders"
+          :counterName="orderSummary?.pendingOrder"
+        >
           <template v-slot:svg>
             <svg
               width="20"
@@ -70,7 +76,10 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Shipped orders" counterName="1,278">
+        <DynamicDashCard
+          cardName="Shipped orders"
+          :counterName="orderSummary?.shippedOrder"
+        >
           <template v-slot:svg>
             <svg
               width="20"
@@ -100,7 +109,10 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Delivered orders" counterName="20">
+        <DynamicDashCard
+          cardName="Delivered orders"
+          :counterName="orderSummary?.deliveredOrder"
+        >
           <template v-slot:svg>
             <svg
               width="20"
@@ -148,8 +160,9 @@
         </DynamicDashCard>
       </div>
       <TableComp
-        heading="New Customers"
-        :tableData="tableData"
+        v-if="orders"
+        heading=""
+        :tableData="orders"
         :tableHeaders="tableHeaders"
         :showBtn="false"
       >
@@ -166,7 +179,7 @@
                 {{ tab }}
               </div>
             </div>
-            <DateFilter />
+            <!-- <DateFilter /> -->
           </div>
         </template>
       </TableComp>
@@ -194,62 +207,46 @@ export default {
         "Price",
         "Status",
       ],
-      tableData: [
-        {
-          id: 1,
-          name: "Mama’s pride rice",
-          date: "2022-05-01",
-          orderId: "12345",
-          quantity: 2,
-          price: 10.99,
-          status: "Completed",
-        },
-      ],
-      products: [],
-      categoriesCount: 0,
-      productsCount: 0,
-      inStock: 0,
-      outOfStock: 0,
+      orders: null,
+      orderSummary: null,
       loading: false,
     };
   },
   created() {
-    this.fetchCategories(); // convert all this to fetch orders
-    this.fetchProductsCount();
-    this.fetchProducts();
+    this.fetchData();
   },
   methods: {
-    fetchCategories() {
-      this.$devInstance
-        .get("/categories")
-        .then((res) => (this.categoriesCount = res?.data?.results))
-        .catch((err) => console.log(err))
-        .finally(() => (this.loading = false));
+    async fetchData() {
+      try {
+        this.loading = true;
+        await Promise.all([this.fetchOrderSummary(), this.fetchAllOrders()]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle errors here, such as showing a user-friendly error message
+      } finally {
+        this.loading = false;
+      }
     },
-    fetchProductsCount() {
-      this.loading = true;
-      this.$devInstance
-        .get("/products/total-product-count")
-        .then((res) => {
-          this.productsCount = res?.data?.data?.productsCount;
-          this.inStock = res?.data?.data?.productCountInStock;
-          this.outOfStock = res?.data?.data?.productCountNotInStock;
-        })
-        .catch((err) => consolee.log(err))
-        .finally(() => (this.loading = false));
+    async fetchOrderSummary() {
+      try {
+        const response = await this.$devInstance.get("/orders/orders-summary");
+        this.orderSummary = response?.data?.data;
+        console.log("all orderSummary", this.orderSummary);
+      } catch (error) {
+        console.error("Error fetching order summary:", error);
+        // Handle errors here
+      }
     },
-    fetchProducts() {
-      this.loading = true;
-      this.$devInstance
-        .get("/products")
-        .then(
-          (res) => (
-            (this.products = res?.data?.data?.products),
-            console.log(this.products)
-          )
-        )
-        .catch((err) => console.log(err))
-        .finally(() => (this.loading = false));
+    async fetchAllOrders() {
+      try {
+        const response = await this.$devInstance.get("/orders");
+        this.orders = response?.data?.data?.orders;
+        console.log("all orders", this.orders);
+        console.log("all orders products", this.orders[0].products);
+      } catch (error) {
+        console.error("Error fetching all orders:", error);
+        // Handle errors here
+      }
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;

@@ -9,6 +9,7 @@
         <div class="product__header__wrap">
           <h3>Product details</h3>
           <DynamicButton
+            @clickButton="editProductByID"
             class="auto"
             buttonText="Edit product"
             size="standard"
@@ -119,21 +120,19 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter  } from "vue-router";
 
 const id = ref("");
 const product = ref(null);
 
-onMounted(async () => {
-  const { params } = useRoute();
-  if (params.id) {
-    const pathArray = params.id.split("~");
-    const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
-    id.value = lastSegment;
+const { params } = useRoute();
+const pathArray = params.id.split("~");
+const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
+id.value = lastSegment;
 
-    const uri =
-      "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" +
-      id.value;
+onMounted(async () => {
+  if (params.id) {
+    const uri = "http://localhost:8000/api/v1/products/" + id.value;
 
     try {
       const response = await fetch(uri);
@@ -148,19 +147,13 @@ onMounted(async () => {
     }
   }
 });
-// const { id } = useRoute().params;
-// const pathArray = id.split("~");
-// const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
-// const productID = lastSegment;
 
-// const uri =
-//   "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1/products/" + productID;
-// console.log(uri);
-// console.log(productID);
-
-// // fetching the products
-// const { data: product } = await useFetch(uri);
+const router = useRouter();
+const editProductByID = async () => {
+  await router.push(`/dashboard/products/edit-product/${id.value}`);
+};
 </script>
+
 
 
 <script>
@@ -217,6 +210,9 @@ export default {
     clearInterval(this.zoomInterval);
   },
   methods: {
+    // editProductByID() {
+    //   this.$router.push(`/dashboard/products/edit-product/${productId}`);
+    // },
     checkScreenSize() {
       if (window.innerWidth <= 951) {
         this.mobile = true;

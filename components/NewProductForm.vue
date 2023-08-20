@@ -374,15 +374,15 @@ export default {
       }
       // Emit the inputted data to the parent component
       const data = {
-        name: this.productName,
-        discountPrice: this.price,
-        actualPrice: this.slash,
+        productName: this.productName,
+        price: this.price,
+        slash: this.slash,
         description: this.description,
         brand: this.brand,
-        status: this.statusValue,
-        category: this.categoryValue,
+        statusValue: this.statusValue,
+        categoryValue: this.categoryValue,
         weight: this.weight,
-        images: this.selectedFiles,
+        selectedImages: this.selectedFiles,
       };
       this.$emit("nextEvent", data);
       // console.log(data.selectedImages);

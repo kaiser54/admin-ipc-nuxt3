@@ -30,9 +30,7 @@
         name="search"
         id="search"
         placeholder="Search for products"
-        v-model="newQuery"
-        @input="handleSearch"
-        @keydown.enter="handleSearch"
+        v-model="searchQuery"
       />
     </div>
     <section class="dashboard-profile">
@@ -54,13 +52,13 @@
 import { useIPCStore } from "/stores/index";
 
 const IPCStore = useIPCStore();
-const newQuery = ref("");
-const handleSearch = () => {
-  if (newQuery.value.length > 0) {
-    IPCStore.updateSearchQuery(newQuery.value);
-    console.log(newQuery.value)
-  }
-};
+
+const searchQuery = ref("");
+
+watch(searchQuery, (newValue) => {
+  IPCStore.updateSearchQuery(newValue);
+  console.log("Message changed:", newValue);
+});
 </script>
 
 

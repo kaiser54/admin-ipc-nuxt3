@@ -6,15 +6,23 @@
     <div class="customer__info">
       <div class="group">
         <div class="title">Account name</div>
-        <div class="subject">Daniel Ayomide</div>
+        <div class="subject">
+          {{ customer?.firstName }} {{ customer?.lastName }}
+        </div>
       </div>
       <div class="group">
         <div class="title">Phone number</div>
-        <div class="subject">09156581205</div>
+        <div
+          class="subject"
+          v-for="(phoneNumber, index) in customer?.phoneNumbers"
+          :key="index"
+        >
+          {{ phoneNumber }}
+        </div>
       </div>
       <div class="group">
         <div class="title">Date joined</div>
-        <div class="subject">23-02-022</div>
+        <div class="subject">{{ formattedCreatedAt }}</div>
       </div>
       <div class="group">
         <div class="title">Account type</div>
@@ -28,31 +36,45 @@
           >
             <circle cx="4.5" cy="4" r="4" fill="#20AF0B" />
           </svg>
-          Business
+          {{ convertToTitleCase(customer.type) }}
         </div>
       </div>
       <div class="group">
         <div class="title">Email address</div>
-        <div class="subject">daniel@gmail.com</div>
+        <div class="subject">{{ customer.email }}</div>
       </div>
     </div>
     <div class="customer__info" v-if="showMore">
       <div class="group">
         <div class="title">Email verification</div>
-        <!-- <div class="subject">Status</div> -->
-        <DynamicTags :tagText="tagText" size="small" :type="type" />
+        <DynamicTags
+          tagText="Verified"
+          size="small"
+          type="positive"
+          v-if="customer.verified === true"
+        />
+        <DynamicTags
+          tagText="Not verified"
+          size="small"
+          type="negative"
+          v-if="customer.verified === false"
+        />
       </div>
       <div class="group">
         <div class="title">Street address</div>
-        <div class="subject">91, ayetoro road</div>
+        <div class="subject">
+          {{ customer.address ? customer.address : "91, ayetoro road" }}
+        </div>
       </div>
       <div class="group">
         <div class="title">State</div>
-        <div class="subject">Lagos</div>
+        <div class="subject">
+          {{ customer.state ? customer.state : "Lagos" }}
+        </div>
       </div>
       <div class="group">
         <div class="title">LGA</div>
-        <div class="subject">Ikeja</div>
+        <div class="subject">{{ customer.LGA ? customer.LGA : "Ikeja" }}</div>
       </div>
     </div>
   </div>
@@ -61,17 +83,37 @@
 <script>
 export default {
   props: {
-    tagText: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
+    customer: {
       required: true,
     },
     showMore: {
       type: Boolean,
       default: true,
+    },
+  },
+  computed: {
+    formattedCreatedAt() {
+      return this.convertDateFormat(this.customer.createdAt);
+    },
+  },
+  methods: {
+    convertDateFormat(inputDate) {
+      if (inputDate) {
+        const date = new Date(inputDate);
+        const year = date.getFullYear().toString().substr(-2); // Extract the last 2 digits of the year
+        const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+        const day = date.getDate().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
+    },
+    convertToTitleCase(inputString) {
+      if (inputString) {
+        return (
+          inputString.charAt(0).toUpperCase() +
+          inputString.slice(1).toLowerCase()
+        );
+      }
     },
   },
 };

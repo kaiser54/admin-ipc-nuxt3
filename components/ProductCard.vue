@@ -33,7 +33,7 @@
 
     <!-- edit card button  -->
 
-    <DynamicButton buttonText="Edit product" size="small" type="secondary">
+    <DynamicButton buttonText="Edit product" size="small" type="secondary" @clickButton="editProductByID(product._id)">
     </DynamicButton>
 
     <!-- -------------------------------- -->
@@ -53,7 +53,11 @@ export default {
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    editProductByID(productId) {
+      this.$router.push(`/dashboard/products/edit-product/${productId}`);
+    }
+  },
 };
 </script>
   

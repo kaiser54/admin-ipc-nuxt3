@@ -5,7 +5,7 @@
         <div class="dash__card">
           <DynamicDashCard
             cardName="Total customers"
-            :counterName="productsCount"
+            :counterName="customerCount.customersCount"
           >
             <template v-slot:svg>
               <svg
@@ -36,7 +36,10 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Business" :counterName="categoriesCount">
+          <DynamicDashCard
+            cardName="Business"
+            :counterName="customerCount.customersB"
+          >
             <template v-slot:svg>
               <svg
                 width="20"
@@ -74,7 +77,10 @@
               </svg>
             </template>
           </DynamicDashCard>
-          <DynamicDashCard cardName="Individual" :counterName="inStock">
+          <DynamicDashCard
+            cardName="Individual"
+            :counterName="customerCount.customersI"
+          >
             <template v-slot:svg>
               <svg
                 width="20"
@@ -97,26 +103,14 @@
             </template>
           </DynamicDashCard>
         </div>
-        <TableComp
-          heading="New Customers"
-          :tableData="tableData"
+
+        <NewTable
+        heading="New customers"
+          :tableData="customers"
           :showBtn="false"
           :tableHeaders="tableHeaders"
-        >
-          <template v-slot:tableFilter>
-            <div class="filter__tabs">
-              <div
-                v-for="(tab, index) in tabs"
-                :key="index"
-                class="tab tab-standard"
-                @click="toggleTab(index)"
-                :class="{ clicked: activeTab === index }"
-              >
-                {{ tab }}
-              </div>
-            </div>
-          </template>
-        </TableComp>
+          @goUserRoute="handleGoUserRoute"
+        />
       </div>
     </div>
     <LoaderComponent v-if="loading" />
@@ -130,75 +124,54 @@ export default {
   components: { MainLayout, LoaderComponent },
   data() {
     return {
-      products: [],
-      categoriesCount: 0,
-      productsCount: 0,
-      inStock: 0,
-      outOfStock: 0,
+      customers: [],
+      customerCount: [],
       loading: false,
       displayText: "All",
       tabs: ["All", "Business", "Individual"],
       activeTab: 0, // set the default active tab to be "All"
       tableHeaders: [
-        "Product’s name",
+        "Name",
         "Date",
-        "Order ID",
-        "Quantity",
+        "Orders",
+        "Account Type",
         "Price",
         "Status",
-      ],
-      tableData: [
-        {
-          id: 1,
-          name: "Mama’s pride rice",
-          date: "2022-05-01",
-          orderId: "12345",
-          quantity: 2,
-          price: 10.99,
-          status: "Completed",
-        },
       ],
     };
   },
   created() {
-    this.fetchCategories();
-    this.fetchProductsCount();
-    this.fetchProducts();
+    this.fetchAllCustomers();
+    this.fetchCustomersCount();
   },
   methods: {
     toggleTab(index) {
       this.activeTab = index;
     },
-    redirectToCreateProductPage() {
-      this.$router.push("/dashboard/products/new-product");
+    handleGoUserRoute(userId) {
+      this.$router.push(`/dashboard/customers/${userId}`);
     },
-    fetchCategories() {
+    fetchAllCustomers() {
+      this.loading = true;
       this.$devInstance
-        .get("/categories")
-        .then((res) => (this.categoriesCount = res?.data?.results))
+        .get("/business-customers")
+        .then(
+          (res) => (
+            (this.customers = res?.data?.data?.customers),
+            console.log(this.customers)
+          )
+        )
         .catch((err) => console.log(err))
         .finally(() => (this.loading = false));
     },
-    fetchProductsCount() {
+    fetchCustomersCount() {
       this.loading = true;
       this.$devInstance
-        .get("/products/total-product-count")
-        .then((res) => {
-          this.productsCount = res?.data?.data?.productsCount;
-          this.inStock = res?.data?.data?.productCountInStock;
-          this.outOfStock = res?.data?.data?.productCountNotInStock;
-        })
-        .catch((err) => consolee.log(err))
-        .finally(() => (this.loading = false));
-    },
-    fetchProducts() {
-      this.loading = true;
-      this.$devInstance
-        .get("/products")
+        .get("/customers/total-customer-count")
         .then(
           (res) => (
-            (this.products = res?.data?.data?.products),
-            console.log(this.products)
+            (this.customerCount = res?.data?.data),
+            console.log(this.customerCount)
           )
         )
         .catch((err) => console.log(err))

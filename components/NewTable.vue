@@ -48,28 +48,18 @@
           <tr
             v-for="item in tableData"
             :key="item.id"
-            @click="userRoute(item.name)"
+            @click="$emit('goUserRoute', item._id);"
           >
-            <td style="display: flex; align-items: center; gap: 5px" v-for="product in item.products"
-            :key="product.id">
-              <div class="img">
-                <img src="@/assets/images/p1.png" alt="" />
-              </div>
-              {{ product?.name }}
+            <td style="display: flex; align-items: center; gap: 16px">
+                <RandomAvatar :name="`${item?.firstName} ${item?.lastName}`" />
+              {{ item?.firstName }} {{ item?.lastName }}
             </td>
-            <td>{{ formatDate(product?.createdAt) || "22-22-22" }}</td>
-            <td>{{ item._id }}</td>
-            <td>{{ item.products.length }}</td>
-            <td>{{ item.totalPrice }}</td>
+            <td>{{ convertDateFormat(item.createdAt) }}</td>
+            <td>{{ item?.orders ? item?.orders : 0 }}</td>
+            <td>{{ convertToTitleCase(item.type) }}</td>
+            <td>450000</td>
             <td style="text-align: -webkit-right">
-              <!-- <span
-                v-if="item.status === 'Pending'"
-                :class="['tag', 'pending']"
-                >{{ item.status }}</span
-              >
-              <span v-else :class="['tag', 'verified']">{{ item.status }}</span> -->
-              <DynamicTags :tagText="item.status" size="small" type="warning" />
-              <!-- <DynamicTags :tagText="tagText" :size="size" :type="type"/> -->
+              <DynamicTags tagText="Active" size="small" type="positive" />
             </td>
           </tr>
         </tbody>
@@ -77,8 +67,8 @@
     </div>
   </div>
 </template>
-
-<script>
+  
+  <script>
 export default {
   props: {
     heading: {
@@ -87,7 +77,6 @@ export default {
     },
     tableHeaders: {
       type: Array,
-      required: true,
     },
     tableData: {
       type: Array,
@@ -99,66 +88,44 @@ export default {
     },
   },
   data() {
-    return {
-      selectedIndex: 2,
-      listSelect: [
-        {
-          title: "Order procesing",
-          type: "warning",
-          size: "small",
-        },
-        {
-          title: "Shipped",
-          type: "info",
-          size: "small",
-        },
-        {
-          title: "Delivered",
-          type: "positive",
-          size: "small",
-        },
-      ],
-    };
+    return {};
+  },
+  computed: {
+    formattedCreatedAt() {
+      return this.convertDateFormat(this.item.createdAt);
+    },
   },
   methods: {
     userRoute(value) {
-      // this.$router.push('/dashboard/orders/'`${value}`);
       this.$router.push("/dashboard/orders/2");
     },
     goToRoutePage() {
-      // this.$router.push('/dashboard/orders/'`${value}`);
       this.$router.push("/dashboard/orders/2");
     },
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Month, zero-padded
-      const day = String(date.getDate()).padStart(2, '0'); // Day, zero-padded
-      return `${day}-${month}-${year}`;
-    }
-  },
-  computed: {
-    tagText() {
-      return this.listSelect[this.selectedIndex].title;
+    convertDateFormat(inputDate) {
+      if (inputDate) {
+        const date = new Date(inputDate);
+        const year = date.getFullYear().toString().substr(-2); // Extract the last 2 digits of the year
+        const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+        const day = date.getDate().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
     },
-    type() {
-      return this.listSelect[this.selectedIndex].type;
-    },
-    size() {
-      return this.listSelect[this.selectedIndex].size;
-    },
-    statusTagType() {
-      if (this.statusTagText === "In Active") {
-        return "warning";
-      } else {
-        return "info";
+    convertToTitleCase(inputString) {
+      if (inputString) {
+        return (
+          inputString.charAt(0).toUpperCase() +
+          inputString.slice(1).toLowerCase()
+        );
       }
     },
   },
+  computed: {},
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 .table__container {
   display: flex;
   flex-direction: column;
@@ -232,12 +199,12 @@ span.tag {
 }
 
 /* 
-.sticky-header {
-  position: sticky;
-  top: 134px;
-  background: var(--white);
-  z-index: 2;
-} */
+  .sticky-header {
+    position: sticky;
+    top: 134px;
+    background: var(--white);
+    z-index: 2;
+  } */
 
 @media (max-width: 1300px) {
   .sticky-header {

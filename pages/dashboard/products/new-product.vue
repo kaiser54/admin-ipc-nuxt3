@@ -6,13 +6,13 @@
         :message="alertMessage"
         :alertType="alertType"
       />
-      <ProductForm
+      <NewProductForm
         @nextEvent="nextEvent"
         v-show="!passed"
         headingText="Add new product"
-        :categories="categories"
+        :categories="IPCStore.categories"
       />
-      <ProductDetails
+      <NewProductDetails
         @buttonClick="postProduct"
         @back="goRoute"
         v-if="passed"
@@ -44,20 +44,24 @@
             </g>
           </svg>
         </template>
-      </ProductDetails>
+      </NewProductDetails>
     </div>
-    <LoaderComponent v-if="loading" />
+    <LoaderComponent v-if="IPCStore.loading || loading" />
   </MainLayout>
 </template>
 
+<script setup>
+import { useIPCStore } from "/stores/index";
 
+const IPCStore = useIPCStore();
+IPCStore.fetchCategories();
+</script>
 
 <script>
-// import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
 import LoaderComponent from "/components/LoaderComponent.vue";
 export default {
-  components: { MainLayout },
+  components: { MainLayout, LoaderComponent },
   data() {
     return {
       passed: false,
@@ -65,13 +69,10 @@ export default {
       alertType: "",
       productData: null,
       imageArray: [],
-      categories: [],
       loading: false,
     };
   },
-  created() {
-    this.fetchCategories();
-  },
+
   methods: {
     nextEvent(data) {
       this.passed = !this.passed;
@@ -83,12 +84,6 @@ export default {
           console.log(this.imageArray);
         }
       }
-      // Access the submitted data from the child component
-      // console.log("Form Data:", data);
-      // Perform further actions with the data
-    },
-    postProduct() {
-      console.log(this.productData);
     },
     async postProduct() {
       this.loading = true;
@@ -141,13 +136,6 @@ export default {
     goRoute() {
       this.passed = !this.passed;
       this.imageArray = [];
-    },
-    fetchCategories() {
-      this.loading = true;
-      this.$devInstance
-        .get("/categories")
-        .then((res) => (this.categories = res?.data?.data?.categories))
-        .finally(() => (this.loading = false));
     },
   },
 };

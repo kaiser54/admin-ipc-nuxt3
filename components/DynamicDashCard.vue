@@ -26,7 +26,7 @@ export default {
       required: true,
     },
     counterName: {
-      type: String,
+      // type: String,
       required: true,
     },
     active: {

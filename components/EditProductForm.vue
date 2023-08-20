@@ -12,7 +12,7 @@
       <h3>{{ headingText }}</h3>
       <div class="" style="display: flex; align-items: center; gap: 16px">
         <DynamicButton
-          v-if="showButton"
+          v-if="editMode"
           @clickButton="emitDelete"
           class="auto"
           buttonText="Delete product"
@@ -83,7 +83,7 @@
         </DynamicBtn>
       </div>
     </div>
-    <div class="form__wrapper">
+    <div class="form__wrapper" v-if="formData">
       <!-- <div class="form__heading">{{ formHeading }}</div> -->
       <div class="form__heading border">Fill in the product details</div>
       <div class="form">
@@ -95,17 +95,19 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{ 'input-error': continueClicked && !productName }"
+                    :class="{
+                      'input-error': continueClicked && !formData.name,
+                    }"
                     type="text"
                     id=""
                     placeholder="Ex: Mama’s pride rice"
                     required
-                    v-model="productName"
+                    v-model="formData.name"
                   />
                 </div>
               </div>
               <ErrorMsg
-                v-if="continueClicked && !productName"
+                v-if="continueClicked && !formData.name"
                 description="Please enter the product's name"
               />
             </div>
@@ -116,43 +118,49 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{ 'input-error': continueClicked && !price }"
+                    :class="{
+                      'input-error': continueClicked && !formData.discountPrice,
+                    }"
                     type="number"
                     name="price"
                     id=""
                     placeholder="₦70,000"
                     required
-                    v-model="price"
+                    v-model="formData.discountPrice"
                   />
                 </div>
               </div>
               <ErrorMsg
-                v-if="continueClicked && !price"
+                v-if="continueClicked && !formData.discountPrice"
                 description="Please enter the product's price"
               />
             </div>
+
             <div class="form__field">
               <div class="input-field">
                 <label for="slash">Market slash price</label>
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{ 'input-error': continueClicked && !slash }"
+                    :class="{
+                      'input-error': continueClicked && !formData.actualPrice,
+                    }"
                     type="number"
                     name="slash"
                     id=""
                     placeholder="₦80,000"
                     required
-                    v-model="slash"
+                    v-model="formData.actualPrice"
                   />
                 </div>
               </div>
               <ErrorMsg
-                v-if="continueClicked && !slash"
+                v-if="continueClicked && !formData.actualPrice"
                 description="Please enter a slash price"
               />
             </div>
           </div>
+
           <div class="second flex">
             <div class="form__field">
               <label for="description">Product’s description</label>
@@ -160,33 +168,38 @@
                 class="input"
                 name="description"
                 id=""
-                v-model="description"
+                v-model="formData.description"
                 placeholder="Enter the product description"
-                :class="{ 'input-error': continueClicked && !description }"
+                :class="{
+                  'input-error': continueClicked && !formData.description,
+                }"
               ></textarea>
               <ErrorMsg
-                v-if="continueClicked && !description"
+                v-if="continueClicked && !formData.description"
                 description="Please enter description"
               />
             </div>
+
             <div class="form__field">
               <div class="input-field">
                 <label for="brand">Brand’s name</label>
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{ 'input-error': continueClicked && !brand }"
+                    :class="{
+                      'input-error': continueClicked && !formData.brand,
+                    }"
                     type="text"
                     name="brand"
                     id=""
                     placeholder="Mama’s rice"
                     required
-                    v-model="brand"
+                    v-model="formData.brand"
                   />
                 </div>
               </div>
               <ErrorMsg
-                v-if="continueClicked && !brand"
+                v-if="continueClicked && !formData.brand"
                 description="Please enter a brand name"
               />
             </div>
@@ -198,8 +211,10 @@
                 class="input"
                 name="category"
                 id=""
-                v-model="categoryValue"
-                :class="{ 'input-error': continueClicked && !categoryValue }"
+                v-model="formData.category"
+                :class="{
+                  'input-error': continueClicked && !formData.category,
+                }"
               >
                 <option disabled selected value="">
                   Please select a category
@@ -213,18 +228,19 @@
                 </option>
               </select>
               <ErrorMsg
-                v-if="continueClicked && !categoryValue"
+                v-if="continueClicked && !formData.category"
                 description="Please select a category"
               />
             </div>
+
             <div class="form__field">
               <label for="status">Status</label>
               <select
                 class="input"
                 name="status"
                 id=""
-                v-model="statusValue"
-                :class="{ 'input-error': continueClicked && !statusValue }"
+                v-model="formData.status"
+                :class="{ 'input-error': continueClicked && !formData.status }"
               >
                 <option disabled selected value="">
                   Please select a status
@@ -238,27 +254,29 @@
                 </option>
               </select>
               <ErrorMsg
-                v-if="continueClicked && !statusValue"
+                v-if="continueClicked && !formData.status"
                 description="Please enter a status"
               />
             </div>
+
             <div class="form__field">
               <div class="input-field">
                 <label for="weight">Measurement (Optional)</label>
                 <div class="input-container">
                   <input
                     class="input"
-                    type="number"
+                    type="text"
                     name="weight"
                     id=""
                     placeholder="5kg"
                     required
-                    v-model="weight"
+                    v-model="formData.weight"
                   />
                 </div>
               </div>
             </div>
           </div>
+
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
@@ -270,15 +288,10 @@
                 ref="fileInput"
                 multiple
                 @change="handleFileChange"
+                accept="image/*"
               />
-              <!-- <button @click="uploadImages">Upload Images</button> -->
             </div>
-            <!-- <div class="flex">
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
-              <ImageUpload @image-selected="handleImageSelected" />
-            </div> -->
+
             <div v-if="previewImages.length" class="flex">
               <div
                 v-for="image in previewImages"
@@ -294,10 +307,10 @@
     </div>
   </div>
 </template>
-
-
-
-<script>
+  
+  
+  
+  <script>
 export default {
   props: {
     headingText: {
@@ -308,98 +321,77 @@ export default {
       type: Array,
       required: true,
     },
-    showButton: {
-      type: Boolean,
-      default: false,
-    },
+    editMode: Boolean, // Indicates whether it's in edit mode or not
   },
 
   data() {
     return {
-      productName: "", // Set initial values for data properties
-      price: "",
-      slash: "",
-      description: "",
-      brand: "",
-      weight: "",
+      productID: null,
+      formData: {
+        _id: "",
+        name: "",
+        description: "",
+        actualPrice: 0,
+        discountPrice: 0,
+        inStock: true,
+        brand: "",
+        weight: "",
+        images: [],
+        category: "",
+        createdAt: "",
+        updatedAt: "",
+        __v: 0,
+      },
       invalid: false,
       continueClicked: false,
-
       status: [
         { label: "In stock", value: "option1" },
         { label: "Out of stock", value: "option2" },
       ],
       statusValue: "",
-
-      // categories: [
-      //   { label: "Category 1", value: "option1" },
-      //   { label: "Category 2", value: "option2" },
-      //   { label: "Category 3", value: "option3" },
-      // ],
-      categoryValue: "",
+      images: [],
       selectedImages: [],
       selectedFiles: [],
       previewImages: [], // Array to store image previews
     };
   },
-  computed: {
-    allFieldsValid() {
-      if (
-        !this.productName &&
-        !this.price &&
-        !this.slash &&
-        !this.description &&
-        !this.brand &&
-        !this.categoryValue &&
-        !this.statusValue
-      ) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    isSlashGreaterThanPrice() {
-      if (this.price === "" || this.slash === "") {
-        // If either price or slash is empty, no need to validate
-        return true;
-      }
-      return parseFloat(this.slash) > parseFloat(this.price);
-    },
+  async created() {
+    this.productID = this.$route.params.id; // Assuming the parameter is named "id"
+    await this.fetchProductByID(); // Fetch order details
   },
+  computed: {},
+  mounted() {},
   methods: {
-    emitFunction() {
-      this.continueClicked = true;
-      if (!this.allFieldsValid) {
-        return;
+    async fetchProductByID() {
+      try {
+        const response = await this.$devInstance.get(
+          `/products/${this.productID}`
+        );
+        this.formData = response?.data?.data?.product;
+        // this.images = this.formData.images
+        console.log("old form Data :", this.formData);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+        // Handle errors here
       }
-      // Emit the inputted data to the parent component
-      const data = {
-        name: this.productName,
-        discountPrice: this.price,
-        actualPrice: this.slash,
-        description: this.description,
-        brand: this.brand,
-        status: this.statusValue,
-        category: this.categoryValue,
-        weight: this.weight,
-        images: this.selectedFiles,
-      };
-      this.$emit("nextEvent", data);
-      // console.log(data.selectedImages);
+    },
+    emitFunction() {
+      // this.continueClicked = true;
+      // this.$emit("submitData", this.formData);
+      this.$emit("updateProduct", this.formData);
+      console.log(this.formData);
     },
 
     emitDelete() {
       this.$emit("deleteProduct");
     },
-    // handleImageSelected(file) {
-    //   // Push the selected image data into the array
-    //   this.selectedImages.push(file);
-    //   // console.log("Selected images:", this.selectedImages);
-    // },
     handleFileChange(event) {
       const maxImages = 4;
       this.selectedFiles = Array.from(event.target.files).slice(0, maxImages);
-      this.previewImages = []; // Clear previous previews
+      if (this.selectedFiles.length > 0) {
+        this.previewImages = []; // Clear previous previews
+        this.formData.images = []; // Clear previous previews
+      }
 
       for (const file of this.selectedFiles) {
         // Create a preview URL for each selected image
@@ -407,14 +399,16 @@ export default {
         reader.onload = (e) => {
           this.previewImages.push({ url: e.target.result, name: file.name });
         };
+        this.formData.images = [];
         reader.readAsDataURL(file);
+        this.formData.images = this.selectedFiles;
       }
     },
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 h3 {
   color: var(--grey-grey1, #303237);
   font-size: 24px;
