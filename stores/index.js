@@ -7,7 +7,36 @@ export const useIPCStore = defineStore("IPCStore", {
     totalProductCount: [],
     filteredProducts: [],
     loading: false,
+    searchQuery: "",
   }),
+
+  getters: {
+    searchTasks() {
+      if (!this.searchQuery) {
+        return this.products;
+      }
+      const query = this.searchQuery.toLowerCase();
+      return this.products.filter((product) =>
+        product.name.toLowerCase().includes(query)
+      );
+    },
+
+    filteredProductsBySearch() {
+      const query = this.searchQuery.toLowerCase().trim();
+      if (!query) {
+        return this.products;
+      }
+
+      const filteredProducts = this.products.filter((product) => {
+        return (
+          product.name.toLowerCase().includes(query) ||
+          product.category.toLowerCase().includes(query) ||
+          product.brand.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query)
+        );
+      });
+    },
+  },
 
   actions: {
     async fetchProducts() {
@@ -36,6 +65,10 @@ export const useIPCStore = defineStore("IPCStore", {
 
       this.totalProductCount = data?.data;
       this.loading = false;
+    },
+
+    updateSearchQuery(query) {
+      this.searchQuery = query;
     },
   },
 });

@@ -190,8 +190,9 @@
           </DynamicDashCard>
         </div>
         <div class="product__listing">
+          <li v-if="IPCStore.filteredProductsBySearch.length === 0">Product not found</li>
           <ProductCard
-            v-for="product in IPCStore.products"
+            v-for="product in IPCStore.filteredProductsBySearch"
             :product="product"
             :key="product._id"
           ></ProductCard>
