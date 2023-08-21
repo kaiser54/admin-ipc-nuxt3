@@ -124,6 +124,7 @@ export default {
             "Product data uploaded successfully",
             "success"
           );
+          this.$route.push('./dashboard/products')
         })
         .catch((error) => {
           console.log("error", error);

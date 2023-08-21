@@ -112,26 +112,29 @@ export default {
 
     async postProduct() {
       this.loading = true;
-      const data = new FormData();
+      const formdata = new FormData();
       const productData = this.productData;
 
       // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-      data.append("name", productData.name);
-      data.append("description", productData.description);
-      data.append("actualPrice", productData.actualPrice);
-      data.append("discountPrice", productData.discountPrice);
-      data.append("brand", productData.brand);
-      data.append("weight", productData.weight);
-      data.append("category", productData.category);
-      for (let i = 0; i < productData.images.length; i++) {
-        data.append("image", productData.images[i]);
-      }
+
+      formdata.append("name", this.productData.name);
+      formdata.append("description", this.productData.description);
+      formdata.append("actualPrice", this.productData.actualPrice);
+      formdata.append("discountPrice", this.productData.discountPrice);
+      formdata.append("inStock", this.productData.inStock);
+      formdata.append("brand", this.productData.brand);
+      formdata.append("unit", this.productData.weight);
+      formdata.append("category", this.productData.category);
+
+      this.productData.images.forEach((image, index) => {
+        formdata.append("image", image);
+      });
 
       let config = {
         method: "put",
         maxBodyLength: Infinity,
         url: `/products/${this.productID}`,
-        data: data,
+        data: formdata,
       };
 
       this.$devInstance(config)
