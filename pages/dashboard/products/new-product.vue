@@ -82,47 +82,51 @@ export default {
           const url = URL.createObjectURL(image);
           this.imageArray.push(url);
           console.log(this.imageArray);
+          console.log(this.productData);
         }
       }
     },
     async postProduct() {
       this.loading = true;
-      const data = new FormData();
+      const formdata = new FormData();
 
-      // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-      data.append("name", this.productData.productName);
-      data.append("description", this.productData.description);
-      data.append("actualPrice", this.productData.slash);
-      data.append("discountPrice", this.productData.price);
-      data.append("brand", this.productData.brand);
-      data.append("weight", this.productData.weight);
-      data.append("category", this.productData.categoryValue);
-      for (let i = 0; i < this.productData.selectedImages.length; i++) {
-        data.append("image", this.productData.selectedImages[i]);
-        // formData.append(`image_${i}`, this.productData.selectedImages[i]); //USING DIFF KEY NAMES
-      }
+      // Assuming 'selectedImages' is your array of File objects
+      this.productData.selectedImages.forEach((image, index) => {
+        formdata.append("image", image);
+      });
 
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "/products",
-        data: data,
+      // Append other fields
+      formdata.append("name", this.productData.productName);
+      formdata.append("description", this.productData.description);
+      formdata.append("actualPrice", this.productData.slash);
+      formdata.append("discountPrice", this.productData.price);
+      formdata.append("inStock", this.productData.inStock);
+      formdata.append("brand", this.productData.brand);
+      formdata.append("unit", this.productData.weight);
+      formdata.append("category", this.productData.categoryValue);
+
+      console.log("form data: ", formdata);
+
+      // Configure requestOptions and send the request
+      const requestOptions = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
       };
 
-      this.$devInstance(config)
-        .then((res) => {
-          // Handle the success response here or update the component state as needed
+      fetch("http://localhost:8000/api/v1/products/", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
           this.alertType = "success";
           this.alertMessage = "Successfully added to the product list";
           this.$refs.alertPrompt.showAlert(
-            "product data uploaded successfully",
+            "Product data uploaded successfully",
             "success"
           );
         })
-        .catch((err) => {
-          console.error("Error uploading product data:", err);
-
-          // Handle the error response here or update the component state as needed
+        .catch((error) => {
+          console.log("error", error);
           this.alertType = "error";
           this.alertMessage =
             "Error uploading product data. Please try again later.";
