@@ -5,7 +5,7 @@
       <GoBackButton style="margin-top: 28px; margin-left: 16px" />
       <!-- ----------- -->
 
-      <div class="product-detail-con">
+      <div class="product-detail-con" v-if="product">
         <div class="product__header__wrap">
           <h3>Product details</h3>
           <DynamicButton
@@ -113,6 +113,7 @@
         </div>
         <!-- ---------------------------------- -->
       </div>
+      <LoaderComponent v-if="!product"/>
     </div>
   </MainLayout>
 </template>
