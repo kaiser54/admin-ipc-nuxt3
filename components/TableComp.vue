@@ -46,21 +46,37 @@
         </thead>
         <tbody>
           <tr
-            v-for="item in tableData"
-            :key="item.id"
-            @click="userRoute(item.name)"
+            v-for="order in orders"
+            :key="order._id"
+            @click="userRoute(order.name)"
           >
-            <td style="display: flex; align-items: center; gap: 5px" v-for="product in item.products"
+            <!-- <td style="display: flex; align-items: center; gap: 5px" v-for="product in item.products"
             :key="product.id">
               <div class="img">
                 <img src="@/assets/images/p1.png" alt="" />
               </div>
               {{ product?.name }}
+            </td> -->
+            <td>
+              <div class="product-info">
+                <div class="product_image_group">
+                  <div
+                    class="product-images"
+                    v-for="image in getProductImages(order.products)"
+                    :key="image.id"
+                  >
+                    <img :src="image.url" alt="Product Image" />
+                  </div>
+                </div>
+                <span class="product-name">{{
+                  getProductNames(order.products)
+                }}</span>
+              </div>
             </td>
-            <td>{{ formatDate(product?.createdAt) || "22-22-22" }}</td>
-            <td>{{ item._id }}</td>
-            <td>{{ item.products.length }}</td>
-            <td>{{ item.totalPrice }}</td>
+            <td>{{ formatDate(order.date) || "22-22-22" }}</td>
+            <td>{{ order._id }}</td>
+            <td>{{ order.products.length }}</td>
+            <td>{{ order.totalPrice }}</td>
             <td style="text-align: -webkit-right">
               <!-- <span
                 v-if="item.status === 'Pending'"
@@ -68,7 +84,11 @@
                 >{{ item.status }}</span
               >
               <span v-else :class="['tag', 'verified']">{{ item.status }}</span> -->
-              <DynamicTags :tagText="item.status" size="small" type="warning" />
+              <DynamicTags
+                :tagText="order.status"
+                size="small"
+                type="warning"
+              />
               <!-- <DynamicTags :tagText="tagText" :size="size" :type="type"/> -->
             </td>
           </tr>
@@ -89,7 +109,7 @@ export default {
       type: Array,
       required: true,
     },
-    tableData: {
+    data: {
       type: Array,
       required: true, // just incase the table headers are different accross each pages
     },
@@ -125,6 +145,23 @@ export default {
       // this.$router.push('/dashboard/orders/'`${value}`);
       this.$router.push("/dashboard/orders/2");
     },
+    getProductImages(products) {
+      const images = products.map((product) => product.images[0]);
+      return images;
+    },
+    getProductNames(products) {
+      if (products.length === 0) {
+        return "No products";
+      } else if (products.length === 1) {
+        return products[0].name;
+      } else {
+        const truncatedNames = products
+          .map((product) => product.name)
+          .join(", ")
+          .substring(0, 5) + "..."; // Adjust the character limit as needed
+        return truncatedNames;
+      }
+    },
     goToRoutePage() {
       // this.$router.push('/dashboard/orders/'`${value}`);
       this.$router.push("/dashboard/orders/2");
@@ -132,12 +169,16 @@ export default {
     formatDate(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Month, zero-padded
-      const day = String(date.getDate()).padStart(2, '0'); // Day, zero-padded
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Month, zero-padded
+      const day = String(date.getDate()).padStart(2, "0"); // Day, zero-padded
       return `${day}-${month}-${year}`;
-    }
+    },
   },
   computed: {
+    orders() {
+      //   return this.data.data.orders;
+      return this.data;
+    },
     tagText() {
       return this.listSelect[this.selectedIndex].title;
     },
@@ -231,13 +272,31 @@ span.tag {
   height: auto;
 }
 
-/* 
-.sticky-header {
-  position: sticky;
-  top: 134px;
-  background: var(--white);
-  z-index: 2;
-} */
+.product_image_group {
+  display: flex;
+  align-items: flex-start;
+  max-width: 73px;
+  width: 100%;
+  gap: -11.5px;
+}
+
+.product-images {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%; /* Makes the div circular */
+  overflow: hidden; /* Clips content that goes beyond the circular boundary */
+}
+.product-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Maintains aspect ratio while covering the circular container */
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
 @media (max-width: 1300px) {
   .sticky-header {

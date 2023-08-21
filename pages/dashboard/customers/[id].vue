@@ -16,6 +16,7 @@
         :tagText="statusTagText"
         :type="statusTagType"
         :customer="IPCStore.customer"
+        :address="address"
       />
       <LoaderComponent v-if="IPCStore.loading" />
     </div>
@@ -34,7 +35,7 @@ const id = route.params.id;
 IPCStore.fetchCustomerInfo(id);
 </script>
     
-    <script>
+<script>
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -43,7 +44,40 @@ export default {
     return {
       statusTagText: "Not verified",
       statusTagType: null,
+      address: null,
     };
+  },
+  created() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    // Assuming you're using Vue Router and the customer ID is available in route.params
+    var customerId = this.$route.params.id;
+
+    var raw = JSON.stringify({
+      customerId: customerId,
+    });
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:8000/api/v1/addresses/", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (
+          result.status === "success" &&
+          result.data &&
+          result.data.addresses
+        ) {
+          console.log("Addresses data:", result.data.addresses);
+        } else {
+          console.log("Addresses data not available or empty.");
+        }
+      })
+      .catch((error) => console.log("error", error));
   },
   computed: {
     statusTagType() {

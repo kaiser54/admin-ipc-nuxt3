@@ -160,13 +160,13 @@
         </DynamicDashCard>
       </div>
       <TableComp
-        v-if="orders"
+      v-if="orders"
         heading=""
-        :tableData="orders"
+        :data="orders"
         :tableHeaders="tableHeaders"
         :showBtn="false"
       >
-        <template v-slot:tableFilter>
+        <!-- <template v-slot:tableFilter>
           <div class="filter__header">
             <div class="filter__tabs">
               <div
@@ -179,10 +179,10 @@
                 {{ tab }}
               </div>
             </div>
-            <!-- <DateFilter /> -->
           </div>
-        </template>
+        </template> -->
       </TableComp>
+      <LoaderComponent v-if="loading"/>
     </div>
   </MainLayout>
 </template>
