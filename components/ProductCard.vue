@@ -11,7 +11,7 @@
         <div class="image-container">
           <!-- <img :src="require(`~/assets/images/${product.image}`)" /> -->
           <!-- <img :src="product.image" alt="Product Image" /> -->
-          <img :src="product?.images[1]?.url" alt="Product Image" />
+          <img :src="product?.images[0]?.url" alt="Product Image" />
         </div>
         <!-- -------------------------------- -->
       </div>

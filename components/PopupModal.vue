@@ -93,7 +93,11 @@ export default {
   methods: {
     handleOutsideClick(event) {
       const modalElement = this.$refs.modalRef;
-      if (modalElement.contains(event.target)) {
+      if (
+        modalElement &&
+        modalElement.contains &&
+        modalElement.contains(event.target)
+      ) {
         // Emit the event to close the modal
         this.$emit("closeModalBG");
       }

@@ -40,7 +40,7 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="New orders" counterName="205" :active="true">
+        <DynamicDashCard cardName="New orders" :counterName="NewOrder?.pendingOrder" :active="true">
           <template v-slot:svg>
             <svg
               width="20"
@@ -278,6 +278,7 @@ export default {
       ],
       customersCount: 0,
       productsCount: 0,
+      NewOrder: 0,
       individualCustomersCount: 0,
       businessCustomersCount: 0,
     };
@@ -285,6 +286,7 @@ export default {
   created() {
     this.fetchCustomersCount();
     this.fetchProductsCount();
+    this.fetchNewOrder();
   },
 
   computed: {
@@ -314,6 +316,13 @@ export default {
       this.$devInstance
         .get("/products/total-product-count")
         .then((res) => (this.productsCount = res?.data?.data?.productsCount))
+        .catch((err) => console.log(err));
+    },
+
+    fetchNewOrder() {
+      this.$devInstance
+        .get("/orders/orders-summary/")
+        .then((res) => (this.NewOrder = res?.data?.data))
         .catch((err) => console.log(err));
     },
 

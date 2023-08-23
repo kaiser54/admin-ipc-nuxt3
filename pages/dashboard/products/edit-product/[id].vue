@@ -61,7 +61,7 @@
         buttonText2="Confirm"
         buttonClass="neutral-btn"
         buttonClass2="negative-btn"
-        @okModal="okOrderStatus"
+        @okModal="deleteProductByID"
         @closeModal="changeOrderStatus"
         @closeModalBG="changeOrderStatus"
       >
@@ -166,6 +166,7 @@ export default {
       this.passed = !this.passed;
       this.imageArray = [];
     },
+
     async fetchCategories() {
       this.loading = true;
       this.$devInstance
@@ -180,8 +181,40 @@ export default {
     changeOrderStatus() {
       this.showDelete = !this.showDelete;
     },
-    okOrderStatus() {
-      this.showDelete = false;
+    async deleteProductByID() {
+      this.loading = true;
+      
+      let config = {
+        method: "delete",
+        maxBodyLength: Infinity,
+        url: `/products/${this.productID}`,
+        // data: formdata,
+      };
+
+      this.$devInstance(config)
+        .then((res) => {
+          // Handle the success response here or update the component state as needed
+          this.alertType = "success";
+          this.alertMessage = "Successfully added to the product list";
+          this.$refs.alertPrompt.showAlert(
+            "product data uploaded successfully",
+            "success"
+          );
+          this.$router.push("/dashboard/products/");
+        })
+        .catch((err) => {
+          console.error("Error uploading product data:", err);
+
+          // Handle the error response here or update the component state as needed
+          this.alertType = "error";
+          this.alertMessage =
+            "Error uploading product data. Please try again later.";
+          this.$refs.alertPrompt.showAlert(
+            "Error uploading product data",
+            "error"
+          );
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };
