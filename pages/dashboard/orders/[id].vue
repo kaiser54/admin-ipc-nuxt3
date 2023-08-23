@@ -35,7 +35,7 @@
       </div>
       <CustomerInfo
         v-if="customerData"
-        :data="customerData"
+        :customer="customerData"
         :tagText="statusTagText"
         :type="statusTagType"
         :showMore="false"
@@ -77,14 +77,24 @@
         </DynamicButton>
       </div>
       <div class="dash__button flex__row">
-        <OrderProduct :tagText="tagText" :size="size" :type="type" />
+        <OrderProduct
+          v-if="orderDetails"
+          :tagText="dynamicTagProps.tagText"
+          size="small"
+          :type="dynamicTagProps.type"
+          :data="orderDetails"
+        />
         <UserInfo
-          :data="data"
+          :data="orderDetails"
           style="max-width: 387px; width: 100%; margin-left: 20px"
         >
           <template v-slot:button>
             <div class="dash__button bdr">
-              <DynamicTags :tagText="tagText" :size="size" :type="type" />
+              <DynamicTags
+                :tagText="tagText"
+                :size="size"
+                :type="dynamicTagProps.type"
+              />
               <!-- <div class="order__processing">Order Processing</div> -->
               <DynamicButton
                 @clickButton="changeOrderStatus"
@@ -116,10 +126,10 @@
             <div class="content-select">
               <div
                 class="list-select border"
-                :class="{ clicked: selectedItem === index }"
+                :class="{ clicked: selectedItem === item.title }"
                 v-for="(item, index) in listSelect"
                 :key="index"
-                @click="selectItem(index)"
+                @click="selectItem(item.title)"
               >
                 <div class="list-select-header">
                   <DynamicTags
@@ -136,14 +146,14 @@
                       hidden
                     />
                     <svg
-                      :class="{ selected: selectedItem === index }"
+                      :class="{ selected: selectedItem === item.title }"
                       viewBox="0 0 25 25"
                       width="25"
                       height="25"
                     >
                       <circle cx="12" cy="12" r="11" />
                       <path
-                        v-if="selectedItem === index"
+                        v-if="selectedItem === item.title"
                         d="M8.5,12l2.5,2.5L15.5,10"
                         fill="none"
                         stroke="#fff"
@@ -159,6 +169,7 @@
           </template>
         </PopupModal>
       </transition>
+      <LoaderComponent v-if="loading" />
     </div>
   </MainLayout>
 </template>
@@ -181,17 +192,17 @@ export default {
       // statusTagType: null,
       listSelect: [
         {
-          title: "Order procesing",
+          title: "PROCESSING",
           type: "warning",
           size: "small",
         },
         {
-          title: "Shipped",
+          title: "SHIPPED",
           type: "info",
           size: "small",
         },
         {
-          title: "Delivered",
+          title: "DELIVERED",
           type: "positive",
           size: "small",
         },
@@ -199,11 +210,15 @@ export default {
       orderId: null,
       orderDetails: null,
       customerData: null,
+      loading: false,
     };
   },
   computed: {
     tagText() {
-      return this.listSelect[this.selectedIndex].title;
+      // return this.listSelect[this.selectedIndex].title;
+      if (this.orderDetails?.status) {
+        return this.orderDetails?.status;
+      }
     },
     type() {
       return this.listSelect[this.selectedIndex].type;
@@ -218,6 +233,20 @@ export default {
         return "info";
       }
     },
+    dynamicTagProps() {
+      let tagText = this.orderDetails?.status;
+      let type = "";
+
+      if (tagText === "PROCESSING") {
+        type = "warning";
+      } else if (tagText === "SHIPPED") {
+        type = "info";
+      } else if (tagText === "DELIVERED") {
+        type = "positive";
+      }
+
+      return { tagText, type };
+    },
   },
   async created() {
     this.orderId = this.$route.params.id; // Assuming the parameter is named "id"
@@ -225,44 +254,91 @@ export default {
     await this.fetchCustomerInfo(); // Fetch customer information
   },
 
-  mounted() {
-    this.selectedItem = this.selectedIndex;
-  },
+  mounted() {},
   methods: {
     async fetchOrderData() {
+      this.loading = true;
       try {
         const response = await this.$devInstance.get(`/orders/${this.orderId}`);
         this.orderDetails = response?.data?.data?.order;
+        this.selectedItem = this.orderDetails?.status;
         console.log("orderDetails", this.orderDetails);
       } catch (error) {
         console.error("Error fetching order details:", error);
         // Handle errors here
       }
+
+      this.loading = false;
     },
     async fetchCustomerInfo() {
-      try {
-        if (this.orderDetails) {
-          const response = await this.$devInstance.get(
-            `/business-customers/${this.orderDetails?.customerId}`
-          );
-          this.customerData = response?.data?.data?.customer;
-          console.log("customerData", this.customerData);
+      this.loading = true;
+
+      if (this.orderDetails) {
+        const res = await fetch(
+          `https://api.ipc-africa.com/api/v1/individual-customers/${this.orderDetails?.customerId}`
+        );
+        const firstSourceData = await res.json();
+
+        if (firstSourceData?.data) {
+          this.customerData = firstSourceData.data.customer;
+          console.log(this.customerData);
+          this.loading = false;
+          return;
         }
-      } catch (error) {
-        console.error("Error fetching customer information:", error);
-        // Handle errors here
+
+        const res2 = await fetch(
+          `https://api.ipc-africa.com/api/v1/business-customers/${this.orderDetails?.customerId}`
+        );
+        const secondSourceData = await res2.json();
+
+        if (secondSourceData?.data) {
+          this.customerData = secondSourceData.data.customer;
+          console.log(this.customerData);
+        }
+
+        this.loading = false;
       }
     },
+
     changeOrderStatus() {
       this.animate = "animate__zoomIn";
       this.orderSatatus = !this.orderSatatus;
     },
-    okOrderStatus() {
-      this.selectedIndex = this.selectedItem;
-      this.orderSatatus = false;
+    async okOrderStatus() {
+      this.loading = true;
+      const newStatus = this.selectedItem;
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        status: newStatus,
+      });
+
+      var requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(
+        "https://api.ipc-africa.com/api/v1/orders/" + this.orderId,
+        requestOptions
+      )
+        .then((response) => response.text())
+        .then((result) => {
+          // console.log(result);
+          this.fetchOrderData(); // Corrected placement of this line
+        })
+        .catch((error) => console.log("error", error));
+
+      this.loading = false;
+      this.orderSatatus = false; // You might want to correct the variable name here
     },
+
     selectItem(value) {
       this.selectedItem = value;
+      console.log(value);
     },
   },
 };

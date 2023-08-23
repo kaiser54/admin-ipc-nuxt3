@@ -3,40 +3,40 @@
     <slot name="button"></slot>
     <div class="client-user-name bdr" v-if="data">
       <div class="client-frame">
-        <span>Full name</span><span class="bold">{{ data.firstName }} {{ data.lastName }}</span>
+        <span>Full name</span><span class="bold">{{ data?.firstName }} {{ data?.lastName }}</span>
       </div>
-      <div class="client-frame" v-for="(phoneNumber, index) in data.phoneNumbers" :key="index">
+      <div class="client-frame" v-for="(phoneNumber, index) in data?.phoneNumbers" :key="index">
         <span>Phone number {{ index + 1}}</span><span class="bold">{{ phoneNumber }}</span>
       </div>
       <div class="client-frame">
-        <span>Street address</span><span class="bold">{{ data.directions }}</span>
+        <span>Street address</span><span class="bold">{{ data?.address.streetAddress }}</span>
       </div>
       <div class="client-frame">
-        <span>Local govt. area</span><span class="bold">{{ data.LGA }}</span>
+        <span>Local govt. area</span><span class="bold">{{ data?.address.lga }}</span>
       </div>
       <div class="client-frame">
-        <span>State</span><span class="bold">{{ data.state }}</span>
+        <span>State</span><span class="bold">{{ data?.address.state }}</span>
       </div>
     </div>
       <slot name="delivery"></slot>
       <slot name="email"></slot>
-    <div class="client-user-name bdr" v-if="data.paymentMethod">
+    <div class="client-user-name bdr" v-if="data?.paymentMethod">
       <div class="client-frame">
-        <span>Payment method</span><span class="bold">{{ data.paymentMethod }}</span>
+        <span>Payment method</span><span class="bold">{{ data?.paymentMethod }}</span>
       </div>
-      <div class="client-frame" v-if="data.paymentDate">
-        <span>Placed on</span><span class="bold">{{ data.paymentDate }}</span>
+      <div class="client-frame" v-if="data?.paymentDate">
+        <span>Placed on</span><span class="bold">{{ data?.paymentDate }}</span>
       </div>
     </div>
     <div class="client-user-name bdr">
       <div class="client-frame">
-        <span>Subtotal</span><span class="bold">₦ {{ data.loll }}</span>
+        <span>Subtotal</span><span class="bold">₦ {{ data?.totalPrice }}</span>
       </div>
       <div class="client-frame">
-        <span>Delivery fee</span><span class="bold">#0</span>
+        <span>Delivery fee</span><span class="bold">₦ {{  data?.totalPrice }}</span>
       </div>
       <div class="client-frame total">
-        <span>Total</span><span class="bold">₦ {{  data.loll }}</span>
+        <span>Total</span><span class="bold">₦ {{  data?.totalPrice }}</span>
       </div>
     </div>
   </div>
@@ -103,6 +103,8 @@ export default {
 
 .client-frame .bold {
   color: var(--grey-grey1);
+  max-width: 50%;
+  text-align: end;
 }
 .total .bold {
   font-weight: 700;

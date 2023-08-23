@@ -75,7 +75,6 @@
   <script>
 // import axios from "plugins/axios";
 import MainLayout from "/layouts/MainLayout.vue";
-import LoaderComponent from "/components/LoaderComponent.vue";
 export default {
   components: { MainLayout },
   data() {

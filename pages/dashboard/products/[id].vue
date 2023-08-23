@@ -133,7 +133,7 @@ id.value = lastSegment;
 
 onMounted(async () => {
   if (params.id) {
-    const uri = "http://localhost:8000/api/v1/products/" + id.value;
+    const uri = "https://api.ipc-africa.com/api/v1/products/" + id.value;
 
     try {
       const response = await fetch(uri);

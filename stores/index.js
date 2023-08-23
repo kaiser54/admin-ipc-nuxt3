@@ -42,7 +42,7 @@ export const useIPCStore = defineStore("IPCStore", {
   actions: {
     async fetchProducts() {
       this.loading = true;
-      const res = await fetch("http://localhost:8000/api/v1/products/");
+      const res = await fetch("https://api.ipc-africa.com/api/v1/products/");
       const data = await res.json();
       this.products = data?.data?.products;
       this.loading = false;
@@ -50,7 +50,7 @@ export const useIPCStore = defineStore("IPCStore", {
 
     async fetchCategories() {
       this.loading = true;
-      const res = await fetch("http://localhost:8000/api/v1/categories/");
+      const res = await fetch("https://api.ipc-africa.com/api/v1/categories/");
       const data = await res.json();
 
       this.categories = data?.data?.categories;
@@ -60,7 +60,7 @@ export const useIPCStore = defineStore("IPCStore", {
     async fetchProductsCount() {
       this.loading = true;
       const res = await fetch(
-        "http://localhost:8000/api/v1/products/total-product-count/"
+        "https://api.ipc-africa.com/api/v1/products/total-product-count/"
       );
       const data = await res.json();
 
@@ -68,22 +68,22 @@ export const useIPCStore = defineStore("IPCStore", {
       this.loading = false;
     },
 
-    async fetchCustomerInfo() {
-      this.loading = true;
-      const res = await fetch(
-        "http://localhost:8000/api/v1/products/total-product-count/"
-      );
-      const data = await res.json();
+    // async fetchCustomerInfo() {
+    //   this.loading = true;
+    //   const res = await fetch(
+    //     "https://api.ipc-africa.com/api/v1/products/total-product-count/"
+    //   );
+    //   const data = await res.json();
 
-      this.totalProductCount = data?.data;
-      this.loading = false;
-    },
+    //   this.totalProductCount = data?.data;
+    //   this.loading = false;
+    // },
 
     async fetchCustomerInfo(id) {
       this.loading = true;
 
       const res = await fetch(
-        `http://localhost:8000/api/v1/individual-customers/${id}`
+        `https://api.ipc-africa.com/api/v1/individual-customers/${id}`
       );
       const firstSourceData = await res.json();
 
@@ -95,7 +95,7 @@ export const useIPCStore = defineStore("IPCStore", {
       }
 
       const res2 = await fetch(
-        `http://localhost:8000/api/v1/business-customers/${id}`
+        `https://api.ipc-africa.com/api/v1/business-customers/${id}`
       );
       const secondSourceData = await res2.json();
 

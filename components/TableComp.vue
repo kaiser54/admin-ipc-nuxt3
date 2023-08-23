@@ -48,7 +48,7 @@
           <tr
             v-for="order in orders"
             :key="order._id"
-            @click="userRoute(order.name)"
+            @click="userRoute(order._id)"
           >
             <!-- <td style="display: flex; align-items: center; gap: 5px" v-for="product in item.products"
             :key="product.id">
@@ -86,8 +86,8 @@
               <span v-else :class="['tag', 'verified']">{{ item.status }}</span> -->
               <DynamicTags
                 :tagText="order.status"
-                size="small"
-                type="warning"
+                :size="size"
+                :type="getTagType(order.status)"
               />
               <!-- <DynamicTags :tagText="tagText" :size="size" :type="type"/> -->
             </td>
@@ -142,8 +142,7 @@ export default {
   },
   methods: {
     userRoute(value) {
-      // this.$router.push('/dashboard/orders/'`${value}`);
-      this.$router.push("/dashboard/orders/2");
+      this.$router.push(`/dashboard/orders/${value}`);
     },
     getProductImages(products) {
       const images = products.map((product) => product.images[0]);
@@ -155,11 +154,23 @@ export default {
       } else if (products.length === 1) {
         return products[0].name;
       } else {
-        const truncatedNames = products
-          .map((product) => product.name)
-          .join(", ")
-          .substring(0, 5) + "..."; // Adjust the character limit as needed
+        const truncatedNames =
+          products
+            .map((product) => product.name)
+            .join(", ")
+            .substring(0, 5) + "..."; // Adjust the character limit as needed
         return truncatedNames;
+      }
+    },
+    getTagType(status) {
+      if (status === "PROCESSING") {
+        return "warning";
+      } else if (status === "SHIPPED") {
+        return "info";
+      } else if (status === "DELIVERED") {
+        return "positive";
+      } else {
+        return ""; // Handle any other cases if needed
       }
     },
     goToRoutePage() {

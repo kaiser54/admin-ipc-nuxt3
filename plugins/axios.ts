@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:8000/api/v1";
-const URL = "https://ipc-server-fac46fdaae46.herokuapp.com/api/v1"
+const URL = "https://https://api.ipc-africa.com/api/v1"
 
 let devInstance = axios.create({
-    // baseURL: URL,
-    baseURL: API_URL,
+    baseURL: URL,
+    // baseURL: API_URL,
 });
 
 devInstance.interceptors.response.use(

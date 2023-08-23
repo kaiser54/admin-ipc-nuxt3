@@ -63,18 +63,18 @@
       <div class="group">
         <div class="title">Street address</div>
         <div class="subject">
-          {{ address.streetAddress ? address.streetAddress : "91, ayetoro road" }}
+          {{ address?.streetAddress ? address.streetAddress : "91, ayetoro road" }}
         </div>
       </div>
       <div class="group">
         <div class="title">State</div>
         <div class="subject">
-          {{ address.state ? address.state : "Lagos" }}
+          {{ address?.state ? address.state : "Lagos" }}
         </div>
       </div>
       <div class="group">
         <div class="title">LGA</div>
-        <div class="subject">{{ address.lga ? address.lga : "Ikeja" }}</div>
+        <div class="subject">{{ address?.lga ? address.lga : "Ikeja" }}</div>
       </div>
     </div>
   </div>
@@ -87,7 +87,6 @@ export default {
       required: true,
     },
     address: {
-      default: true,
     },
     showMore: {
       type: Boolean,

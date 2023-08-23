@@ -64,7 +64,7 @@ export default {
       redirect: "follow",
     };
 
-    fetch("http://localhost:8000/api/v1/addresses/", requestOptions)
+    fetch("https://api.ipc-africa.com/api/v1/addresses/", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (

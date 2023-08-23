@@ -1,28 +1,46 @@
 <template>
   <div class="order-wrapper">
     <div class="order-product">
-      <div class="image">
-        <img src="~/assets/images/p1.png" alt="" />
+      <div class="product_image_group">
+        <div
+          class="product-images"
+          v-for="image in getProductImages(order.products)"
+          :key="image.id"
+        >
+          <img :src="image.url" alt="Product Image" />
+        </div>
       </div>
       <div class="order-product-details">
         <div class="order-content">
-          <div class="title">Mama'S Choice Nigerian Parboiled Rice 25kg</div>
+          <div class="title">{{ getProductNames(order.products) }}</div>
           <div class="order-id-price">
-            <div class="order-id">Order Id: 1234567</div>
+            <div class="order-id">Order ID : {{ order._id }}</div>
             <div class="order-qty">Qty: 1</div>
           </div>
-          <div class="order-price">#75,000</div>
+          <div class="order-price">{{ order.totalPrice }}</div>
           <DynamicTags :tagText="tagText" :size="size" :type="type" />
         </div>
 
         <div class="price-qty">
-          <div class="order-price">#75,000</div>
+          <div class="order-price">{{ order.totalPrice }}</div>
           <div class="order-qty">Qty: 1</div>
         </div>
       </div>
-      <svg v-if="showSvg" xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
-        <path d="M13.334 11.168L18.6673 16.5013L13.334 21.8346" stroke="#565C69" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" />
+      <svg
+        v-if="showSvg"
+        xmlns="http://www.w3.org/2000/svg"
+        width="32"
+        height="33"
+        viewBox="0 0 32 33"
+        fill="none"
+      >
+        <path
+          d="M13.334 11.168L18.6673 16.5013L13.334 21.8346"
+          stroke="#565C69"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </div>
   </div>
@@ -31,6 +49,9 @@
 <script>
 export default {
   props: {
+    data: {
+      required: true,
+    },
     showSvg: {
       type: Boolean,
       default: true,
@@ -45,6 +66,47 @@ export default {
     type: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    order() {
+      //   return this.data.data.orders;
+      return this.data;
+    },
+  },
+  methods: {
+    userRoute(value) {
+      this.$router.push(`/dashboard/orders/${value}`);
+    },
+    getProductImages(products) {
+      const images = products.map((product) => product.images[0]);
+      return images;
+    },
+    getProductNames(products) {
+      const number = products.length;
+      if (number === 0) {
+        return "No products";
+      } else if (number === 1) {
+        return products[0].name;
+      } else {
+        const firstProductName =
+          products[0].name.length > 16
+            ? products[0].name.substring(0, 16) + "..."
+            : products[0].name;
+        const additionalProductCount = number - 1;
+        return `${firstProductName} and ${additionalProductCount} more`;
+      }
+    },
+    goToRoutePage() {
+      // this.$router.push('/dashboard/orders/'`${value}`);
+      this.$router.push("/dashboard/orders/2");
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Month, zero-padded
+      const day = String(date.getDate()).padStart(2, "0"); // Day, zero-padded
+      return `${day}-${month}-${year}`;
     },
   },
 };
@@ -86,14 +148,27 @@ a {
   border-radius: 16px;
 }
 
-.image {
+.product_image_group {
+  max-width: 146px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: -23px;
+}
+
+.product-images {
   width: 64px;
-  height: 72px;
+  height: 64px;
+  border-radius: 50%; /* Makes the div circular */
+  overflow: hidden; /* Clips content that goes beyond the circular boundary */
 
-  /* Grey/Grey6 */
-
-  background: var(--grey-grey6);
-  border-radius: 1.70667px;
+  border: 4px solid var(--white, #fff);
+  background: var(--grey-grey-6, #f4f5f8);
+}
+.product-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Maintains aspect ratio while covering the circular container */
 }
 
 .order-product-details {
@@ -243,4 +318,5 @@ a {
       max-width: 150px;
     }
   }
-}</style>
+}
+</style>
