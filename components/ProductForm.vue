@@ -248,7 +248,7 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    type="number"
+                    type="text"
                     name="weight"
                     id=""
                     placeholder="5kg"
