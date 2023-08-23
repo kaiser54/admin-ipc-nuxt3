@@ -83,7 +83,7 @@ export const useIPCStore = defineStore("IPCStore", {
       this.loading = true;
 
       const res = await fetch(
-        `https://api.ipc-africa.com/api/v1/individual-customers/${id}`
+        `https://api.ipc-africa.com/api/v1/business-customers/${id}`
       );
       const firstSourceData = await res.json();
 
@@ -94,15 +94,15 @@ export const useIPCStore = defineStore("IPCStore", {
         return;
       }
 
-      const res2 = await fetch(
-        `https://api.ipc-africa.com/api/v1/business-customers/${id}`
-      );
-      const secondSourceData = await res2.json();
+      // const res2 = await fetch(
+      //   `https://api.ipc-africa.com/api/v1/individual-customers/${id}`
+      // );
+      // const secondSourceData = await res2.json();
 
-      if (secondSourceData?.data) {
-        this.customer = secondSourceData.data.customer;
-        console.log(this.customer);
-      }
+      // if (secondSourceData?.data) {
+      //   this.customer = secondSourceData.data.customer;
+      //   console.log(this.customer);
+      // }
 
       this.loading = false;
     },

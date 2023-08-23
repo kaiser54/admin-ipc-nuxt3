@@ -85,6 +85,7 @@
           :data="orderDetails"
         />
         <UserInfo
+        v-if="orderDetails"
           :data="orderDetails"
           style="max-width: 387px; width: 100%; margin-left: 20px"
         >
@@ -274,17 +275,17 @@ export default {
       this.loading = true;
 
       if (this.orderDetails) {
-        const res = await fetch(
-          `https://api.ipc-africa.com/api/v1/individual-customers/${this.orderDetails?.customerId}`
-        );
-        const firstSourceData = await res.json();
+        // const res = await fetch(
+        //   `https://api.ipc-africa.com/api/v1/individual-customers/${this.orderDetails?.customerId}`
+        // );
+        // const firstSourceData = await res.json();
 
-        if (firstSourceData?.data) {
-          this.customerData = firstSourceData.data.customer;
-          console.log(this.customerData);
-          this.loading = false;
-          return;
-        }
+        // if (firstSourceData?.data) {
+        //   this.customerData = firstSourceData.data.customer;
+        //   console.log(this.customerData);
+        //   this.loading = false;
+        //   return;
+        // }
 
         const res2 = await fetch(
           `https://api.ipc-africa.com/api/v1/business-customers/${this.orderDetails?.customerId}`
