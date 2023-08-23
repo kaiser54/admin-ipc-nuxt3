@@ -40,7 +40,11 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="New orders" :counterName="NewOrder?.pendingOrder" :active="true">
+        <DynamicDashCard
+          cardName="New orders"
+          :counterName="NewOrder?.pendingOrder"
+          :active="true"
+        >
           <template v-slot:svg>
             <svg
               width="20"
@@ -213,6 +217,7 @@
           </div>
         </template>
       </TableComp> -->
+      <LoaderComponent v-if="loading" />
     </div>
   </MainLayout>
 </template>
@@ -224,11 +229,6 @@ export default {
   components: { MainLayout },
   data() {
     return {
-      username: "",
-      password: "",
-      usernameError: "",
-      passwordError: "",
-
       rotate: false,
       showDropdown: false,
       displayText: "All",
@@ -242,45 +242,13 @@ export default {
         "Price",
         "Status",
       ],
-      tableData: [
-        {
-          _id: "64bfd63d334b7736c1912905",
-          name: "mama rice",
-          description: "hello",
-          actualPrice: 20000,
-          discountPrice: 10000,
-          inStock: true,
-          brand: "mama rice",
-          weight: 3,
-          images: [
-            {
-              url: "https://res.cloudinary.com/hammy06/image/upload/v1690293820/Images/pgoqxy1pxdqvppk3l78p.png",
-              id: "Images/pgoqxy1pxdqvppk3l78p",
-            },
-            {
-              url: "https://res.cloudinary.com/hammy06/image/upload/v1690293820/Images/d28hacpaymo7y2di2bma.png",
-              id: "Images/d28hacpaymo7y2di2bma",
-            },
-            {
-              url: "https://res.cloudinary.com/hammy06/image/upload/v1690293821/Images/r7pa63eaqz43qnarvfyz.jpg",
-              id: "Images/r7pa63eaqz43qnarvfyz",
-            },
-            {
-              url: "https://res.cloudinary.com/hammy06/image/upload/v1690293821/Images/g80srfhothnpyv8n8h77.jpg",
-              id: "Images/g80srfhothnpyv8n8h77",
-            },
-          ],
-          category: "Frozen foods",
-          createdAt: "2023-07-25T14:03:41.892Z",
-          updatedAt: "2023-07-25T14:03:41.892Z",
-          __v: 0,
-        },
-      ],
+      tableData: [],
       customersCount: 0,
       productsCount: 0,
       NewOrder: 0,
       individualCustomersCount: 0,
       businessCustomersCount: 0,
+      loading: false,
     };
   },
   created() {
@@ -301,6 +269,8 @@ export default {
 
   methods: {
     fetchCustomersCount() {
+      this.loading = true; // Set loading to true
+
       this.$devInstance
         .get("/customers/total-customer-count")
         .then((res) => {
@@ -308,11 +278,14 @@ export default {
           this.individualCustomersCount = res?.data?.data?.customersI;
           this.businessCustomersCount = res?.data?.data?.customersB;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.loading = false; // Set loading back to false, whether the request succeeded or failed
+        });
     },
 
-
     fetchProductsCount() {
+      this.loading = true; // Set loading to true
       this.$devInstance
         .get("/products/total-product-count")
         .then((res) => (this.productsCount = res?.data?.data?.productsCount))
@@ -323,10 +296,12 @@ export default {
       this.$devInstance
         .get("/orders/orders-summary/")
         .then((res) => (this.NewOrder = res?.data?.data))
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.loading = false; // Set loading back to false, whether the request succeeded or failed
+        });
     },
 
-    
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
       this.rotate = !this.rotate;
