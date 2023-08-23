@@ -114,7 +114,7 @@ export default {
         redirect: "follow",
       };
 
-      fetch("http://localhost:8000/api/v1/products/", requestOptions)
+      fetch("https://api.ipc-africa.com/api/v1/products/", requestOptions)
         .then((response) => response.text())
         .then((result) => {
           console.log(result);
@@ -124,7 +124,7 @@ export default {
             "Product data uploaded successfully",
             "success"
           );
-          this.$route.push('./dashboard/products')
+          this.$router.push('./dashboard/products')
         })
         .catch((error) => {
           console.log("error", error);
