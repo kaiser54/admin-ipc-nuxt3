@@ -166,21 +166,6 @@
         :tableHeaders="tableHeaders"
         :showBtn="false"
       >
-        <!-- <template v-slot:tableFilter>
-          <div class="filter__header">
-            <div class="filter__tabs">
-              <div
-                v-for="(tab, index) in tabs"
-                :key="index"
-                class="tab tab-standard"
-                @click="toggleTab(index)"
-                :class="{ clicked: activeTabs.includes(index) }"
-              >
-                {{ tab }}
-              </div>
-            </div>
-          </div>
-        </template> -->
       </TableComp>
       <LoaderComponent v-if="loading"/>
     </div>

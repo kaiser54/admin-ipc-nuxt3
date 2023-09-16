@@ -59,6 +59,7 @@
           size="standard"
           type="primary"
           icon="icon-right"
+          
         >
           <template v-slot:svg>
             <svg
@@ -142,15 +143,14 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{
-                      'input-error': continueClicked && !formData.actualPrice,
-                    }"
+                    :class="{ 'input-error': continueClicked && (!formData.actualPrice || slashError || priceGreaterThanSlashError) }"
                     type="number"
                     name="slash"
                     id=""
                     placeholder="₦80,000"
                     required
                     v-model="formData.actualPrice"
+                    @input="handleSlashInput"
                   />
                 </div>
               </div>
@@ -158,6 +158,7 @@
                 v-if="continueClicked && !formData.actualPrice"
                 description="Please enter a slash price"
               />
+              <ErrorMsg v-if="slashError" description="Slash price must be higher than price" />
             </div>
           </div>
 
@@ -280,9 +281,7 @@
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
-              <p>
-                <strong>NOTE: </strong>Only maximum of 4 images to be selected
-              </p>
+              <p><strong>NOTE: </strong> Total size of Images should not exceed 1MB</p>
               <input
                 type="file"
                 ref="fileInput"
@@ -292,15 +291,25 @@
               />
             </div>
 
-            <div v-if="previewImages.length" class="flex">
-              <div
-                v-for="image in previewImages"
-                :key="image.name"
-                class="upload-box"
-              >
-                <img :src="image.url" :alt="image.name" />
+            <div v-if="previewImages.length" :key="updateKey" class="flex">
+              <div v-for="image in previewImages" :key="image.id" class="flexed-image">
+                <div @click="handleImageClick(image)" class="upload-box">
+                  <img v-if="image.url" :src="image.url" :alt="image.name" />
+                  <img v-else src="@/assets/images/avatar.png" alt="upload image" />
+                </div>
+                <p v-if="image.name"> {{ `${image.size / 1000}kb` }}</p>
               </div>
             </div>
+            <div class="Error">
+                <ErrorMsg
+                v-if="maxSizeExceeded"
+                description="Total image size exceeds 1MB. Please select smaller images."
+              />
+              <ErrorMsg
+                v-if="continueClicked && !selectedFiles.length"
+                description="Please add product images"
+              />
+              </div>
           </div>
         </form>
       </div>
@@ -328,6 +337,7 @@ export default {
     return {
       productID: null,
       formData: {
+        status: "",
         _id: "",
         name: "",
         description: "",
@@ -342,26 +352,90 @@ export default {
         updatedAt: "",
         __v: 0,
       },
+      clickedImage: null,
       invalid: false,
       continueClicked: false,
+      slashError: false,
+      priceGreaterThanSlashError: false,
       status: [
         { label: "In stock", value: "option1" },
         { label: "Out of stock", value: "option2" },
       ],
       statusValue: "",
       images: [],
+      maxSizeExceeded: false,
       selectedImages: [],
       selectedFiles: [],
-      previewImages: [], // Array to store image previews
+      totalSize:0,
+      previewImages: [
+        {
+          id: 0,
+          size: 0,
+        },
+        {
+          id: 1,
+          size: 0,
+        },
+        {
+          id: 2,
+          size: 0,
+        },
+        {
+          id: 3,
+          size: 0,
+        },
+      ], // Array to store image previews
     };
   },
   async created() {
     this.productID = this.$route.params.id; // Assuming the parameter is named "id"
     await this.fetchProductByID(); // Fetch order details
   },
-  computed: {},
+  computed: {
+    allFieldsValid() {
+      if (!this.formData.discountPrice && !this.formData.name && !this.formData.actualPrice && !selectedFiles.length) {
+        return false
+      } else {
+        return true
+      }
+
+    },
+  },
   mounted() {},
   methods: {
+    handleSlashInput() {
+      // Reset error flags
+      this.slashError = false;
+      this.priceGreaterThanSlashError = false;
+
+      // Check for slash price validity
+      if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
+        this.slashError = true;
+      }
+    },
+    
+    emitFunction() {
+      this.continueClicked = true;
+      if (!this.allFieldsValid) {
+        return
+      }
+      // Validate slash price
+      if (!this.formData.actualPrice) {
+        this.slashError = true;
+        return;
+      }
+      if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
+        this.priceGreaterThanSlashError = true;
+        return;
+      }
+      // Reset error flags
+      this.slashError = false;
+      this.priceGreaterThanSlashError = false
+
+      this.$emit("updateProduct", this.formData);
+      console.log(this.formData);
+    },
+
     async fetchProductByID() {
       try {
         const response = await this.$devInstance.get(
@@ -375,36 +449,59 @@ export default {
         // Handle errors here
       }
     },
-    emitFunction() {
-      // this.continueClicked = true;
-      // this.$emit("submitData", this.formData);
-      this.$emit("updateProduct", this.formData);
-      console.log(this.formData);
-    },
+    // emitFunction() {
+    //   this.continueClicked = true;
+    //   this.$emit("submitData", this.formData);
+    //   this.$emit("updateProduct", this.formData);
+    //   console.log(this.formData);
+    // },
 
     emitDelete() {
       this.$emit("deleteProduct");
     },
-    handleFileChange(event) {
-      const maxImages = 4;
-      this.selectedFiles = Array.from(event.target.files).slice(0, maxImages);
-      if (this.selectedFiles.length > 0) {
-        this.previewImages = []; // Clear previous previews
-        this.formData.images = []; // Clear previous previews
-      }
-
-      for (const file of this.selectedFiles) {
-        // Create a preview URL for each selected image
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.previewImages.push({ url: e.target.result, name: file.name });
+      getTotalImageSize(files) {
+    let totalSize = 0;
+    for (const file of files) {
+      totalSize += file.size;
+    }
+    return totalSize;
+  },
+  handleFileChange(event) {
+      console.log(event)
+      this.maxSizeExceeded = false;
+      this.updateKey++;
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        this.selectedFiles[this.clickedImageIndex] = selectedFile;
+        let size = 0;
+        size = this.totalSize + selectedFile.size / 1000;
+        console.log(size);
+        if (size > 1024) {
+          this.maxSizeExceeded = true;
+          return;
+        }
+        this.totalSize = size;
+        this.previewImages[this.clickedImageIndex] = {
+          url: URL.createObjectURL(selectedFile),
+          name: selectedFile.name,
+          size: selectedFile.size,
+          id: this.clickedImageIndex,
         };
-        this.formData.images = [];
-        reader.readAsDataURL(file);
-        this.formData.images = this.selectedFiles;
       }
     },
-  },
+
+    handleImageClick(image) {
+      if (image) {
+        this.clickedImage = image;
+      }
+      this.clickedImageIndex = image.id;
+
+      // Open the file input dialog by clicking on it programmatically
+      this.$refs.fileInput.click();
+    },
+
+  }
+
 };
 </script>
   
@@ -468,6 +565,11 @@ form {
   width: 100%;
 }
 
+.flex div p {
+  width: 100px;
+  font-size: 12px;
+  text-align: center;
+}
 .form__field {
   display: flex;
   flex-direction: column;
@@ -563,6 +665,9 @@ option {
   border: 1px dashed var(--grey-grey4, #bdc0ce);
 }
 
+input[type="file"] {
+  display: none;
+}
 .error-message p {
   color: red;
 }
