@@ -167,7 +167,7 @@
         :showBtn="false"
       >
       </TableComp>
-      <LoaderComponent v-if="loading"/>
+      <LoaderComponent v-if="false"/>
     </div>
   </MainLayout>
 </template>

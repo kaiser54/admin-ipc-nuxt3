@@ -290,12 +290,12 @@
                 accept="image/*"
               />
             </div>
-
+<!-- {{ previewImages }} -->
             <div v-if="previewImages.length" :key="updateKey" class="flex">
               <div v-for="image in previewImages" :key="image.id" class="flexed-image">
                 <div @click="handleImageClick(image)" class="upload-box">
                   <img v-if="image.url" :src="image.url" :alt="image.name" />
-                  <img v-else src="@/assets/images/avatar.png" alt="upload image" />
+                  <p v-else style="font-size: 40px">+</p>
                 </div>
                 <p v-if="image.name"> {{ `${image.size / 1000}kb` }}</p>
               </div>
@@ -369,21 +369,21 @@ export default {
       totalSize:0,
       previewImages: [
         {
-          id: 0,
+          index: 0,
           size: 0,
         },
         {
-          id: 1,
+          index: 1,
           size: 0,
         },
         {
-          id: 2,
+          index: 2,
           size: 0,
         },
         {
-          id: 3,
+          index: 3,
           size: 0,
-        },
+        }
       ], // Array to store image previews
     };
   },
@@ -442,13 +442,60 @@ export default {
           `/products/${this.productID}`
         );
         this.formData = response?.data?.data?.product;
-        // this.images = this.formData.images
-        console.log("old form Data :", this.formData);
+        this.previewImages = [...this.formData.images]
+        // this.previewImages = this.previewImages.map((img)=>{
+        //   img.size = this.checkImgSize(img.url)
+        //   console.log(img)
+        //   return img
+        // })
+        // console.log(this.previewImages)
+        for (let i = 0; i < (4 - this.formData.images.length); i++ ) {
+          this.previewImages.push({
+            size: 0,
+          })
+        }
+        for (let i = 0; i < this.previewImages.length; i++ ) {
+          this.previewImages[i].index = i
+        }
       } catch (error) {
         console.error("Error fetching order details:", error);
         // Handle errors here
       }
     },
+    async checkImgSize (imageUrl) {
+      try {
+      const response = await fetch(imageUrl, { method: 'HEAD' })
+        if (response.ok) {
+          const contentLength = response.headers.get('content-length');
+          if (contentLength) {
+            // Convert bytes to kilobytes
+            const sizeInKB = parseInt(contentLength) / 1024;
+            return sizeInKB.toFixed(2)
+          }
+        }
+      }
+      catch(error) {
+        console.error('An error occurred:', error);
+      }
+    },
+    // getMeta(url) {
+    //   return new Promise((resolve, reject) => {
+    //       let img = new Image();
+    //       img.onload = () => resolve(img);
+    //       img.onerror = () => reject();
+    //       img.src = url;
+    //   });
+    // },
+    // async getImgDimension (image) {
+    //   let img = await this.getMeta(image);
+    //   let w = img.width;
+    //   let h = img.height; 
+
+    //   console.log(w, h)
+    //   return {w, h}
+    //   // size.innerText = `width=${w}px, height=${h}px`;
+    //   // size.appendChild(img);
+    // },
     // emitFunction() {
     //   this.continueClicked = true;
     //   this.$emit("submitData", this.formData);
@@ -485,7 +532,7 @@ export default {
           url: URL.createObjectURL(selectedFile),
           name: selectedFile.name,
           size: selectedFile.size,
-          id: this.clickedImageIndex,
+          index: this.clickedImageIndex,
         };
       }
     },
@@ -494,7 +541,7 @@ export default {
       if (image) {
         this.clickedImage = image;
       }
-      this.clickedImageIndex = image.id;
+      this.clickedImageIndex = image.index;
 
       // Open the file input dialog by clicking on it programmatically
       this.$refs.fileInput.click();
