@@ -96,7 +96,7 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent(formData) {
+    nextEvent(formData, imageFiles) {
       this.passed = !this.passed;
       this.productData = formData;
       console.log("new form data:", this.productData);

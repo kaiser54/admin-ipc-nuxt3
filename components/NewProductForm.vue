@@ -246,7 +246,7 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    type="number"
+                    type="text"
                     name="weight"
                     id=""
                     placeholder="5kg"
@@ -332,11 +332,11 @@ export default {
       ],
       statusValue: "",
 
-      categories: [
-        { label: "Category 1", value: "option1" },
-        { label: "Category 2", value: "option2" },
-        { label: "Category 3", value: "option3" },
-      ],
+      // categories: [
+      //   { label: "Category 1", value: "option1" },
+      //   { label: "Category 2", value: "option2" },
+      //   { label: "Category 3", value: "option3" },
+      // ],
       categoryValue: "",
       selectedImages: [],
       selectedFiles: [],
@@ -362,14 +362,38 @@ export default {
     };
   },
   computed: {
+    // allFieldsValid() {
+    //   if (!this.productName && !this.price && !this.slash && !selectedFiles.length) {
+    //     return false;
+    //   } else {
+    //     return true;
+    //   }
+    // },
     allFieldsValid() {
-      if (!this.productName && !this.price && !this.slash && !selectedFiles.length) {
+      if (
+        !this.productName &&
+        !this.price &&
+        !this.slash &&
+        !this.description &&
+        !this.brand &&
+        !this.categoryValue &&
+        !this.statusValue &&
+        !this.selectedFiles
+      ) {
         return false;
       } else {
         return true;
       }
     },
+    // isSlashGreaterThanPrice() {
+    //   if (this.price === "" || this.slash === "") {
+    //     // If either price or slash is empty, no need to validate
+    //     return true;
+    //   }
+    //   return parseFloat(this.slash) > parseFloat(this.price);
+    // },
   },
+
   methods: {
     emitFunction() {
       this.continueClicked = true;

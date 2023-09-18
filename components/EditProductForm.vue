@@ -310,7 +310,7 @@
                 description="Please add product images"
               />
               </div>
-          </div>
+``          </div>
         </form>
       </div>
     </div>
@@ -415,26 +415,28 @@ export default {
     },
     
     emitFunction() {
-      this.continueClicked = true;
-      if (!this.allFieldsValid) {
-        return
-      }
-      // Validate slash price
-      if (!this.formData.actualPrice) {
-        this.slashError = true;
-        return;
-      }
-      if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
-        this.priceGreaterThanSlashError = true;
-        return;
-      }
-      // Reset error flags
-      this.slashError = false;
-      this.priceGreaterThanSlashError = false
+  this.continueClicked = true;
+  if (!this.allFieldsValid) {
+    return;
+  }
+  // Validate slash price
+  if (!this.formData.actualPrice) {
+    this.slashError = true;
+    return;
+  }
+  if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
+    this.priceGreaterThanSlashError = true;
+    return;
+  }
+  // Reset error flags
+  this.slashError = false;
+  this.priceGreaterThanSlashError = false;
 
-      this.$emit("updateProduct", this.formData);
-      console.log(this.formData);
-    },
+  // Emit the formData along with images
+  this.$emit("updateProduct", this.formData, this.selectedImages);
+  console.log(this.formData);
+}
+,
 
     async fetchProductByID() {
       try {
@@ -514,28 +516,31 @@ export default {
     return totalSize;
   },
   handleFileChange(event) {
-      console.log(event)
-      this.maxSizeExceeded = false;
-      this.updateKey++;
-      const selectedFile = event.target.files[0];
-      if (selectedFile) {
-        this.selectedFiles[this.clickedImageIndex] = selectedFile;
-        let size = 0;
-        size = this.totalSize + selectedFile.size / 1000;
-        console.log(size);
-        if (size > 1024) {
-          this.maxSizeExceeded = true;
-          return;
-        }
-        this.totalSize = size;
-        this.previewImages[this.clickedImageIndex] = {
-          url: URL.createObjectURL(selectedFile),
-          name: selectedFile.name,
-          size: selectedFile.size,
-          index: this.clickedImageIndex,
-        };
-      }
-    },
+  this.maxSizeExceeded = false;
+  this.updateKey++;
+  const selectedFile = event.target.files[0];
+  if (selectedFile) {
+    this.selectedFiles[this.clickedImageIndex] = selectedFile;
+    let size = 0;
+    size = this.totalSize + selectedFile.size / 1000;
+    console.log(size);
+    if (size > 1024) {
+      this.maxSizeExceeded = true;
+      return;
+    }
+    this.totalSize = size;
+
+    // Attach selected image to formData.images
+    this.formData.images[this.clickedImageIndex] = selectedFile;
+
+    this.previewImages[this.clickedImageIndex] = {
+      url: URL.createObjectURL(selectedFile),
+      name: selectedFile.name,
+      size: selectedFile.size,
+      index: this.clickedImageIndex,
+    };
+  }
+},
 
     handleImageClick(image) {
       if (image) {
