@@ -83,7 +83,7 @@
                   {{ dataProp.productName }}
                 </h3>
                 <p class="product-details-brand">
-                  Brand: <span>Mama’s Choice</span>
+                  Brand: <span>{{ dataProp.brand }}</span>
                 </p>
               </div>
             </div>
