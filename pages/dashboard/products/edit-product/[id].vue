@@ -1,6 +1,8 @@
 <template>
   <MainLayout>
     <div>
+      {{ previewImages }}
+      {{ formData }}
       <AlertPrompt
         ref="alertPrompt"
         :message="alertMessage"
@@ -25,6 +27,7 @@
         :showBtn="true"
         :dataProp="productData"
         :productImage="imageArray"
+      
       >
         <template v-slot:svg>
           <svg
@@ -96,17 +99,31 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent(formData, imageFiles) {
+
+    nextEvent({formData, previewImages}) {
+      const yo = {...formData}
+      const yoyo = [...previewImages]
+    console.log(yo)
+    console.log(yoyo)
+    console.log(previewImages)
       this.passed = !this.passed;
       this.productData = formData;
+      // this.formData.images.push({
+      //   url: previewImages.url,
+      //   id:previewImages.id,
+      //   index: previewImages.index
+      // })
+      console.log("image:",this.productData.images)
       console.log("new form data:", this.productData);
-      for (const image of formData.images) {
-        if (image) {
-          const url = URL.createObjectURL(image);
-          this.imageArray.push(url);
-          console.log(this.imageArray);
-        }
-      }
+      this.imageArray = previewImages
+      // for (const image of formData.images) {
+      //   console.log(formData.images)
+      //   if (image) {
+      //     const url = URL.createObjectURL(image);
+      //     this.imageArray.push(url);
+      //     console.log(this.imageArray);
+      //   }
+      // }
     },
 
     async postProduct() {

@@ -74,9 +74,10 @@ export default {
   },
 
   methods: {
-    nextEvent(data) {
+    nextEvent(data,selectedFile) {
       this.passed = !this.passed;
       this.productData = data;
+      this.data.selectedImages.push(selectedFile)
       for (const image of data.selectedImages) {
         if (image) {
           const url = URL.createObjectURL(image);

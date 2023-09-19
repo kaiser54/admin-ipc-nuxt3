@@ -251,7 +251,7 @@
                     id=""
                     placeholder="5kg"
                     required
-                    v-model="weight"
+                    v-model="unit"
                   />
                 </div>
               </div>
@@ -317,7 +317,7 @@ export default {
       slash: "",
       description: "",
       brand: "",
-      weight: "",
+      unit: "",
       invalid: false,
       continueClicked: false,
       slashError: false,
@@ -423,7 +423,7 @@ export default {
         brand: this.brand,
         statusValue: this.statusValue,
         categoryValue: this.categoryValue,
-        weight: this.weight,
+        unit: this.unit,
         selectedImages: this.selectedFiles,
       };
       this.$emit("nextEvent", data);

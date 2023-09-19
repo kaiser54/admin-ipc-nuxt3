@@ -240,7 +240,7 @@
                 class="input"
                 name="status"
                 id=""
-                v-model="formData.status"
+                v-model="formData.inStock"
                 :class="{ 'input-error': continueClicked && !formData.status }"
               >
                 <option disabled selected value="">
@@ -271,13 +271,12 @@
                     id=""
                     placeholder="5kg"
                     required
-                    v-model="formData.weight"
+                    v-model="formData.unit"
                   />
                 </div>
               </div>
             </div>
           </div>
-
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
@@ -291,6 +290,7 @@
               />
             </div>
 <!-- {{ previewImages }} -->
+
             <div v-if="previewImages.length" :key="updateKey" class="flex">
               <div v-for="image in previewImages" :key="image.id" class="flexed-image">
                 <div @click="handleImageClick(image)" class="upload-box">
@@ -306,11 +306,11 @@
                 description="Total image size exceeds 1MB. Please select smaller images."
               />
               <ErrorMsg
-                v-if="continueClicked && !selectedFiles.length"
+                v-if="continueClicked && !previewImages.length"
                 description="Please add product images"
               />
               </div>
-``          </div>
+           </div>
         </form>
       </div>
     </div>
@@ -390,10 +390,13 @@ export default {
   async created() {
     this.productID = this.$route.params.id; // Assuming the parameter is named "id"
     await this.fetchProductByID(); // Fetch order details
+    this.statusValue = this.formData.inStock ? "in Stock" : "out of Stock";
+
+
   },
   computed: {
     allFieldsValid() {
-      if (!this.formData.discountPrice && !this.formData.name && !this.formData.actualPrice && !selectedFiles.length) {
+      if (!this.formData.discountPrice && !this.formData.name && !this.formData.actualPrice && !this.previewImages.length) {
         return false
       } else {
         return true
@@ -433,8 +436,9 @@ export default {
   this.priceGreaterThanSlashError = false;
 
   // Emit the formData along with images
-  this.$emit("updateProduct", this.formData, this.selectedImages);
+  this.$emit("updateProduct", {formData: this.formData, previewImages:this.previewImages});
   console.log(this.formData);
+
 }
 ,
 
@@ -445,6 +449,7 @@ export default {
         );
         this.formData = response?.data?.data?.product;
         this.previewImages = [...this.formData.images]
+        console.log(this.formData.inStock)
         // this.previewImages = this.previewImages.map((img)=>{
         //   img.size = this.checkImgSize(img.url)
         //   console.log(img)
@@ -463,6 +468,11 @@ export default {
         console.error("Error fetching order details:", error);
         // Handle errors here
       }
+      if(this.formData.inStock = true){
+      this.statusValue = "in Stock"
+    } else {
+      this.statusValue = "out of Status"
+    }
     },
     async checkImgSize (imageUrl) {
       try {

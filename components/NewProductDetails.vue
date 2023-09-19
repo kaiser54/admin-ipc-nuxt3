@@ -53,6 +53,7 @@
         <div class="product-details-main">
           <div class="product-img-thumb">
             <!-- image container -->
+            {{ mainImage }}
             <div class="product-img zoom-container" ref="zoomContainer">
               <img
                 :src="mainImage"
@@ -144,6 +145,7 @@ export default {
   },
   created() {
     if (this.productImage.length > 0) {
+      console.log(this.productImage)
       this.mainImage = this.productImage[0]; // Set the first thumbnail as the initial product image
     }
   },
