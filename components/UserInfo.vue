@@ -3,26 +3,35 @@
     <slot name="button"></slot>
     <div class="client-user-name bdr" v-if="data">
       <div class="client-frame">
-        <span>Full name</span><span class="bold">{{ data?.firstName }} {{ data?.lastName }}</span>
+        <span>Full name</span
+        ><span class="bold">{{ data?.firstName }} {{ data?.lastName }}</span>
       </div>
-      <div class="client-frame" v-for="(phoneNumber, index) in data?.phoneNumbers" :key="index">
-        <span>Phone number {{ index + 1}}</span><span class="bold">{{ phoneNumber }}</span>
+      <div
+        class="client-frame"
+        v-for="(phoneNumber, index) in data?.phoneNumbers"
+        :key="index"
+      >
+        <span>Phone number {{ index + 1 }}</span
+        ><span class="bold">{{ phoneNumber }}</span>
       </div>
       <div class="client-frame">
-        <span>Street address</span><span class="bold">{{ data?.address.streetAddress }}</span>
+        <span>Street address</span
+        ><span class="bold">{{ data?.address.streetAddress }}</span>
       </div>
       <div class="client-frame">
-        <span>Local govt. area</span><span class="bold">{{ data?.address.lga }}</span>
+        <span>Local govt. area</span
+        ><span class="bold">{{ data?.address.lga }}</span>
       </div>
       <div class="client-frame">
         <span>State</span><span class="bold">{{ data?.address.state }}</span>
       </div>
     </div>
-      <slot name="delivery"></slot>
-      <slot name="email"></slot>
+    <slot name="delivery"></slot>
+    <slot name="email"></slot>
     <div class="client-user-name bdr" v-if="data?.paymentMethod">
       <div class="client-frame">
-        <span>Payment method</span><span class="bold">{{ data?.paymentMethod }}</span>
+        <span>Payment method</span
+        ><span class="bold">{{ data?.paymentMethod }}</span>
       </div>
       <div class="client-frame" v-if="data?.paymentDate">
         <span>Placed on</span><span class="bold">{{ data?.paymentDate }}</span>
@@ -30,37 +39,46 @@
     </div>
     <div class="client-user-name bdr">
       <div class="client-frame">
-        <span>Subtotal</span><span class="bold">₦ {{ data?.totalPrice }}</span>
+        <span>Subtotal</span
+        ><span class="bold">₦ {{ formatPriceWithCommas(getTotalProductPrice(data?.products)) }}</span>
       </div>
       <div class="client-frame">
-        <span>Delivery fee</span><span class="bold">₦ {{  data?.totalPrice }}</span>
+        <span>Delivery fee</span
+        ><span class="bold">₦ {{ formatPriceWithCommas(data?.deliveryFee) }}</span>
       </div>
       <div class="client-frame total">
-        <span>Total</span><span class="bold">₦ {{  data?.totalPrice }}</span>
+        <span>Total</span><span class="bold">₦ {{ formatPriceWithCommas(getTotalProductPrice(data?.products) + data?.deliveryFee) }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { formatPriceWithCommas } from '@/plugins/formatPrice'
 export default {
   props: {
     data: {
       required: true,
     },
   },
-  computed: {
-    progressPercentage() {
-      // return `${(this.currentStep - 1) * 49.5}`; //returns a string
-      return (this.currentStep - 1) * 49.5;
-    },
-  },
+  computed: {},
   mounted() {
-    console.log(this.data)
+    console.log(this.data);
   },
   methods: {
-    
-  }
+    formatPriceWithCommas,
+    getTotalProductPrice(products) {
+      let price = 0;
+
+      for (const product of products) {
+        if (product.totalPrice) {
+          price += product.totalPrice;
+        }
+      }
+
+      return price;
+    },
+  },
 };
 </script>
 
@@ -80,7 +98,6 @@ export default {
   align-items: flex-start;
   width: 100%;
 }
-
 
 .client-frame {
   display: flex;

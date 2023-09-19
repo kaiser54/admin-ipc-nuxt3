@@ -2,7 +2,7 @@
   <!-- product card container starts here -->
   <div class="product-card">
     <!-- <nuxt-link :to="{ name: 'product', params: { id: product.id, title: product.title } }"> -->
-    <nuxt-link :to="`/dashboard/products/${product.name}~${product._id}`">
+    <nuxt-link :to="`/dashboard/products/~${product._id}`">
       <div class="product-img-grp">
         <!-- <img :src="product.image" alt="" /> -->
 

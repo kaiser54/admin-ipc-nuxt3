@@ -12,18 +12,19 @@
       </div>
       <div class="order-product-details">
         <div class="order-content">
+          <!-- <div class="title"> product name </div> -->
           <div class="title">{{ getProductNames(order.products) }}</div>
           <div class="order-id-price">
             <div class="order-id">Order ID : {{ order._id }}</div>
-            <div class="order-qty">Qty: 1</div>
+            <div class="order-qty">Qty: {{ getProductQuantity(order.products) }}</div>
           </div>
-          <div class="order-price">{{ order.totalPrice }}</div>
+          <div class="order-price">{{ order?.totalPrice }}</div>
           <DynamicTags :tagText="tagText" :size="size" :type="type" />
         </div>
 
         <div class="price-qty">
-          <div class="order-price">{{ order.totalPrice }}</div>
-          <div class="order-qty">Qty: 1</div>
+          <div class="order-price">{{ order?.totalPrice }}</div>
+          <div class="order-qty">Qty: {{ getProductQuantity(order.products) }}</div>
         </div>
       </div>
       <svg
@@ -79,20 +80,46 @@ export default {
       this.$router.push(`/dashboard/orders/${value}`);
     },
     getProductImages(products) {
-      const images = products.map((product) => product.images[0]);
+      // Use the `map` function to create a new array
+      const images = products.slice(0, 3).map((product, index) => {
+        // Access the `images` property of each product (assuming it's an array)
+        const productImages = product.images;
+
+        // Log the chosen products
+        if (index < 3) {
+          console.log(`Chosen Product ${index + 1}:`, product);
+        }
+
+        // Return the first image URL
+        return productImages ? productImages[0] : product.product.images[0];
+      });
+
+      // Log the chosen images to the console
+      console.log("Chosen Images:", images);
+
       return images;
+    },
+    getProductQuantity(products) {
+      let totalQuantity = 0;
+      for (const product of products) {
+        if (product.quantity) {
+          totalQuantity += product.quantity;
+        }
+      }
+
+      return totalQuantity;
     },
     getProductNames(products) {
       const number = products.length;
       if (number === 0) {
         return "No products";
       } else if (number === 1) {
-        return products[0].name;
+        return products[0]?.product?.name;
       } else {
         const firstProductName =
-          products[0].name.length > 16
-            ? products[0].name.substring(0, 16) + "..."
-            : products[0].name;
+          products[0].product.name.length > 16
+            ? products[0].product.name.substring(0, 16) + "..."
+            : products[0].product.name;
         const additionalProductCount = number - 1;
         return `${firstProductName} and ${additionalProductCount} more`;
       }

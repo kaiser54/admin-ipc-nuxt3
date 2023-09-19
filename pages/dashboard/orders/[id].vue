@@ -1,6 +1,7 @@
 <template>
   <MainLayout>
     <div class="wrapper">
+      <GoBackButton style="width: fit-content;" />
       <div class="dash__button">
         <h3>Customer information</h3>
         <DynamicButton
@@ -10,6 +11,7 @@
           type="neutral"
           icon="icon-right"
           :disabled="false"
+          @clickButton="customerPage"
         >
           <template v-slot:svg>
             <svg
@@ -177,6 +179,7 @@
   
   <script>
 import MainLayout from "/layouts/MainLayout.vue";
+const API_URL = "http://localhost:8000/api/v1";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
@@ -257,6 +260,9 @@ export default {
 
   mounted() {},
   methods: {
+    customerPage() {
+      this.$router.push(`/dashboard/customers/${this.customerData._id}`)
+    },
     async fetchOrderData() {
       this.loading = true;
       try {
@@ -288,7 +294,7 @@ export default {
         // }
 
         const res2 = await fetch(
-          `https://api.ipc-africa.com/api/v1/business-customers/${this.orderDetails?.customerId}`
+          `${API_URL}/business-customers/${this.orderDetails?.customerId}`
         );
         const secondSourceData = await res2.json();
 
@@ -323,7 +329,7 @@ export default {
       };
 
       fetch(
-        "https://api.ipc-africa.com/api/v1/orders/" + this.orderId,
+        API_URL + "/orders/" + this.orderId,
         requestOptions
       )
         .then((response) => response.text())

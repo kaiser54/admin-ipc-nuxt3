@@ -160,7 +160,7 @@
         </DynamicDashCard>
       </div>
       <TableComp
-      v-if="orders"
+        v-if="orders"
         heading=""
         :data="orders"
         :tableHeaders="tableHeaders"
