@@ -36,14 +36,16 @@ IPCStore.fetchCustomerInfo(id);
 </script>
     
 <script>
+import axios from "axios";
 import MainLayout from "/layouts/MainLayout.vue";
+import { API_URL } from "@/plugins/axios.ts";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
   data() {
     return {
       statusTagText: "Not verified",
-      statusTagType: null,
+      // statusTagType: null,
       address: null,
     };
   },
@@ -58,26 +60,21 @@ export default {
       customerId: customerId,
     });
 
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    fetch("https://api.ipc-africa.com/api/v1/addresses/", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (
-          result.status === "success" &&
-          result.data &&
-          result.data.addresses
-        ) {
-          console.log("Addresses data:", result.data.addresses);
-        } else {
-          console.log("Addresses data not available or empty.");
-        }
+    axios.get(`${API_URL}/addresses/`, {
+        params: {
+          customerId: customerId,
+        },
       })
-      .catch((error) => console.log("error", error));
+      .then((response) => {
+        // Handle the response data here
+        const addresses = response.data.data.addresses[0];
+        this.address = addresses;
+        console.log("address", addresses);
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error(error);
+      });
   },
   computed: {
     statusTagType() {
