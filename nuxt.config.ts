@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  server: {
+    port: 3001, // Change the port to 3001 or any other available port
+  },
   devtools: { enabled: true },
   app: {
     head: {

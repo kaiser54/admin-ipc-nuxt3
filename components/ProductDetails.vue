@@ -55,7 +55,7 @@
             <!-- image container -->
             <div class="product-img zoom-container" ref="zoomContainer">
               <img
-                :src="mainImage"
+                :src="mainImage.url"
                 alt="Product Image"
                 class="zoom-image"
                 ref="zoomImage"
@@ -70,7 +70,7 @@
                 v-for="(image, index) in productImage"
                 :key="index"
               >
-                <img :src="image" @click="replaceProductImage(image)" />
+                <img :src="image.url" @click="replaceProductImage(image)" />
               </div>
               <!-- -------------------------------------------- -->
             </div>
@@ -82,6 +82,9 @@
                 <h3 class="h3-small-medium">
                   {{ dataProp?.name }}
                 </h3>
+                <p class="product-details-brand">
+                  Weight: <span>{{ dataProp?.weight }}</span>
+                </p>
                 <p class="product-details-brand">
                   Brand: <span>{{ dataProp?.brand }}</span>
                 </p>

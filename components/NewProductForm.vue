@@ -209,7 +209,7 @@
                   :key="option?._id"
                   :value="option?.value"
                 >
-                  {{ option?.value }}
+                  {{ option?.name }}
                 </option>
               </select>
               <ErrorMsg

@@ -96,17 +96,18 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent(formData, imageFiles) {
+    nextEvent({formData, previewImages}) {
       this.passed = !this.passed;
       this.productData = formData;
       console.log("new form data:", this.productData);
-      for (const image of formData.images) {
-        if (image) {
-          const url = URL.createObjectURL(image);
-          this.imageArray.push(url);
-          console.log(this.imageArray);
-        }
-      }
+      // for (const image of previewImages) {
+      //   if (image) {
+      //     const url = URL.createObjectURL(image);
+      //     this.imageArray.push(url);
+      //     console.log(this.imageArray);
+      //   }
+      // }
+      this.imageArray = previewImages
     },
 
     async postProduct() {
@@ -115,7 +116,7 @@ export default {
       const productData = this.productData;
 
       // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-
+console.log(this.productData)
       formdata.append("name", this.productData.name);
       formdata.append("description", this.productData.description);
       formdata.append("actualPrice", this.productData.actualPrice);
@@ -124,13 +125,12 @@ export default {
       formdata.append("brand", this.productData.brand);
       formdata.append("unit", this.productData.weight);
       formdata.append("category", this.productData.category);
-
       this.productData.images.forEach((image, index) => {
         formdata.append("image", image);
       });
-
+      console.log(this.productData)
       let config = {
-        method: "put",
+        method: "PUT",
         maxBodyLength: Infinity,
         url: `/products/${this.productID}`,
         data: formdata,
@@ -146,6 +146,7 @@ export default {
             "success"
           );
           this.$router.push("/dashboard/products/");
+          console.log(res)
         })
         .catch((err) => {
           console.error("Error uploading product data:", err);

@@ -234,13 +234,13 @@
               />
             </div>
 
-            <div class="form__field">
+            <!-- <div class="form__field">
               <label for="status">Status</label>
               <select
                 class="input"
                 name="status"
                 id=""
-                v-model="formData.status"
+                v-model="stockStatus"
                 :class="{ 'input-error': continueClicked && !formData.status }"
               >
                 <option disabled selected value="">
@@ -258,7 +258,7 @@
                 v-if="continueClicked && !formData.status"
                 description="Please enter a status"
               />
-            </div>
+            </div> -->
 
             <div class="form__field">
               <div class="input-field">
@@ -281,7 +281,7 @@
           <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
-              <p><strong>NOTE: </strong> Total size of Images should not exceed 1MB</p>
+              <!-- <p><strong>NOTE: </strong> Total size of Images should not exceed 1MB</p> -->
               <input
                 type="file"
                 ref="fileInput"
@@ -290,8 +290,7 @@
                 accept="image/*"
               />
             </div>
-<!-- {{ previewImages }} -->
-            <div v-if="previewImages.length" :key="updateKey" class="flex">
+            <div v-if="previewImages.length" class="flex">
               <div v-for="image in previewImages" :key="image.id" class="flexed-image">
                 <div @click="handleImageClick(image)" class="upload-box">
                   <img v-if="image.url" :src="image.url" :alt="image.name" />
@@ -300,17 +299,17 @@
                 <p v-if="image.name"> {{ `${image.size / 1000}kb` }}</p>
               </div>
             </div>
-            <div class="Error">
+            <!-- <div class="Error">
                 <ErrorMsg
                 v-if="maxSizeExceeded"
                 description="Total image size exceeds 1MB. Please select smaller images."
               />
               <ErrorMsg
-                v-if="continueClicked && !selectedFiles.length"
+                v-if="continueClicked && !previewImages.length"
                 description="Please add product images"
               />
+              </div> -->   
               </div>
-``          </div>
         </form>
       </div>
     </div>
@@ -350,6 +349,7 @@ export default {
         category: "",
         createdAt: "",
         updatedAt: "",
+        // stockStatus: this.formData.inStock ? "in Stock" : "out of Stock",
         __v: 0,
       },
       clickedImage: null,
@@ -433,7 +433,8 @@ export default {
   this.priceGreaterThanSlashError = false;
 
   // Emit the formData along with images
-  this.$emit("updateProduct", this.formData, this.selectedImages);
+  // this.$emit("updateProduct", this.formData, this.selectedImage);
+  this.$emit("updateProduct", {formData: this.formData, previewImages:this.previewImages});
   console.log(this.formData);
 }
 ,
@@ -444,13 +445,17 @@ export default {
           `/products/${this.productID}`
         );
         this.formData = response?.data?.data?.product;
+        this.formData.weight = this.formData.unit
+        this.status = this.formData.inStock
         this.previewImages = [...this.formData.images]
+
         // this.previewImages = this.previewImages.map((img)=>{
         //   img.size = this.checkImgSize(img.url)
         //   console.log(img)
         //   return img
         // })
         // console.log(this.previewImages)
+        
         for (let i = 0; i < (4 - this.formData.images.length); i++ ) {
           this.previewImages.push({
             size: 0,
@@ -517,7 +522,7 @@ export default {
   },
   handleFileChange(event) {
   this.maxSizeExceeded = false;
-  this.updateKey++;
+  // this.updateKey++;
   const selectedFile = event.target.files[0];
   if (selectedFile) {
     this.selectedFiles[this.clickedImageIndex] = selectedFile;
