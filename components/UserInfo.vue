@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { formatPriceWithCommas } from '@/plugins/formatPrice'
+import { formatPriceWithCommas } from '../plugins/formatPrice'
 export default {
   props: {
     data: {

@@ -63,18 +63,18 @@
       <div class="group">
         <div class="title">Street address</div>
         <div class="subject">
-          {{ address?.streetAddress ? address.streetAddress : "91, ayetoro road" }}
+          {{ address?.streetAddress ? address.streetAddress : "Not set" }}
         </div>
       </div>
       <div class="group">
         <div class="title">State</div>
         <div class="subject">
-          {{ address?.state ? address.state : "Lagos" }}
+          {{ address?.state ? address.state : "Not set" }}
         </div>
       </div>
       <div class="group">
         <div class="title">LGA</div>
-        <div class="subject">{{ address?.lga ? address.lga : "Ikeja" }}</div>
+        <div class="subject">{{ address?.lga ? address.lga : "Not set" }}</div>
       </div>
     </div>
   </div>
