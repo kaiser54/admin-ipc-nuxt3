@@ -62,10 +62,10 @@
                 <div class="product_image_group">
                   <div
                     class="product-images"
-                    v-for="image in getProductImages(order.products)"
-                    :key="image.id"
+                    v-for="(image, index) in getProductImages(order.products)"
+                    :key="index"
                   >
-                    <img :src="image.url" alt="Product Image" />
+                    <img :src="image?.url" alt="Product Image" />
                   </div>
                 </div>
                 <span class="product-name">{{
@@ -145,23 +145,40 @@ export default {
       this.$router.push(`/dashboard/orders/${value}`);
     },
     getProductImages(products) {
-      const images = products.map((product) => product.images[0]);
+      // Use the `map` function to create a new array
+      const images = products.slice(0, 3).map((product, index) => {
+        // Access the `images` property of each product (assuming it's an array)
+        const productImages = product.images;
+
+        // Log the chosen products
+        if (index < 3) {
+          console.log(`Chosen Product ${index + 1}:`, product);
+        }
+
+        // Return the first image URL
+        return productImages ? productImages[0] : product.product.images[0];
+      });
+
+      // Log the chosen images to the console
+      console.log("Chosen Images:", images);
+
       return images;
     },
     getProductNames(products) {
-      if (products.length === 0) {
-        return "No products";
-      } else if (products.length === 1) {
-        return products[0].name;
-      } else {
-        const truncatedNames =
-          products
-            .map((product) => product.name)
-            .join(", ")
-            .substring(0, 5) + "..."; // Adjust the character limit as needed
-        return truncatedNames;
-      }
-    },
+  if (products.length === 0) {
+    return "No products";
+  } else if (products.length === 1) {
+    return products[0]?.name || products[0]?.product.name || "No name";
+  } else {
+    const truncatedNames =
+      products
+        .map((product) => product?.name || product?.product.name || "No name")
+        .join(", ")
+        .substring(0, 5) + "..."; // Adjust the character limit as needed
+    return truncatedNames;
+  }
+}
+,
     getTagType(status) {
       if (status === "PROCESSING") {
         return "warning";

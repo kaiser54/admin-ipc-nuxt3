@@ -145,7 +145,8 @@ export default {
             "product data uploaded successfully",
             "success"
           );
-          this.$router.push("/dashboard/products/");
+          // this.$router.push("/dashboard/products/");
+          console.log(res)
         })
         .catch((err) => {
           console.error("Error uploading product data:", err);

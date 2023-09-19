@@ -160,7 +160,7 @@
         </DynamicDashCard>
       </div>
       <TableComp
-      v-if="orders"
+        v-if="orders"
         heading=""
         :data="orders"
         :tableHeaders="tableHeaders"
@@ -182,7 +182,7 @@
           </div>
         </template> -->
       </TableComp>
-      <LoaderComponent v-if="loading"/>
+      <LoaderComponent v-if="loading" />
     </div>
   </MainLayout>
 </template>

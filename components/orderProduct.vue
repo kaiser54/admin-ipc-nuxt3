@@ -17,12 +17,12 @@
             <div class="order-id">Order ID : {{ order._id }}</div>
             <div class="order-qty">Qty: 1</div>
           </div>
-          <div class="order-price">{{ order.totalPrice }}</div>
+          <div class="order-price">{{ order?.totalPrice }}</div>
           <DynamicTags :tagText="tagText" :size="size" :type="type" />
         </div>
 
         <div class="price-qty">
-          <div class="order-price">{{ order.totalPrice }}</div>
+          <div class="order-price">{{ order?.totalPrice }}</div>
           <div class="order-qty">Qty: 1</div>
         </div>
       </div>

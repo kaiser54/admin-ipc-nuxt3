@@ -121,7 +121,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRoute, useRouter  } from "vue-router";
+import { useRoute } from "vue-router";
 
 const id = ref("");
 const product = ref(null);
@@ -130,6 +130,7 @@ const { params } = useRoute();
 const pathArray = params.id.split("~");
 const lastSegment = decodeURIComponent(pathArray[pathArray.length - 1]);
 id.value = lastSegment;
+
 
 onMounted(async () => {
   if (params.id) {

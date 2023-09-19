@@ -177,6 +177,7 @@
   
   <script>
 import MainLayout from "/layouts/MainLayout.vue";
+const API_URL = "http://localhost:8000/api/v1";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
@@ -288,7 +289,7 @@ export default {
         // }
 
         const res2 = await fetch(
-          `https://api.ipc-africa.com/api/v1/business-customers/${this.orderDetails?.customerId}`
+          `${API_URL}/business-customers/${this.orderDetails?.customerId}`
         );
         const secondSourceData = await res2.json();
 
