@@ -446,23 +446,25 @@ export default {
 
       // Emit the formData along with images
       // this.$emit("updateProduct", this.formData, this.selectedImage);
+      this.formData.images = this.previewImages;
+      console.log("from dattaaaaa", this.formData.images);
       this.$emit("updateProduct", {
         formData: this.formData,
         previewImages: this.previewImages,
       });
-      console.log(this.formData);
+      console.log("datattttttt", this.formData);
     },
     async fetchProductByID() {
       try {
         const response = await this.$devInstance.get(
           `/products/${this.productID}`
         );
-          console.log("responsesssss", response)
+        console.log("responsesssss", response);
         this.formData = response?.data?.data?.product;
         this.formData.weight = this.formData.unit;
         this.status = this.formData.inStock;
         this.previewImages = [...this.formData.images];
-        console.log("previewwwww",this.previewImages)
+        console.log("previewwwww", this.previewImages);
 
         // this.previewImages = this.previewImages.map((img)=>{
         //   img.size = this.checkImgSize(img.url)
@@ -564,7 +566,7 @@ export default {
     handleImageClick(image) {
       if (image) {
         this.clickedImage = image;
-        console.log("preview imagesd",this.previewImages)
+        console.log("preview imagesd", this.previewImages);
       }
       this.clickedImageIndex = image.index;
 
