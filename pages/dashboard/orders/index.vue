@@ -231,7 +231,7 @@ export default {
       try {
         const response = await this.$devInstance.get("/orders/orders-summary");
         this.orderSummary = response?.data?.data;
-        console.log("all orderSummary", this.orderSummary);
+        // console.log("all orderSummary", this.orderSummary);
       } catch (error) {
         console.error("Error fetching order summary:", error);
         // Handle errors here
@@ -241,7 +241,7 @@ export default {
       try {
         const response = await this.$devInstance.get("/orders");
         this.orders = response?.data?.data?.orders;
-        console.log("all orders", this.orders);
+        // console.log("all orders", this.orders);
         console.log("all orders products", this.orders[0].products);
       } catch (error) {
         console.error("Error fetching all orders:", error);

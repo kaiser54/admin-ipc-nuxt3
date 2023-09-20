@@ -40,21 +40,35 @@
     <div class="client-user-name bdr">
       <div class="client-frame">
         <span>Subtotal</span
-        ><span class="bold">₦ {{ formatPriceWithCommas(getTotalProductPrice(data?.products)) }}</span>
+        ><span class="bold"
+          >₦
+          {{
+            formatPriceWithCommas(getTotalProductPrice(data?.products))
+          }}</span
+        >
       </div>
       <div class="client-frame">
         <span>Delivery fee</span
-        ><span class="bold">₦ {{ formatPriceWithCommas(data?.deliveryFee) }}</span>
+        ><span class="bold"
+          >₦ {{ formatPriceWithCommas(data?.deliveryFee) }}</span
+        >
       </div>
       <div class="client-frame total">
-        <span>Total</span><span class="bold">₦ {{ formatPriceWithCommas(getTotalProductPrice(data?.products) + data?.deliveryFee) }}</span>
+        <span>Total</span
+        ><span class="bold"
+          >₦
+          {{
+            formatPriceWithCommas(
+              getTotalProductPrice(data?.products) + data?.deliveryFee
+            )
+          }}</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { formatPriceWithCommas } from '../plugins/formatPrice'
 export default {
   props: {
     data: {
@@ -66,7 +80,10 @@ export default {
     console.log(this.data);
   },
   methods: {
-    formatPriceWithCommas,
+    formatPriceWithCommas(price) {
+      // Use the toLocaleString method with appropriate options to add commas
+      return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    },
     getTotalProductPrice(products) {
       let price = 0;
 
@@ -130,4 +147,4 @@ export default {
 
   letter-spacing: -0.5px;
 }
-</style>
+</style>plugins/pricing.jsplugins/formatPrice.js
