@@ -59,7 +59,6 @@
           size="standard"
           type="primary"
           icon="icon-right"
-          
         >
           <template v-slot:svg>
             <svg
@@ -143,7 +142,13 @@
                 <div class="input-container">
                   <input
                     class="input"
-                    :class="{ 'input-error': continueClicked && (!formData.actualPrice || slashError || priceGreaterThanSlashError) }"
+                    :class="{
+                      'input-error':
+                        continueClicked &&
+                        (!formData.actualPrice ||
+                          slashError ||
+                          priceGreaterThanSlashError),
+                    }"
                     type="number"
                     name="slash"
                     id=""
@@ -158,7 +163,10 @@
                 v-if="continueClicked && !formData.actualPrice"
                 description="Please enter a slash price"
               />
-              <ErrorMsg v-if="slashError" description="Slash price must be higher than price" />
+              <ErrorMsg
+                v-if="slashError"
+                description="Slash price must be higher than price"
+              />
             </div>
           </div>
 
@@ -291,25 +299,19 @@
               />
             </div>
             <div v-if="previewImages.length" class="flex">
-              <div v-for="image in previewImages" :key="image.id" class="flexed-image">
+              <div
+                v-for="(image, index) in previewImages"
+                :key="index"
+                class="flexed-image"
+              >
                 <div @click="handleImageClick(image)" class="upload-box">
                   <img v-if="image.url" :src="image.url" :alt="image.name" />
                   <p v-else style="font-size: 40px">+</p>
                 </div>
-                <p v-if="image.name"> {{ `${image.size / 1000}kb` }}</p>
+                <p v-if="image.name">{{ `${image.size / 1000}kb` }}</p>
               </div>
             </div>
-            <!-- <div class="Error">
-                <ErrorMsg
-                v-if="maxSizeExceeded"
-                description="Total image size exceeds 1MB. Please select smaller images."
-              />
-              <ErrorMsg
-                v-if="continueClicked && !previewImages.length"
-                description="Please add product images"
-              />
-              </div> -->   
-              </div>
+          </div>
         </form>
       </div>
     </div>
@@ -366,7 +368,7 @@ export default {
       maxSizeExceeded: false,
       selectedImages: [],
       selectedFiles: [],
-      totalSize:0,
+      totalSize: 0,
       previewImages: [
         {
           index: 0,
@@ -383,7 +385,7 @@ export default {
         {
           index: 3,
           size: 0,
-        }
+        },
       ], // Array to store image previews
     };
   },
@@ -393,12 +395,16 @@ export default {
   },
   computed: {
     allFieldsValid() {
-      if (!this.formData.discountPrice && !this.formData.name && !this.formData.actualPrice && !selectedFiles.length) {
-        return false
+      if (
+        !this.formData.discountPrice &&
+        !this.formData.name &&
+        !this.formData.actualPrice &&
+        !selectedFiles.length
+      ) {
+        return false;
       } else {
-        return true
+        return true;
       }
-
     },
   },
   mounted() {},
@@ -409,45 +415,54 @@ export default {
       this.priceGreaterThanSlashError = false;
 
       // Check for slash price validity
-      if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
+      if (
+        parseFloat(this.formData.discountPrice) >=
+        parseFloat(this.formData.actualPrice)
+      ) {
         this.slashError = true;
       }
     },
-    
+
     emitFunction() {
-  this.continueClicked = true;
-  if (!this.allFieldsValid) {
-    return;
-  }
-  // Validate slash price
-  if (!this.formData.actualPrice) {
-    this.slashError = true;
-    return;
-  }
-  if (parseFloat(this.formData.discountPrice) >= parseFloat(this.formData.actualPrice)) {
-    this.priceGreaterThanSlashError = true;
-    return;
-  }
-  // Reset error flags
-  this.slashError = false;
-  this.priceGreaterThanSlashError = false;
+      this.continueClicked = true;
+      if (!this.allFieldsValid) {
+        return;
+      }
+      // Validate slash price
+      if (!this.formData.actualPrice) {
+        this.slashError = true;
+        return;
+      }
+      if (
+        parseFloat(this.formData.discountPrice) >=
+        parseFloat(this.formData.actualPrice)
+      ) {
+        this.priceGreaterThanSlashError = true;
+        return;
+      }
+      // Reset error flags
+      this.slashError = false;
+      this.priceGreaterThanSlashError = false;
 
-  // Emit the formData along with images
-  // this.$emit("updateProduct", this.formData, this.selectedImage);
-  this.$emit("updateProduct", {formData: this.formData, previewImages:this.previewImages});
-  console.log(this.formData);
-}
-,
-
+      // Emit the formData along with images
+      // this.$emit("updateProduct", this.formData, this.selectedImage);
+      this.$emit("updateProduct", {
+        formData: this.formData,
+        previewImages: this.previewImages,
+      });
+      console.log(this.formData);
+    },
     async fetchProductByID() {
       try {
         const response = await this.$devInstance.get(
           `/products/${this.productID}`
         );
+          console.log("responsesssss", response)
         this.formData = response?.data?.data?.product;
-        this.formData.weight = this.formData.unit
-        this.status = this.formData.inStock
-        this.previewImages = [...this.formData.images]
+        this.formData.weight = this.formData.unit;
+        this.status = this.formData.inStock;
+        this.previewImages = [...this.formData.images];
+        console.log("previewwwww",this.previewImages)
 
         // this.previewImages = this.previewImages.map((img)=>{
         //   img.size = this.checkImgSize(img.url)
@@ -455,34 +470,33 @@ export default {
         //   return img
         // })
         // console.log(this.previewImages)
-        
-        for (let i = 0; i < (4 - this.formData.images.length); i++ ) {
+
+        for (let i = 0; i < 4 - this.formData.images.length; i++) {
           this.previewImages.push({
             size: 0,
-          })
+          });
         }
-        for (let i = 0; i < this.previewImages.length; i++ ) {
-          this.previewImages[i].index = i
+        for (let i = 0; i < this.previewImages.length; i++) {
+          this.previewImages[i].index = i;
         }
       } catch (error) {
         console.error("Error fetching order details:", error);
         // Handle errors here
       }
     },
-    async checkImgSize (imageUrl) {
+    async checkImgSize(imageUrl) {
       try {
-      const response = await fetch(imageUrl, { method: 'HEAD' })
+        const response = await fetch(imageUrl, { method: "HEAD" });
         if (response.ok) {
-          const contentLength = response.headers.get('content-length');
+          const contentLength = response.headers.get("content-length");
           if (contentLength) {
             // Convert bytes to kilobytes
             const sizeInKB = parseInt(contentLength) / 1024;
-            return sizeInKB.toFixed(2)
+            return sizeInKB.toFixed(2);
           }
         }
-      }
-      catch(error) {
-        console.error('An error occurred:', error);
+      } catch (error) {
+        console.error("An error occurred:", error);
       }
     },
     // getMeta(url) {
@@ -496,7 +510,7 @@ export default {
     // async getImgDimension (image) {
     //   let img = await this.getMeta(image);
     //   let w = img.width;
-    //   let h = img.height; 
+    //   let h = img.height;
 
     //   console.log(w, h)
     //   return {w, h}
@@ -513,52 +527,51 @@ export default {
     emitDelete() {
       this.$emit("deleteProduct");
     },
-      getTotalImageSize(files) {
-    let totalSize = 0;
-    for (const file of files) {
-      totalSize += file.size;
-    }
-    return totalSize;
-  },
-  handleFileChange(event) {
-  this.maxSizeExceeded = false;
-  // this.updateKey++;
-  const selectedFile = event.target.files[0];
-  if (selectedFile) {
-    this.selectedFiles[this.clickedImageIndex] = selectedFile;
-    let size = 0;
-    size = this.totalSize + selectedFile.size / 1000;
-    console.log(size);
-    if (size > 1024) {
-      this.maxSizeExceeded = true;
-      return;
-    }
-    this.totalSize = size;
+    getTotalImageSize(files) {
+      let totalSize = 0;
+      for (const file of files) {
+        totalSize += file.size;
+      }
+      return totalSize;
+    },
+    handleFileChange(event) {
+      this.maxSizeExceeded = false;
+      // this.updateKey++;
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        this.selectedFiles[this.clickedImageIndex] = selectedFile;
+        let size = 0;
+        size = this.totalSize + selectedFile.size / 1000;
+        console.log(size);
+        if (size > 1024) {
+          this.maxSizeExceeded = true;
+          return;
+        }
+        this.totalSize = size;
 
-    // Attach selected image to formData.images
-    this.formData.images[this.clickedImageIndex] = selectedFile;
+        // Attach selected image to formData.images
+        this.formData.images[this.clickedImageIndex] = selectedFile;
 
-    this.previewImages[this.clickedImageIndex] = {
-      url: URL.createObjectURL(selectedFile),
-      name: selectedFile.name,
-      size: selectedFile.size,
-      index: this.clickedImageIndex,
-    };
-  }
-},
+        this.previewImages[this.clickedImageIndex] = {
+          url: URL.createObjectURL(selectedFile),
+          name: selectedFile.name,
+          size: selectedFile.size,
+          index: this.clickedImageIndex,
+        };
+      }
+    },
 
     handleImageClick(image) {
       if (image) {
         this.clickedImage = image;
+        console.log("preview imagesd",this.previewImages)
       }
       this.clickedImageIndex = image.index;
 
       // Open the file input dialog by clicking on it programmatically
       this.$refs.fileInput.click();
     },
-
-  }
-
+  },
 };
 </script>
   
