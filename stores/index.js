@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-const API_URL = "http://localhost:8000/api/v1";
+import { API_URL } from "@/plugins/axios.ts";
 
 export const useIPCStore = defineStore("IPCStore", {
   state: () => ({
