@@ -120,6 +120,7 @@
     
 
 <script setup>
+import { API_URL } from "@/plugins/axios.ts";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -134,7 +135,7 @@ id.value = lastSegment;
 
 onMounted(async () => {
   if (params.id) {
-    const uri = "https://api.ipc-africa.com/api/v1/products/" + id.value;
+    const uri = `${API_URL}/products/` + id.value;
 
     try {
       const response = await fetch(uri);

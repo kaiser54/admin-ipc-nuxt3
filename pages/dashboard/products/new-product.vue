@@ -58,6 +58,7 @@ IPCStore.fetchCategories();
 </script>
 
 <script>
+import { API_URL } from "@/plugins/axios.ts";
 import MainLayout from "/layouts/MainLayout.vue";
 import LoaderComponent from "/components/LoaderComponent.vue";
 export default {
@@ -114,7 +115,7 @@ export default {
         redirect: "follow",
       };
 
-      fetch("https://api.ipc-africa.com/api/v1/products/", requestOptions)
+      fetch(`${API_URL}/products/`, requestOptions)
         .then((response) => response.text())
         .then((result) => {
           console.log(result);

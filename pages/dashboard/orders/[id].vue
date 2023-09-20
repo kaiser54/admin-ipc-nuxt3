@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="wrapper">
-      <GoBackButton style="width: fit-content;" />
+      <GoBackButton style="width: fit-content" />
       <div class="dash__button">
         <h3>Customer information</h3>
         <DynamicButton
@@ -87,7 +87,7 @@
           :data="orderDetails"
         />
         <UserInfo
-        v-if="orderDetails"
+          v-if="orderDetails"
           :data="orderDetails"
           style="max-width: 387px; width: 100%; margin-left: 20px"
         >
@@ -179,7 +179,6 @@
   
   <script>
 import MainLayout from "/layouts/MainLayout.vue";
-const API_URL = "http://localhost:8000/api/v1";
 export default {
   components: { MainLayout },
   layout: "dashboardview",
@@ -261,7 +260,7 @@ export default {
   mounted() {},
   methods: {
     customerPage() {
-      this.$router.push(`/dashboard/customers/${this.customerData._id}`)
+      this.$router.push(`/dashboard/customers/${this.customerData._id}`);
     },
     async fetchOrderData() {
       this.loading = true;
@@ -269,6 +268,7 @@ export default {
         const response = await this.$devInstance.get(`/orders/${this.orderId}`);
         this.orderDetails = response?.data?.data?.order;
         this.selectedItem = this.orderDetails?.status;
+        console.log("iddd", this.orderId);
         console.log("orderDetails", this.orderDetails);
       } catch (error) {
         console.error("Error fetching order details:", error);
@@ -281,20 +281,8 @@ export default {
       this.loading = true;
 
       if (this.orderDetails) {
-        // const res = await fetch(
-        //   `https://api.ipc-africa.com/api/v1/individual-customers/${this.orderDetails?.customerId}`
-        // );
-        // const firstSourceData = await res.json();
-
-        // if (firstSourceData?.data) {
-        //   this.customerData = firstSourceData.data.customer;
-        //   console.log(this.customerData);
-        //   this.loading = false;
-        //   return;
-        // }
-
-        const res2 = await fetch(
-          `${API_URL}/business-customers/${this.orderDetails?.customerId}`
+        const res2 = await this.$devInstance.get(
+          `/business-customers/${this.orderDetails?.customerId}`
         );
         const secondSourceData = await res2.json();
 
@@ -328,10 +316,7 @@ export default {
         redirect: "follow",
       };
 
-      fetch(
-        API_URL + "/orders/" + this.orderId,
-        requestOptions
-      )
+      fetch(API_URL + "/orders/" + this.orderId, requestOptions)
         .then((response) => response.text())
         .then((result) => {
           // console.log(result);

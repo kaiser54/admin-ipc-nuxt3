@@ -4,19 +4,19 @@
       <div class="product_image_group">
         <div
           class="product-images"
-          v-for="image in getProductImages(order.products)"
-          :key="image.id"
+          v-for="(image, index) in getProductImages(order?.products)"
+          :key="index"
         >
-          <img :src="image.url" alt="Product Image" />
+          <img :src="image?.url" alt="Product Image" />
         </div>
       </div>
       <div class="order-product-details">
         <div class="order-content">
           <!-- <div class="title"> product name </div> -->
-          <div class="title">{{ getProductNames(order.products) }}</div>
+          <div class="title">{{ getProductNames(order?.products) }}</div>
           <div class="order-id-price">
-            <div class="order-id">Order ID : {{ order._id }}</div>
-            <div class="order-qty">Qty: {{ getProductQuantity(order.products) }}</div>
+            <div class="order-id">Order ID : {{ order?._id }}</div>
+            <div class="order-qty">Qty: {{ getProductQuantity(order?.products) }}</div>
           </div>
           <div class="order-price">{{ order?.totalPrice }}</div>
           <DynamicTags :tagText="tagText" :size="size" :type="type" />
@@ -24,7 +24,7 @@
 
         <div class="price-qty">
           <div class="order-price">{{ order?.totalPrice }}</div>
-          <div class="order-qty">Qty: {{ getProductQuantity(order.products) }}</div>
+          <div class="order-qty">Qty: {{ getProductQuantity(order?.products) }}</div>
         </div>
       </div>
       <svg
@@ -91,7 +91,7 @@ export default {
         }
 
         // Return the first image URL
-        return productImages ? productImages[0] : product.product.images[0];
+        return productImages ? productImages[0] : product.product.images[0] || null;
       });
 
       // Log the chosen images to the console
