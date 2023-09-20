@@ -446,7 +446,7 @@ export default {
 
       // Emit the formData along with images
       // this.$emit("updateProduct", this.formData, this.selectedImage);
-      this.formData.images = this.previewImages;
+    //   this.formData.images = this.previewImages;
       console.log("from dattaaaaa", this.formData.images);
       this.$emit("updateProduct", {
         formData: this.formData,

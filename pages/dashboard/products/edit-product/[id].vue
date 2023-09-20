@@ -1,48 +1,17 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt
-        ref="alertPrompt"
-        :message="alertMessage"
-        :alertType="alertType"
-      />
-      <EditProductForm
-        @updateProduct="nextEvent"
-        @deleteProduct="deleteProduct"
-        v-show="!passed"
-        headingText="Edit product"
-        :categories="categories"
-        :editMode="true"
-      />
-      <ProductDetails
-        @buttonClick="postProduct"
-        @back="goRoute"
-        v-if="passed"
-        icon="icon-right"
-        size="standard"
-        buttonText="Post product"
-        type="primary"
-        :showBtn="true"
-        :dataProp="productData"
-        :productImage="imageArray"
-      >
+      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
+      <EditProductForm @updateProduct="nextEvent" @deleteProduct="deleteProduct" v-show="!passed"
+        headingText="Edit product" :categories="categories" :editMode="true" />
+      <ProductDetails @buttonClick="postProduct" @back="goRoute" v-if="passed" icon="icon-right" size="standard"
+        buttonText="Post product" type="primary" :showBtn="true" :dataProp="productData" :productImage="imageArray">
         <template v-slot:svg>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="arrow-top-right">
-              <path
-                id="Vector"
+              <path id="Vector"
                 d="M15.3029 4.69678V12.9463M4.69629 15.3034L15.3029 4.69678L4.69629 15.3034ZM15.3029 4.69678L7.0533 4.69679L15.3029 4.69678Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </g>
           </svg>
         </template>
@@ -51,20 +20,10 @@
     <LoaderComponent v-if="loading" />
     <transition name="modal-fade">
       <!-- enter the PopModal an add router push to the button and remove the nuxt link -->
-      <PopupModal
-        v-if="showDelete"
-        :showSnippet="true"
-        :animate="animate"
-        title="Delete product?"
-        snippet="Are you sure you want to delete this product?"
-        buttonText="Don’t delete"
-        buttonText2="Confirm"
-        buttonClass="neutral-btn"
-        buttonClass2="negative-btn"
-        @okModal="deleteProductByID"
-        @closeModal="changeOrderStatus"
-        @closeModalBG="changeOrderStatus"
-      >
+      <PopupModal v-if="showDelete" :showSnippet="true" :animate="animate" title="Delete product?"
+        snippet="Are you sure you want to delete this product?" buttonText="Don’t delete" buttonText2="Confirm"
+        buttonClass="neutral-btn" buttonClass2="negative-btn" @okModal="deleteProductByID" @closeModal="changeOrderStatus"
+        @closeModalBG="changeOrderStatus">
       </PopupModal>
     </transition>
   </MainLayout>
@@ -72,8 +31,9 @@
   
   
   
-  <script>
+<script>
 // import axios from "plugins/axios";
+import axios from 'axios'
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -96,7 +56,7 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent({formData, previewImages}) {
+    nextEvent({ formData, previewImages }) {
       this.passed = !this.passed;
       this.productData = formData;
       console.log("new form data:", this.productData);
@@ -115,8 +75,7 @@ export default {
       const formdata = new FormData();
       const productData = this.productData;
 
-      // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
-console.log(this.productData)
+      console.log(this.productData);
       formdata.append("name", this.productData.name);
       formdata.append("description", this.productData.description);
       formdata.append("actualPrice", this.productData.actualPrice);
@@ -125,42 +84,30 @@ console.log(this.productData)
       formdata.append("brand", this.productData.brand);
       formdata.append("unit", this.productData.weight);
       formdata.append("category", this.productData.category);
-      this.productData.images.forEach((image, index) => {
+
+      for (const image of this.productData.images) {
         formdata.append("image", image);
-      });
-      console.log(this.productData)
-      let config = {
-        method: "PUT",
-        maxBodyLength: Infinity,
-        url: `/products/${this.productID}`,
-        data: formdata,
-      };
+      }
 
-      this.$devInstance(config)
-        .then((res) => {
-          // Handle the success response here or update the component state as needed
-          this.alertType = "success";
-          this.alertMessage = "Successfully added to the product list";
-          this.$refs.alertPrompt.showAlert(
-            "product data uploaded successfully",
-            "success"
-          );
-          this.$router.push("/dashboard/products/");
-          console.log(res)
-        })
-        .catch((err) => {
-          console.error("Error uploading product data:", err);
+      console.log("formdata", formdata);
+      console.log("formdata 2", this.productData);
 
-          // Handle the error response here or update the component state as needed
-          this.alertType = "error";
-          this.alertMessage =
-            "Error uploading product data. Please try again later.";
-          this.$refs.alertPrompt.showAlert(
-            "Error uploading product data",
-            "error"
-          );
-        })
-        .finally(() => (this.loading = false));
+      try {
+        // const response = await this.$devInstance.put(`/products/${this.productID}`, formdata);
+        const response = await axios.put(`http://localhost:8000/api/v1/products/${this.productID}`, formdata);
+        this.alertType = "success";
+        this.alertMessage = "Successfully added to the product list";
+        this.$refs.alertPrompt.showAlert("product data uploaded successfully", "success");
+        this.$router.push("/dashboard/products/");
+        console.log("backend response", response);
+      } catch (err) {
+        console.error("Error uploading product data:", err);
+        this.alertType = "error";
+        this.alertMessage = "Error uploading product data. Please try again later.";
+        this.$refs.alertPrompt.showAlert("Error uploading product data", "error");
+      } finally {
+        this.loading = false;
+      }
     },
 
     goRoute() {
@@ -184,7 +131,7 @@ console.log(this.productData)
     },
     async deleteProductByID() {
       this.loading = true;
-      
+
       let config = {
         method: "delete",
         maxBodyLength: Infinity,
@@ -221,8 +168,8 @@ console.log(this.productData)
 };
 </script>
   
-  <style  scoped></style>
-  <style>
+<style  scoped></style>
+<style>
 .innerProduct .desktop-nav {
   background: var(--primary-p300);
 }
