@@ -70,7 +70,7 @@
                 v-for="(image, index) in productImage"
                 :key="index"
               >
-                <img :src="image" @click="replaceProductImage(image)" />
+                <img :src="image.url" @click="replaceProductImage(image.url)" />
               </div>
               <!-- -------------------------------------------- -->
             </div>
@@ -144,8 +144,10 @@ export default {
     //   this.mainImage = this.dataProp.images[0].url; // Set the first thumbnail as the initial product image
     // }
     if (this.productImage.length > 0) {
-      this.mainImage = this.productImage[0]; // Set the first thumbnail as the initial product image
+      this.mainImage = this.productImage[0].url; // Set the first thumbnail as the initial product image
     }
+    console.log("data",this.dataProp)
+    console.log("productImage",this.productImage)
   },
   methods: {
     replaceProductImage(image) {
