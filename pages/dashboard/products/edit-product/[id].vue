@@ -6,7 +6,7 @@
         :message="alertMessage"
         :alertType="alertType"
       />
-      <EditProductForm
+      <NewEditForm
         @updateProduct="nextEvent"
         @deleteProduct="deleteProduct"
         v-show="!passed"
@@ -14,6 +14,7 @@
         :categories="categories"
         :editMode="true"
       />
+
       <ProductDetails
         @buttonClick="postProduct"
         @back="goRoute"
@@ -96,71 +97,77 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent(formData) {
+    nextEvent({formData, previewImages}) {
       this.passed = !this.passed;
       this.productData = formData;
+      this.imageArray = previewImages;
       console.log("new form data:", this.productData);
-      for (const image of formData.images) {
-        if (image) {
-          const url = URL.createObjectURL(image);
-          this.imageArray.push(url);
-          console.log(this.imageArray);
-        }
-      }
+      // for (const image of formData.images) {
+      //   if (image) {
+      //     const url = URL.createObjectURL(image);
+      //     this.imageArray.push(url);
+      //     console.log(this.imageArray);
+      //   }
+      // }
     },
 
     async postProduct() {
-      this.loading = true;
-      const formdata = new FormData();
-      const productData = this.productData;
+      try {
+        this.loading = true;
+        const formdata = new FormData();
+        const productData = this.productData;
 
-      // PLEASE TRY ADDING ALL THE DATA FILES HERE 🙏🏾
+        // Add all the data fields to the FormData object
+        formdata.append("name", productData.name);
+        formdata.append("description", productData.description);
+        formdata.append("actualPrice", productData.actualPrice);
+        formdata.append("discountPrice", productData.discountPrice);
+        formdata.append("brand", productData.brand);
+        formdata.append("unit", productData.weight);
+        formdata.append("category", productData.category);
 
-      formdata.append("name", this.productData.name);
-      formdata.append("description", this.productData.description);
-      formdata.append("actualPrice", this.productData.actualPrice);
-      formdata.append("discountPrice", this.productData.discountPrice);
-      formdata.append("inStock", this.productData.inStock);
-      formdata.append("brand", this.productData.brand);
-      formdata.append("unit", this.productData.weight);
-      formdata.append("category", this.productData.category);
+        // Add images to the FormData object
+        productData.images.forEach((image, index) => {
+          formdata.append("image", image);
+        });
 
-      this.productData.images.forEach((image, index) => {
-        formdata.append("image", image);
-      });
+        // Define the Axios config
+        const config = {
+          method: "put",
+          maxBodyLength: Infinity,
+          url: `/products/${this.productID}`,
+          data: formdata,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
 
-      let config = {
-        method: "put",
-        maxBodyLength: Infinity,
-        url: `/products/${this.productID}`,
-        data: formdata,
-      };
+        // Send the PUT request using async/await
+        const response = await this.$devInstance(config);
 
-      this.$devInstance(config)
-        .then((res) => {
-          // Handle the success response here or update the component state as needed
-          this.alertType = "success";
-          this.alertMessage = "Successfully added to the product list";
-          this.$refs.alertPrompt.showAlert(
-            "product data uploaded successfully",
-            "success"
-          );
-          // this.$router.push("/dashboard/products/");
-          console.log(res)
-        })
-        .catch((err) => {
-          console.error("Error uploading product data:", err);
+        // Handle the success response here or update the component state as needed
+        this.alertType = "success";
+        this.alertMessage = "Successfully added to the product list";
+        this.$refs.alertPrompt.showAlert(
+          "Product data uploaded successfully",
+          "success"
+        );
+        this.$router.push("/dashboard/products/");
+        console.log("backend response :", response);
+      } catch (error) {
+        console.error("Error uploading product data:", error);
 
-          // Handle the error response here or update the component state as needed
-          this.alertType = "error";
-          this.alertMessage =
-            "Error uploading product data. Please try again later.";
-          this.$refs.alertPrompt.showAlert(
-            "Error uploading product data",
-            "error"
-          );
-        })
-        .finally(() => (this.loading = false));
+        // Handle the error response here or update the component state as needed
+        this.alertType = "error";
+        this.alertMessage =
+          "Error uploading product data. Please try again later.";
+        this.$refs.alertPrompt.showAlert(
+          "Error uploading product data",
+          "error"
+        );
+      } finally {
+        this.loading = false;
+      }
     },
 
     goRoute() {
@@ -184,7 +191,7 @@ export default {
     },
     async deleteProductByID() {
       this.loading = true;
-      
+
       let config = {
         method: "delete",
         maxBodyLength: Infinity,
