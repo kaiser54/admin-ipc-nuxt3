@@ -17,6 +17,10 @@
     "@pinia/nuxt": "^0.4.11",
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
+    "html2canvas": "^1.4.1",
+    "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.10.1",
+    "jspdf": "^2.5.1",
     "pinia": "^2.1.6",
     "vuex": "^4.0.2"
   }

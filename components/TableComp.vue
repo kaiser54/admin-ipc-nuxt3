@@ -140,6 +140,9 @@ export default {
       ],
     };
   },
+  created(){
+    console.log(this.orders)
+  },
   methods: {
     userRoute(value) {
       this.$router.push(`/dashboard/orders/${value}`);
