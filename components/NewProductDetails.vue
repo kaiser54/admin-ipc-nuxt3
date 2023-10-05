@@ -85,6 +85,9 @@
                 <p class="product-details-brand">
                   Brand: <span>{{ dataProp.brand }}</span>
                 </p>
+                <p class="product-details-brand">
+                  Brand: <span>{{ dataProp.weight }}</span>
+                </p>
               </div>
             </div>
             <!-- ------------------------------- -->

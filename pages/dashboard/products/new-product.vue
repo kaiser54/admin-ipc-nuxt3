@@ -83,7 +83,10 @@ export default {
           const url = URL.createObjectURL(image);
           this.imageArray.push(url);
           console.log(this.imageArray);
-          console.log(this.productData);
+          console.log("productData", this.productData);
+          console.log("selectedImages:", this.productData.selectedImages);
+          console.log("selectedImages length:", this.productData.selectedImages.length);
+
         }
       }
     },
@@ -105,7 +108,6 @@ export default {
       formdata.append("brand", this.productData.brand);
       formdata.append("unit", this.productData.weight);
       formdata.append("category", this.productData.categoryValue);
-
       console.log("form data: ", formdata);
 
       // Configure requestOptions and send the request
