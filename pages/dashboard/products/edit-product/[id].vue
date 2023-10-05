@@ -131,15 +131,17 @@ export default {
       //   );
       // } finally {
       //   this.loading = false;
+      console.log('final product data', this.productData)
+      const productData = this.productData
       // }
       var formdata = new FormData();
-      formdata.append("name", "Baking Powder (Longman) 2");
-      formdata.append("discountPrice", 1600);
-      formdata.append("actualPrice", 1700);
-      formdata.append("description", "Baking powder is a special agent that increases lift in various bakery recipes, including; bread loaves, rolls, muffins and American pancakes. Longman baking powder is to be used in the exact amount given in the recipe you follow. Usually you’d use baking powder in plain flour");
-      formdata.append("brand", "Longman");
-      formdata.append("category", "Others");
-      formdata.append("unit", "5kg");
+      formdata.append("name", productData.name);
+formdata.append("description", productData.description);
+formdata.append("actualPrice", productData.actualPrice);
+formdata.append("discountPrice", productData.discountPrice);
+formdata.append("brand", productData.brand);
+formdata.append("unit", productData.unit);
+formdata.append("category", productData.category);
       this.selectedFiles.length && this.selectedFiles.forEach((file) =>
         formdata.append("image", file))
 
@@ -150,7 +152,7 @@ export default {
         redirect: 'follow'
       };
 
-      fetch(`http://localhost:8000/api/v1/products/${this.productID}`, requestOptions)
+      fetch(`https://api.ipc-africa.com/api/v1/products/${this.productID}`, requestOptions)
         .then(response => response.json())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
