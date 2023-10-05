@@ -124,7 +124,8 @@ export default {
     padding: 16px;
     gap: 8px;
     border-radius: 16px;
-    width: 343px;
+    /* width: 343px; */
+    width: fit-content;
     height: 64px;
 }
 

@@ -287,10 +287,9 @@
             </div>
           </div>
 
-          <div class="fourth">
+          <!-- <div class="fourth">
             <div class="form__heading">Add product images</div>
             <div class="imgg">
-              <!-- <p><strong>NOTE: </strong> Total size of Images should not exceed 1MB</p> -->
               <input
                 type="file"
                 ref="fileInput"
@@ -310,6 +309,32 @@
                   <p v-else style="font-size: 40px">+</p>
                 </div>
                 <p v-if="image.name">{{ `${image.size / 1000}kb` }}</p>
+              </div>
+            </div>
+          </div> -->
+
+
+          
+          <div class="fourth">
+            <div class="form__heading">Add product images</div>
+            <div class="imgg">
+              <p>
+                <strong>NOTE: </strong>Only maximum of 4 images to be selected
+              </p>
+              <input
+                type="file"
+                ref="fileInput"
+                multiple
+                @change="handleFileChange"
+              />
+            </div>
+            <div v-if="previewImages.length" class="flex">
+              <div
+                v-for="image in previewImages"
+                :key="image.name"
+                class="upload-box"
+              >
+                <img :src="image.url" :alt="image.name" />
               </div>
             </div>
           </div>
@@ -370,24 +395,25 @@ export default {
       selectedImages: [],
       selectedFiles: [],
       totalSize: 0,
-      previewImages: [
-        {
-          index: 0,
-          size: 0,
-        },
-        {
-          index: 1,
-          size: 0,
-        },
-        {
-          index: 2,
-          size: 0,
-        },
-        {
-          index: 3,
-          size: 0,
-        },
-      ], // Array to store image previews
+      previewImages: [],
+      // previewImage: [
+      //   {
+      //     index: 0,
+      //     size: 0,
+      //   },
+      //   {
+      //     index: 1,
+      //     size: 0,
+      //   },
+      //   {
+      //     index: 2,
+      //     size: 0,
+      //   },
+      //   {
+      //     index: 3,
+      //     size: 0,
+      //   },
+      // ], // Array to store image previews
     };
   },
   async created() {
@@ -449,7 +475,8 @@ export default {
 
       //   replacing the from images with preview
 
-      // this.formData.images = this.previewImages;
+      // this.formData.images = this.selectedFiles;
+      this.formData.images = this.formData.images.concat(this.selectedFiles);;
       // console.log("form data images", this.formData.images);
 
       // Emit the formData along with images
@@ -460,6 +487,7 @@ export default {
       this.$emit("updateProduct", {
         formData: this.formData,
         previewImages: this.previewImages,
+        selectedFiles: this.selectedFiles,
       });
     },
 
@@ -476,7 +504,7 @@ export default {
 
         this.previewImages = this.formData.images.map((image, index) => {
           if (typeof image === "string" && image === "[object Object]") {
-            return { index, size: 0 };
+            return {};
           } else {
             return image; // If it's not the special case, keep the original image
           }
@@ -491,14 +519,14 @@ export default {
         // })
         // console.log(this.previewImages)
 
-        for (let i = 0; i < 4 - this.formData.images.length; i++) {
-          this.previewImages.push({
-            size: 0,
-          });
-        }
-        for (let i = 0; i < this.previewImages.length; i++) {
-          this.previewImages[i].index = i;
-        }
+        // for (let i = 0; i < 4 - this.formData.images.length; i++) {
+        //   this.previewImages.push({
+        //     size: 0,
+        //   });
+        // }
+        // for (let i = 0; i < this.previewImages.length; i++) {
+        //   this.previewImages[i].index = i;
+        // }
       } catch (error) {
         console.error("Error fetching order details:", error);
         // Handle errors here
@@ -559,33 +587,46 @@ export default {
     },
 
     handleFileChange(event) {
-      this.maxSizeExceeded = false;
-      // this.updateKey++;
-      const selectedFile = event.target.files[0];
+      const maxImages = 4;
+      this.selectedFiles = Array.from(event.target.files).slice(0, maxImages);
+      // this.previewImages = []; // Clear previous previews
 
-      if (selectedFile) {
-        this.selectedFiles[this.clickedImageIndex] = selectedFile;
-        let size = 0;
-        size = this.totalSize + selectedFile.size / 1000;
-        console.log(size);
-        if (size > 1024) {
-          this.maxSizeExceeded = true;
-          return;
-        }
-        this.totalSize = size;
-
-        // Attach selected image to formData.images
-        this.formData.images[this.clickedImageIndex] = selectedFile;
-
-        this.previewImages[this.clickedImageIndex] = {
-          url: URL.createObjectURL(selectedFile),
-          name: selectedFile.name,
-          size: selectedFile.size,
-          index: this.clickedImageIndex,
+      for (const file of this.selectedFiles) {
+        // Create a preview URL for each selected image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImages.push({ url: e.target.result, name: file.name });
         };
-        console.log("preview images", this.previewImages);
+        reader.readAsDataURL(file);
+        console.log("this.selectedFiles :",this.selectedFiles)
       }
     },
+
+    // handleFileChange(event) {
+    //   this.maxSizeExceeded = false;
+    //   // this.updateKey++;
+    //   const selectedFile = event.target.files[0];
+
+    //   if (selectedFile) {
+    //     this.selectedFiles[this.clickedImageIndex] = selectedFile;
+    //     let size = 0;
+    //     size = this.totalSize + selectedFile.size / 1000;
+    //     console.log(size);
+    //     if (size > 1024) {
+    //       this.maxSizeExceeded = true;
+    //       return;
+    //     }
+    //     this.totalSize = size;
+
+    //     // Attach selected image to formData.images
+    //     this.formData.images[this.clickedImageIndex] = selectedFile;
+
+    //     this.previewImages[this.clickedImageIndex] = {
+    //       url: URL.createObjectURL(selectedFile)
+    //     };
+    //     console.log("preview images", this.previewImages);
+    //   }
+    // },
 
     handleImageClick(image) {
       if (image) {
@@ -762,9 +803,9 @@ option {
   border: 1px dashed var(--grey-grey4, #bdc0ce);
 }
 
-input[type="file"] {
+/* input[type="file"] {
   display: none;
-}
+} */
 
 .error-message p {
   color: red;

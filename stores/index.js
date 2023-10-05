@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-const API_URL = "https://api.ipc-africa.com/api/v1";
+import { API_URL } from "../plugins/axios";
 
 export const useIPCStore = defineStore("IPCStore", {
   state: () => ({
