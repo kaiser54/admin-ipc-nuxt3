@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --port 3001",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -17,6 +17,8 @@
     "@pinia/nuxt": "^0.4.11",
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
+    "html2pdf.js": "^0.10.1",
+    "nuxt-pdfeasy": "^1.4.0",
     "pinia": "^2.1.6",
     "vuex": "^4.0.2"
   }

@@ -26,16 +26,18 @@ export default defineNuxtConfig({
       ],
     }
   },
-  modules: [[
-    '@pinia/nuxt',
+  modules: [
+    [ '@pinia/nuxt', 
     {
       autoImports: [
         // automatically imports `defineStore`
         'defineStore', // import { defineStore } from 'pinia'
         'acceptHMRUpdate'
       ],
-    } 
-  ]],
+    },
+  ],  
+  'nuxt-pdfeasy',
+],
   imports: {
     dirs: ['stores']
   },

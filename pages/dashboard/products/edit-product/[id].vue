@@ -86,6 +86,7 @@ export default {
       productData: null,
       imageArray: [],
       categories: [],
+      selectedFiles: null,
       loading: false,
       showDelete: false,
       animate: null,
@@ -97,11 +98,12 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    nextEvent({formData, previewImages}) {
+    nextEvent({ formData, previewImages, selectedFiles }) {
       this.passed = !this.passed;
       this.productData = formData;
       this.imageArray = previewImages;
-      console.log("new form data:", this.productData);
+      this.selectedFiles = selectedFiles;
+      console.log("new selectedFiles data:", this.selectedFiles);
       // for (const image of formData.images) {
       //   if (image) {
       //     const url = URL.createObjectURL(image);
@@ -116,6 +118,7 @@ export default {
         this.loading = true;
         const formdata = new FormData();
         const productData = this.productData;
+        console.log("product data:", productData);
 
         // Add all the data fields to the FormData object
         formdata.append("name", productData.name);
@@ -123,19 +126,28 @@ export default {
         formdata.append("actualPrice", productData.actualPrice);
         formdata.append("discountPrice", productData.discountPrice);
         formdata.append("brand", productData.brand);
-        formdata.append("unit", productData.weight);
+        formdata.append("unit", productData.unit);
         formdata.append("category", productData.category);
 
-        // Add images to the FormData object
-        productData.images.forEach((image, index) => {
-          formdata.append("image", image);
-        });
+        // Append Cloudinary image URLs
+        // if (productData?.images?.length > 0) {
+        //   productData.images.forEach((image) => {
+        //     formdata.append("images", image.url);
+        //   });
+        // }
+
+        // Check if new images have been selected
+        if (this.selectedFiles.length > 0) {
+          // Add new images to the FormData object
+          this.selectedFiles.forEach((file) => {
+            formdata.append("images", file);
+          });
+        }
 
         // Define the Axios config
         const config = {
-          method: "put",
-          maxBodyLength: Infinity,
-          url: `/products/${this.productID}`,
+          method: "PUT", // Use PUT method for updating the product
+          url: `/products/${this.productID}`, // Replace with the correct endpoint
           data: formdata,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -147,29 +159,28 @@ export default {
 
         // Handle the success response here or update the component state as needed
         this.alertType = "success";
-        this.alertMessage = "Successfully added to the product list";
+        this.alertMessage = "Successfully updated the product";
         this.$refs.alertPrompt.showAlert(
-          "Product data uploaded successfully",
+          "Product data updated successfully",
           "success"
         );
         this.$router.push("/dashboard/products/");
-        console.log("backend response :", response);
+        console.log("Backend response:", response);
       } catch (error) {
-        console.error("Error uploading product data:", error);
+        console.error("Error updating product data:", error);
 
         // Handle the error response here or update the component state as needed
         this.alertType = "error";
         this.alertMessage =
-          "Error uploading product data. Please try again later.";
+          "Error updating product data. Please try again later.";
         this.$refs.alertPrompt.showAlert(
-          "Error uploading product data",
+          "Error updating product data",
           "error"
         );
       } finally {
         this.loading = false;
       }
     },
-
     goRoute() {
       this.passed = !this.passed;
       this.imageArray = [];
