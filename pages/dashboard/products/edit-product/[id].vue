@@ -1,18 +1,49 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
-      <NewEditForm @updateProduct="nextEvent" @deleteProduct="deleteProduct" v-show="!passed" headingText="Edit product"
-        :categories="categories" :editMode="true" />
+      <AlertPrompt
+        ref="alertPrompt"
+        :message="alertMessage"
+        :alertType="alertType"
+      />
+      <NewEditForm
+        @updateProduct="nextEvent"
+        @deleteProduct="deleteProduct"
+        v-show="!passed"
+        headingText="Edit product"
+        :categories="categories"
+        :editMode="true"
+      />
 
-      <ProductDetails @buttonClick="postProduct" @back="goRoute" v-if="passed" icon="icon-right" size="standard"
-        buttonText="Post product" type="primary" :showBtn="true" :dataProp="productData" :productImage="imageArray">
+      <ProductDetails
+        @buttonClick="postProduct"
+        @back="goRoute"
+        v-if="passed"
+        icon="icon-right"
+        size="standard"
+        buttonText="Post product"
+        type="primary"
+        :showBtn="true"
+        :dataProp="productData"
+        :productImage="imageArray"
+      >
         <template v-slot:svg>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g id="arrow-top-right">
-              <path id="Vector"
+              <path
+                id="Vector"
                 d="M15.3029 4.69678V12.9463M4.69629 15.3034L15.3029 4.69678L4.69629 15.3034ZM15.3029 4.69678L7.0533 4.69679L15.3029 4.69678Z"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </g>
           </svg>
         </template>
@@ -21,10 +52,20 @@
     <LoaderComponent v-if="loading" />
     <transition name="modal-fade">
       <!-- enter the PopModal an add router push to the button and remove the nuxt link -->
-      <PopupModal v-if="showDelete" :showSnippet="true" :animate="animate" title="Delete product?"
-        snippet="Are you sure you want to delete this product?" buttonText="Don’t delete" buttonText2="Confirm"
-        buttonClass="neutral-btn" buttonClass2="negative-btn" @okModal="deleteProductByID" @closeModal="changeOrderStatus"
-        @closeModalBG="changeOrderStatus">
+      <PopupModal
+        v-if="showDelete"
+        :showSnippet="true"
+        :animate="animate"
+        title="Delete product?"
+        snippet="Are you sure you want to delete this product?"
+        buttonText="Don’t delete"
+        buttonText2="Confirm"
+        buttonClass="neutral-btn"
+        buttonClass2="negative-btn"
+        @okModal="deleteProductByID"
+        @closeModal="changeOrderStatus"
+        @closeModalBG="changeOrderStatus"
+      >
       </PopupModal>
     </transition>
   </MainLayout>
@@ -33,7 +74,8 @@
   
   
 <script>
-// import axios from "plugins/axios";
+import { API_URL } from "@/plugins/axios.ts";
+import axios from "axios";
 import MainLayout from "/layouts/MainLayout.vue";
 export default {
   components: { MainLayout },
@@ -62,100 +104,62 @@ export default {
       this.productData = formData;
       this.imageArray = previewImages;
       this.selectedFiles = selectedFiles;
-      console.log(this.productData, "rfdsvrfdvfr")
+      console.log(this.productData, "rfdsvrfdvfr");
       console.log("new selectedFiles data:", this.selectedFiles);
-      // for (const image of formData.images) {
-      //   if (image) {
-      //     const url = URL.createObjectURL(image);
-      //     this.imageArray.push(url);
-      //     console.log(this.imageArray);
-      //   }
-      // }
     },
 
     async postProduct() {
-      // try {
-      //   this.loading = true;
-      //   const formdata = new FormData();
-      //   const productData = this.productData;
-      //   console.log("product data:", productData);
+      this.loading = true;
 
-      //   // Add all the data fields to the FormData object
-      //   formdata.append("name", productData.name);
-      //   formdata.append("description", productData.description);
-      //   formdata.append("actualPrice", productData.actualPrice);
-      //   formdata.append("discountPrice", productData.discountPrice);
-      //   formdata.append("brand", productData.brand);
-      //   formdata.append("unit", productData.unit);
-      //   formdata.append("category", productData.category);
+      const formData = new FormData();
+      formData.append("name", this.productData.name);
+      formData.append("description", this.productData.description);
+      formData.append("actualPrice", this.productData.actualPrice);
+      formData.append("discountPrice", this.productData.discountPrice);
+      formData.append("brand", this.productData.brand);
+      formData.append("unit", this.productData.unit);
+      formData.append("category", this.productData.category);
 
-      //   // Check if new images have been selected
-      //   this.selectedFiles.length > 0 ?
-      //     // Add new images to the FormData object
-      //     this.selectedFiles.forEach((file) => {
-      //       formdata.append("image", file);
-      //     }) : formdata.append("images", this.imageArray);
+      if (this.selectedFiles.length) {
+        this.selectedFiles.forEach((file) => {
+          formData.append("image", file);
+        });
+      }
 
-      //   // Define the Axios config
-      //   const config = {
-      //     method: "PATCH", // Use PUT method for updating the product
-      //     url: `/products/${this.productID}`, // Replace with the correct endpoint
-      //     data: formdata,
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   };
-
-      //   // Send the PUT request using async/await
-      //   const response = await this.$devInstance(config);
-
-      //   // Handle the success response here or update the component state as needed
-      //   this.alertType = "success";
-      //   this.alertMessage = "Successfully updated the product";
-      //   this.$refs.alertPrompt.showAlert(
-      //     "Product data updated successfully",
-      //     "success"
-      //   );
-      //   this.$router.push("/dashboard/products/");
-      //   console.log("Backend response:", response);
-      // } catch (error) {
-      //   console.error("Error updating product data:", error);
-
-      //   // Handle the error response here or update the component state as needed
-      //   this.alertType = "error";
-      //   this.alertMessage =
-      //     "Error updating product data. Please try again later.";
-      //   this.$refs.alertPrompt.showAlert(
-      //     "Error updating product data",
-      //     "error"
-      //   );
-      // } finally {
-      //   this.loading = false;
-      console.log('final product data', this.productData)
-      const productData = this.productData
-      // }
-      var formdata = new FormData();
-      formdata.append("name", productData.name);
-formdata.append("description", productData.description);
-formdata.append("actualPrice", productData.actualPrice);
-formdata.append("discountPrice", productData.discountPrice);
-formdata.append("brand", productData.brand);
-formdata.append("unit", productData.unit);
-formdata.append("category", productData.category);
-      this.selectedFiles.length && this.selectedFiles.forEach((file) =>
-        formdata.append("image", file))
-
-
-      var requestOptions = {
-        method: 'PATCH',
-        body: formdata,
-        redirect: 'follow'
-      };
-
-      fetch(`https://api.ipc-africa.com/api/v1/products/${this.productID}`, requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+      try {
+        const response = await axios.patch(
+          `${API_URL}/products/${this.productID}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.data.status === "success") {
+          this.alertType = "success";
+          this.alertMessage = "Product update successfully";
+          this.$refs.alertPrompt.showAlert(
+            "Product data updated successfully",
+            "success"
+          );
+          this.$router.push("/dashboard/products/");
+        } else {
+          this.alertType = "error";
+          this.alertMessage =
+            "Error updating product data. Please try again later.";
+          this.$refs.alertPrompt.showAlert("Error adding product", "error");
+        }
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error:", error);
+        this.alertType = "error";
+        this.alertMessage =
+          "Error updating product data. Please try again later.";
+        this.$refs.alertPrompt.showAlert("Error adding product", "error");
+      } finally {
+        this.loading = false;
+      }
     },
     goRoute() {
       this.passed = !this.passed;
