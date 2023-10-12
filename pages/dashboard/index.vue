@@ -201,22 +201,6 @@
           </template>
         </DynamicDashCard>
       </div>
-      <!-- <TableComp
-        heading="New orders"
-        :tableData="tableData"
-        :tableHeaders="tableHeaders"
-        @goToRoutePage="goToRoutePage"
-      /> -->
-      <!-- <TableComp heading="New Customers" :tableData="tableData" :tableHeaders="tableHeaders" @goToRoutePage="goToRoutePageCustomers">
-        <template v-slot:tableFilter>
-          <div class="filter__tabs">
-            <div v-for="(tab, index) in tabs" :key="index" class="tab tab-standard" @click="toggleTab(index)"
-              :class="{ clicked: activeTab === index }">
-              {{ tab }}
-            </div>
-          </div>
-        </template>
-      </TableComp> -->
       <LoaderComponent v-if="loading" />
     </div>
   </MainLayout>
