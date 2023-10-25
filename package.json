@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev --port 3000",
+    "dev": "nuxt dev --port 3001",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -19,7 +19,6 @@
     "axios": "^1.4.0",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",
-    "jquery": "^3.7.1",
     "jspdf": "^2.5.1",
     "nuxt-pdfeasy": "^1.4.0",
     "pinia": "^2.1.6",

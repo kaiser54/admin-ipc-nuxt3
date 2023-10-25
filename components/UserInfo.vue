@@ -147,4 +147,4 @@ export default {
 
   letter-spacing: -0.5px;
 }
-</style>plugins/pricing.jsplugins/formatPrice.js
+</style>

@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
     <div class="wrapper">
-      <GoBackButton style="width: fit-content;" />
+      <GoBackButton style="width: fit-content" />
       <div class="dash__button">
         <h3>Customer information</h3>
         <DynamicButton
@@ -44,13 +44,14 @@
       />
       <div class="dash__button">
         <h3>Order details</h3>
-        <DynamicButton
+        <!-- <DynamicButton
           class="auto"
           buttonText="Download invoice"
           size="standard"
           type="neutral"
           icon="icon-left"
           :disabled="false"
+          @clickButton="generateAndDownloadPDF"
         >
           <template v-slot:svg>
             <svg
@@ -76,7 +77,7 @@
               />
             </svg>
           </template>
-        </DynamicButton>
+        </DynamicButton> -->
       </div>
       <div class="dash__button flex__row">
         <OrderProduct
@@ -87,7 +88,7 @@
           :data="orderDetails"
         />
         <UserInfo
-        v-if="orderDetails"
+          v-if="orderDetails"
           :data="orderDetails"
           style="max-width: 387px; width: 100%; margin-left: 20px"
         >
@@ -173,11 +174,59 @@
         </PopupModal>
       </transition>
       <LoaderComponent v-if="loading" />
+      <div class="dash__button">
+        <h3>Invoice details</h3>
+        <DynamicButton
+          class="auto"
+          buttonText="Download invoice"
+          size="standard"
+          type="neutral"
+          icon="icon-left"
+          :disabled="false"
+          @clickButton="generateAndDownloadPDF"
+        >
+          <template v-slot:svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+            >
+              <path
+                d="M2.5 11.6667V16.6667C2.5 17.5872 3.24619 18.3334 4.16667 18.3334H15.8333C16.7538 18.3334 17.5 17.5872 17.5 16.6667V11.6667"
+                stroke="#565C69"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.99967 14.1667L14.1663 9.62967M9.99967 2.5V14.1667V2.5ZM9.99967 14.1667L5.83301 9.62958L9.99967 14.1667Z"
+                stroke="#303237"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </template>
+        </DynamicButton>
+      </div>
+      <div class="hr border">
+        <Invoice
+          v-if="orderDetails && customerData"
+          :customer="customerData"
+          :orders="orderDetails"
+          ref="myComponent"
+          id="componentToSave"
+        />
+      </div>
     </div>
   </MainLayout>
 </template>
   
   <script>
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import MainLayout from "/layouts/MainLayout.vue";
 import { API_URL } from "@/plugins/axios.ts";
 export default {
@@ -258,10 +307,28 @@ export default {
     await this.fetchCustomerInfo(); // Fetch customer information
   },
 
-  mounted() {},
+  mounted() {
+    this.createScript();
+  },
   methods: {
     customerPage() {
-      this.$router.push(`/dashboard/customers/${this.customerData._id}`)
+      this.$router.push(`/dashboard/customers/${this.customerData._id}`);
+    },
+    createScript() {
+      // Create a new script element
+      const popup = document.createElement("script");
+
+      // Set the 'src' attribute to the URL of an external JavaScript file
+      popup.setAttribute(
+        "src",
+        "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      );
+
+      // Set the 'async' attribute to true to load the script asynchronously
+      popup.async = true;
+
+      // Append the script element to the 'head' of the document
+      document.head.appendChild(popup);
     },
     async fetchOrderData() {
       this.loading = true;
@@ -316,10 +383,7 @@ export default {
         redirect: "follow",
       };
 
-      fetch(
-        API_URL + "/orders/" + this.orderId,
-        requestOptions
-      )
+      fetch(API_URL + "/orders/" + this.orderId, requestOptions)
         .then((response) => response.text())
         .then((result) => {
           // console.log(result);
@@ -335,11 +399,44 @@ export default {
       this.selectedItem = value;
       console.log(value);
     },
+
+    async generateAndDownloadPDF() {
+      window.jsPDF = window.jspdf.jsPDF;
+      var doc = new jsPDF();
+
+      // Convert HTML content to PDF
+
+      // Source HTMLElement or a string containing HTML.
+      var elementHTML = document.querySelector("#componentToSave");
+      const name =
+        this.customerData.firstName +
+        " " +
+        this.customerData.lastName +
+        " " +
+        this.customerData.email;
+
+      doc.html(elementHTML, {
+        callback: function (doc) {
+          // Save the PDF
+          // doc.save("name");
+          doc.save(name);
+        },
+        margin: [10, 10, 10, 10],
+        autoPaging: "text",
+        x: 0,
+        y: 0,
+        width: 190, //target width in the PDF document
+        windowWidth: 675, //window width in CSS pixels
+      });
+    },
   },
 };
 </script>
   
   <style scoped>
+.hr {
+  padding: 16px;
+}
 .wrapper {
   margin: 40px 20px;
   display: flex;

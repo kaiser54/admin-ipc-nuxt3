@@ -1,23 +1,24 @@
 <template>
   <div>
-    <!-- <button @click="generateAndDownloadPDF">Save as PDF</button> -->
-    <button @click="openPrintDialog">Save as PDF</button>
-    <Invoice
+    <button @click="generateAndDownloadPDF">Save as PDF</button>
+    <!-- <button @click="openPrintDialog">Save as PDF</button> -->
+    <!-- <button @click="generatePdf">Save as PDF</button> -->
+    <!-- <Invoice
       @invoiceHeight="newInvoiceHeight"
       ref="invoice"
       id="componentToSave"
-    />
+    /> -->
   </div>
 </template>
 
 <script setup>
-
 </script>
 
 <script>
 import html2canvas from "html2canvas";
+import "html2canvas";
 import jsPDF from "jspdf";
-import $ from 'jquery';
+import $ from "jquery";
 
 // import html2pdf from "html2pdf";
 
@@ -41,10 +42,7 @@ export default {
       "src",
       "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
     );
-    popup.setAttribute(
-      "src",
-      "/printThis.js"
-    );
+    popup.setAttribute("src", "/printThis.js");
 
     // Set the 'async' attribute to true to load the script asynchronously
     popup.async = true;
@@ -68,41 +66,50 @@ export default {
     }
   },
   methods: {
+    //jspdf does not include the bootstrap style layout
+    generatePdf() {
+      var doc = new jsPDF("p", "pt", "A4");
+      const margins = {
+        top: 80,
+        bottom: 60,
+        left: 40,
+        width: 522,
+      };
+
+      doc.fromHTML(this.$refs.invoice, margins.left, margins.top, {
+        width: margins.width,
+      });
+
+      doc.save("test.pdf");
+    },
+
     openPrintDialog() {
-        $(".componentToSave").printThis({
-          base: "https://jasonday.github.io/printThis/",
-        });
+      // $(".componentToSave").printThis({
+      //   base: "https://jasonday.github.io/printThis/",
+      // });
 
+      // const invoice = document.getElementById("componentToSave");
+          console.log(invoice);
+          console.log(window);
+          var opt = {
+              margin: 1,
+              filename: 'myfile.pdf',
+              image: { type: 'svg', quality: 1.0 },
+              html2canvas: { scale: 0.9 },
+              jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+          html2pdf().from(invoice).set(opt).save();
 
+        // Generate a dynamic PDF name based on the current date and time
+        const pdfName = "kaiser rr";
 
-
-
-        // const invoice = document.getElementById("componentToSave");
-        //     console.log(invoice);
-        //     console.log(window);
-        //     var opt = {
-        //         margin: 1,
-        //         filename: 'myfile.pdf',
-        //         image: { type: 'svg', quality: 1.0 },
-        //         html2canvas: { scale: 0.9 },
-        //         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        //     };
-        //     html2pdf().from(invoice).set(opt).save();
-
-
-
-
-
-      //   // Generate a dynamic PDF name based on the current date and time
-      //   const pdfName = "kaiser rr";
-
-      //   // Open the print dialog with the dynamic PDF name
-      //   const printOptions = {
-      //     filename: pdfName,
-      //   };
-      //   window.print(printOptions);
-    //   const Element = document.getElementById("componentToSave");
-    //   html2pdf().from(Element).save();
+        // Open the print dialog with the dynamic PDF name
+        const printOptions = {
+          filename: pdfName,
+        };
+        window.print(printOptions);
+        const Element = document.getElementById("componentToSave");
+        html2pdf().from(Element).save();
     },
 
     async generateAndDownloadPDF() {
@@ -140,6 +147,7 @@ export default {
       pdf.save("myComponent.pdf");
     },
   },
+  
 };
 </script>
 

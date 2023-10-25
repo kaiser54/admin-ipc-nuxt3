@@ -279,8 +279,7 @@ button {
   background-color: var(--primary-p400);
 }
 
-.primary-btn:active,
-.primary-btn:focus {
+.primary-btn:active {
   background-color: var(--primary-p500);
 }
 
@@ -327,8 +326,7 @@ button {
   background-color: var(--primary-p50);
 }
 
-.secondary-btn:active,
-.secondary-btn:focus {
+.secondary-btn:active {
   background-color: var(--primary-p75);
 }
 
@@ -377,8 +375,7 @@ button {
   color: var(--primary-p400);
 }
 
-.ghost-btn:active,
-.ghost-btn:focus {
+.ghost-btn:active {
   color: var(--primary-p500);
 }
 
@@ -428,8 +425,7 @@ button {
   border: 1px solid var(--grey-grey6);
 }
 
-.neutral-btn:active,
-.neutral-btn:focus {
+.neutral-btn:active {
   background-color: var(--grey-grey5);
   border: 1px solid var(--grey-grey5);
 }
@@ -478,8 +474,7 @@ button {
   background-color: var(--negative-n400);
 }
 
-.negative-btn:active,
-.negative-btn:focus {
+.negative-btn:active {
   background-color: var(--negative-n500);
 }
 
@@ -532,8 +527,7 @@ button {
 
 .input-search:hover {
   background: var(--grey-grey5);
-}
-
+} 
 .input-search:focus {
   background: var(--grey-grey6);
 }
@@ -556,8 +550,7 @@ button {
   border-color: var(--grey-grey3);
 }
 
-.input:active,
-.input:focus {
+.input:active {
   border-color: var(--primary-p300);
 }
 
