@@ -91,7 +91,7 @@ export const useIPCStore = defineStore("IPCStore", {
 
       if (firstSourceData?.data) {
         this.customer = firstSourceData.data.customer;
-        console.log(this.customer);
+        console.log("customer",this.customer);
         this.loading = false;
         return;
       }

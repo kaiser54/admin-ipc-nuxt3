@@ -30,6 +30,7 @@
               <section class="view">
                 <slot />
               </section>
+                <div class="view" style="width: 100%; padding-bottom: 10vh; color: green;"></div>
             </div>
           </section>
         </div>
@@ -190,7 +191,8 @@ section.dashview {
   overflow-y: scroll;
   height: calc(100vh - 136px);
   max-width: calc(100vw - 278px);
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
 }
 
 section.view {
