@@ -18,7 +18,17 @@
         :customer="IPCStore.customer"
         :address="address"
       />
-      <LoaderComponent v-if="IPCStore.loading" />
+      <div class="heading flex" style="margin-top: 32px;">
+        <h3>Customer Order history</h3>
+      </div>
+      <TableComp
+        v-if="orders"
+        heading=""
+        :data="orders"
+        :tableHeaders="tableHeaders"
+        :showBtn="false"
+      />
+      <LoaderComponent v-if="IPCStore.loading && loading" />
     </div>
   </MainLayout>
 </template>
@@ -47,9 +57,20 @@ export default {
       statusTagText: "Not verified",
       // statusTagType: null,
       address: null,
+      orders: null,
+      loading: false,
+      tableHeaders: [
+        "Product’s name",
+        "Date",
+        "Order ID",
+        "Quantity",
+        "Price",
+        "Status",
+      ],
     };
   },
   created() {
+    this.fetchAllOrders()
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -60,7 +81,8 @@ export default {
       customerId: customerId,
     });
 
-    axios.get(`${API_URL}/addresses/`, {
+    axios
+      .get(`${API_URL}/addresses/`, {
         params: {
           customerId: customerId,
         },
@@ -85,6 +107,24 @@ export default {
       }
     },
   },
+  methods: {
+    async fetchAllOrders() {
+      this.loading = true; // Set loading to true
+
+      var customerId = this.$route.params.id;
+      try {
+        const response = await this.$devInstance.get("/orders/customer/" + customerId);
+        this.orders = response?.data?.data?.orders;
+        console.log("all orders", this.orders);
+        console.log("all orders products", this.orders[0].products);
+      } catch (error) {
+        console.error("Error fetching all orders:", error);
+        // Handle errors here
+      } finally {
+        this.loading = false; // Set loading to false, whether the request succeeds or fails
+      }
+    },
+  }
 };
 </script>
     

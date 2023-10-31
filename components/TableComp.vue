@@ -152,7 +152,7 @@ export default {
 
         // Log the chosen products
         if (index < 3) {
-          console.log(`Chosen Product ${index + 1}:`, product);
+          // console.log(`Chosen Product ${index + 1}:`, product);
         }
 
         // Return the first image URL
@@ -160,7 +160,7 @@ export default {
       });
 
       // Log the chosen images to the console
-      console.log("Chosen Images:", images);
+      // console.log("Chosen Images:", images);
 
       return images;
     },
