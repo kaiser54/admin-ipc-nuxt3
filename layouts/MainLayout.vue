@@ -30,7 +30,7 @@
               <section class="view">
                 <slot />
               </section>
-                <div class="view" style="width: 100%; padding-bottom: 10vh; color: green;"></div>
+                <div class="view" style="width: 100%; padding-bottom: 10vh;"></div>
             </div>
           </section>
         </div>
