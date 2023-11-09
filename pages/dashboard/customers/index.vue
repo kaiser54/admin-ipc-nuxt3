@@ -105,9 +105,10 @@
         </div>
 
         <NewTable
-        heading="New customers"
+          heading="New customers"
           :tableData="customers"
           :showBtn="false"
+          :SwitchToggle="true"
           :tableHeaders="tableHeaders"
           @goUserRoute="handleGoUserRoute"
         />
@@ -137,6 +138,7 @@ export default {
         "Account Type",
         "Price",
         "Status",
+        "Use Credit",
       ],
     };
   },

@@ -73,7 +73,7 @@
                 }}</span>
               </div>
             </td>
-            <td>{{ formatDate(order.date) || "22-22-22" }}</td>
+            <td>{{ formatDate(order.createdAt) || "22-22-22" }}</td>
             <td>{{ order._id }}</td>
             <td>{{ order.products.length }}</td>
             <td>{{ order.totalPrice }}</td>
@@ -165,20 +165,21 @@ export default {
       return images;
     },
     getProductNames(products) {
-  if (products.length === 0) {
-    return "No products";
-  } else if (products.length === 1) {
-    return products[0]?.name || products[0]?.product.name || "No name";
-  } else {
-    const truncatedNames =
-      products
-        .map((product) => product?.name || product?.product.name || "No name")
-        .join(", ")
-        .substring(0, 5) + "..."; // Adjust the character limit as needed
-    return truncatedNames;
-  }
-}
-,
+      if (products.length === 0) {
+        return "No products";
+      } else if (products.length === 1) {
+        return products[0]?.name || products[0]?.product.name || "No name";
+      } else {
+        const truncatedNames =
+          products
+            .map(
+              (product) => product?.name || product?.product.name || "No name"
+            )
+            .join(", ")
+            .substring(0, 5) + "..."; // Adjust the character limit as needed
+        return truncatedNames;
+      }
+    },
     getTagType(status) {
       if (status === "PROCESSING") {
         return "warning";

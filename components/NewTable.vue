@@ -45,21 +45,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="item in tableData"
-            :key="item.id"
-            @click="$emit('goUserRoute', item._id);"
-          >
-            <td style="display: flex; align-items: center; gap: 16px">
-                <RandomAvatar :name="`${item?.firstName} ${item?.lastName}`" />
+          <tr v-for="item in tableData" :key="item.id">
+            <td
+              @click="$emit('goUserRoute', item._id)"
+              style="display: flex; align-items: center; gap: 16px"
+            >
+              <RandomAvatar :name="`${item?.firstName} ${item?.lastName}`" />
               {{ item?.firstName }} {{ item?.lastName }}
             </td>
-            <td>{{ convertDateFormat(item.createdAt) }}</td>
-            <td>{{ item?.orders ? item?.orders : 0 }}</td>
-            <td>{{ convertToTitleCase(item.type) }}</td>
-            <td>450000</td>
-            <td style="text-align: -webkit-right">
+            <td @click="$emit('goUserRoute', item._id)">
+              {{ convertDateFormat(item.createdAt) }}
+            </td>
+            <td @click="$emit('goUserRoute', item._id)">
+              {{ item?.orders ? item?.orders : 0 }}
+            </td>
+            <td @click="$emit('goUserRoute', item._id)">
+              {{ convertToTitleCase(item.type) }}
+            </td>
+            <td @click="$emit('goUserRoute', item._id)">450000</td>
+            <td
+              @click="$emit('goUserRoute', item._id)"
+              style="text-align: -webkit-right"
+            >
               <DynamicTags tagText="Active" size="small" type="positive" />
+            </td>
+            <td>
+              <SwitchToggle
+                v-if="SwitchToggle"
+                :customerID="item._id"
+                :canBuyOnCredit="item.canBuyOnCredit"
+              />
             </td>
           </tr>
         </tbody>
@@ -85,6 +100,10 @@ export default {
     showBtn: {
       type: Boolean,
       default: true,
+    },
+    SwitchToggle: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
