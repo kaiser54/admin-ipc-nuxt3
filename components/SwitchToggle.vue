@@ -160,8 +160,8 @@ p {
     margin-left: -8px;
   }
   .toggleSwitch input:checked ~ span:before {
-    border-color: #0097d1;
-    box-shadow: inset 0 0 0 30px #0097d1;
+    border-color: #167a08;
+    box-shadow: inset 0 0 0 30px #167a08;
   }
   .toggleSwitch input:checked ~ span span:first-of-type {
     opacity: 0;
