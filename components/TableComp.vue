@@ -76,7 +76,7 @@
             <td>{{ formatDate(order.createdAt) || "22-22-22" }}</td>
             <td>{{ order._id }}</td>
             <td>{{ order.products.length }}</td>
-            <td>{{ order.totalPrice }}</td>
+            <td>{{ formatPriceWithCommas(order.totalPrice) }}</td>
             <td style="text-align: -webkit-right">
               <!-- <span
                 v-if="item.status === 'Pending'"
@@ -141,6 +141,10 @@ export default {
     };
   },
   methods: {
+    formatPriceWithCommas(price) {
+      // Use the toLocaleString method with appropriate options to add commas
+      return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    },
     userRoute(value) {
       this.$router.push(`/dashboard/orders/${value}`);
     },
