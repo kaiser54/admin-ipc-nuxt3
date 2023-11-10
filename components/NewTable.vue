@@ -59,9 +59,9 @@
             </td>
             <td @click="$emit('goUserRoute', item._id)">{{ item.email }}</td>
             <!-- <td @click="$emit('goUserRoute', item._id)">450000</td> -->
-            <td @click="$emit('goUserRoute', item._id)">
+            <!-- <td @click="$emit('goUserRoute', item._id)">
               {{ convertDateFormat(item.createdAt) }}
-            </td>
+            </td> -->
             <!-- <td @click="$emit('goUserRoute', item._id)">
               {{ item?.orders ? item?.orders : 0 }}
             </td> -->
@@ -210,10 +210,7 @@ td {
   text-align: left;
 }
 
-th,
-td {
-  /* border-bottom: 1px solid var(--grey-grey5); */
-}
+
 tr {
   border-bottom: 1px solid var(--grey-grey5);
 }

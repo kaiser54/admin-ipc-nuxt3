@@ -45,6 +45,12 @@
       </div>
     </div>
     <div class="customer__info" v-if="showMore">
+      <div class="group" v-if="customer.type === 'BUSINESS'">
+        <div class="title">Business Name</div>
+        <div class="subject">
+          {{ customer?.businessName }}
+        </div>
+      </div>
       <div class="group">
         <div class="title">Email verification</div>
         <DynamicTags

@@ -135,7 +135,7 @@ export default {
         "Name",
         "Email",
         // "Amount",
-        "Date joined",
+        // "Date joined",
         "Account Type",
         "Use Credit",
       ],
