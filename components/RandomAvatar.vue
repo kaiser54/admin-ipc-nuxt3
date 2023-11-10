@@ -1,5 +1,5 @@
 <template>
-  <div class="random-avatar" :style="avatarStyle">
+  <div class="random-avatar" :style="avatarStyle" style="background-color:#FFEA96; color: #B38F00;">
     {{ initials }}
   </div>
 </template>
@@ -14,9 +14,10 @@ export default {
   },
   computed: {
     initials() {
-      const [firstName, lastName] = this.name.trim().split(" ");
+      // const [firstName, lastName] = this.name.trim().split(" ");
+      const [firstName] = this.name;
       return (
-        firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()
+        firstName.charAt(0).toUpperCase()
       );
     },
     avatarStyle() {

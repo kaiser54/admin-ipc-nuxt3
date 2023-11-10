@@ -50,25 +50,39 @@
               @click="$emit('goUserRoute', item._id)"
               style="display: flex; align-items: center; gap: 16px"
             >
-              <RandomAvatar :name="`${item?.firstName} ${item?.lastName}`" />
-              {{ item?.firstName }} {{ item?.lastName }}
+              <RandomAvatar :name="item.businessName" />
+              {{
+                item.businessName
+                  ? item.businessName
+                  : `${item?.firstName} ${item?.lastName}`
+              }}
             </td>
+            <td @click="$emit('goUserRoute', item._id)">{{ item.email }}</td>
+            <!-- <td @click="$emit('goUserRoute', item._id)">450000</td> -->
             <td @click="$emit('goUserRoute', item._id)">
               {{ convertDateFormat(item.createdAt) }}
             </td>
-            <td @click="$emit('goUserRoute', item._id)">
+            <!-- <td @click="$emit('goUserRoute', item._id)">
               {{ item?.orders ? item?.orders : 0 }}
-            </td>
-            <td @click="$emit('goUserRoute', item._id)">
+            </td> -->
+            <td @click="$emit('goUserRoute', item._id)" class="type">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="8"
+                height="8"
+                viewBox="0 0 8 8"
+                fill="none"
+              >
+                <circle cx="4" cy="4" r="4" fill="#07B463" />
+              </svg>
               {{ convertToTitleCase(item.type) }}
             </td>
-            <td @click="$emit('goUserRoute', item._id)">450000</td>
-            <td
+            <!-- <td
               @click="$emit('goUserRoute', item._id)"
               style="text-align: -webkit-right"
             >
               <DynamicTags tagText="Active" size="small" type="positive" />
-            </td>
+            </td> -->
             <td>
               <SwitchToggle
                 v-if="SwitchToggle"
@@ -145,6 +159,14 @@ export default {
 </script>
   
   <style scoped>
+th:last-child,
+td:last-child {
+ padding-right: 25px;
+}
+th:nth-child(2),
+td:nth-child(2) {
+  max-width: 260px;
+}
 .table__container {
   display: flex;
   flex-direction: column;
@@ -163,7 +185,8 @@ export default {
 .table__wrapper {
   display: flex;
   width: 100%;
-  padding: 24px 32px;
+  /* overflow-x: auto; */
+  /* padding: 24px 32px; */
   flex-direction: column;
   align-items: flex-start;
   gap: 32px;
@@ -189,6 +212,9 @@ td {
 
 th,
 td {
+  /* border-bottom: 1px solid var(--grey-grey5); */
+}
+tr {
   border-bottom: 1px solid var(--grey-grey5);
 }
 
@@ -211,7 +237,12 @@ th:last-child {
 span.tag {
   width: 105px;
 }
-
+.type {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+}
 .img {
   width: 32px;
   height: auto;
