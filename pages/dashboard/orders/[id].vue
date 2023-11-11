@@ -355,7 +355,7 @@ export default {
 
         if (secondSourceData?.data) {
           this.customerData = secondSourceData.data.customer;
-          console.log(this.customerData);
+          console.log("CustomerData",this.customerData);
         }
 
         this.loading = false;

@@ -11,7 +11,15 @@
         </div>
       </div>
       <div class="group">
-        <div class="title">Phone number</div>
+        <div class="title">Business name</div>
+        <div
+          class="subject"
+        >
+          {{ customer?.businessName }}
+        </div>
+      </div>
+      <!-- <div class="group">
+        <div class="title">Phone Number</div>
         <div
           class="subject"
           v-for="(phoneNumber, index) in customer?.phoneNumbers"
@@ -19,7 +27,7 @@
         >
           {{ phoneNumber }}
         </div>
-      </div>
+      </div> -->
       <div class="group">
         <div class="title">Date joined</div>
         <div class="subject">{{ formattedCreatedAt }}</div>
@@ -45,6 +53,14 @@
       </div>
     </div>
     <div class="customer__info" v-if="showMore">
+      <div class="group">
+        <div class="title">Business name</div>
+        <div
+          class="subject"
+        >
+          {{ customer?.businessName }}
+        </div>
+      </div>
       <div class="group">
         <div class="title">Email verification</div>
         <DynamicTags

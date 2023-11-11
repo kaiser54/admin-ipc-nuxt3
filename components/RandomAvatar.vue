@@ -6,6 +6,10 @@
   
   <script>
 export default {
+  data(){
+    return{
+    }
+  },
   props: {
     name: {
       type: String,
@@ -14,10 +18,13 @@ export default {
   },
   computed: {
     initials() {
-      const [firstName, lastName] = this.name.trim().split(" ");
-      return (
-        firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()
-      );
+      const nameArray = this.name.split(" ");
+      const firstName = nameArray[0].charAt(0).toUpperCase();
+      const lastName =
+        nameArray.length > 1 ? nameArray[nameArray.length - 1].charAt(0).toUpperCase() : '';
+      
+      const initial = firstName + lastName;
+      return initial;
     },
     avatarStyle() {
       const fontColor = this.generateRandomColor();

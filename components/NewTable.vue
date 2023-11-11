@@ -50,19 +50,30 @@
               @click="$emit('goUserRoute', item._id)"
               style="display: flex; align-items: center; gap: 16px"
             >
+              <RandomAvatar :name="item.businessName" />
+              {{item.businessName}}
+            </td>
+            <td @click="$emit('goUserRoute', item._id)">
+              <!-- {{ truncateEmail(item.email, 18) }} -->
+              {{ item.email }}
+            </td>
+            <!-- <td
+              @click="$emit('goUserRoute', item._id)"
+              style="display: flex; align-items: center; gap: 16px"
+            >
               <RandomAvatar :name="`${item?.firstName} ${item?.lastName}`" />
               {{ item?.firstName }} {{ item?.lastName }}
-            </td>
+            </td> -->
             <td @click="$emit('goUserRoute', item._id)">
               {{ convertDateFormat(item.createdAt) }}
             </td>
-            <td @click="$emit('goUserRoute', item._id)">
+            <!-- <td @click="$emit('goUserRoute', item._id)">
               {{ item?.orders ? item?.orders : 0 }}
-            </td>
+            </td> -->
             <td @click="$emit('goUserRoute', item._id)">
               {{ convertToTitleCase(item.type) }}
             </td>
-            <td @click="$emit('goUserRoute', item._id)">450000</td>
+            <td @click="$emit('goUserRoute', item._id)"><span class="naira">₦</span>450,000</td>
             <td
               @click="$emit('goUserRoute', item._id)"
               style="text-align: -webkit-right"
@@ -139,6 +150,17 @@ export default {
         );
       }
     },
+    truncateEmail(email, maxLength) {
+      if (!email) {
+        return ""; // Return an empty string if id is undefined or null
+      }
+
+      if (email.length > maxLength) {
+        return email.substring(0, maxLength) + "...";
+      }
+
+      return email;
+    },
   },
   computed: {},
 };
@@ -162,7 +184,7 @@ export default {
 }
 .table__wrapper {
   display: flex;
-  width: 100%;
+  width: 1200px;
   padding: 24px 32px;
   flex-direction: column;
   align-items: flex-start;

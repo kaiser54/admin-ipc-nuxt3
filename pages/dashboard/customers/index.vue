@@ -133,8 +133,9 @@ export default {
       activeTab: 0, // set the default active tab to be "All"
       tableHeaders: [
         "Name",
+        "Email",
         "Date",
-        "Orders",
+        // "Orders",
         "Account Type",
         "Price",
         "Status",
