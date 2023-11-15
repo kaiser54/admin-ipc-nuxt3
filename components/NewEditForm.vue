@@ -249,8 +249,8 @@
                 class="input"
                 name="status"
                 id=""
-                v-model="stockStatus"
-                :class="{ 'input-error': continueClicked && !formData.status }"
+                v-model="stockmodel"
+                :class="{ 'input-error': continueClicked && formData.stockmodel == '' }"
               >
                 <option disabled selected value="">
                   Please select a status
@@ -264,7 +264,7 @@
                 </option>
               </select>
               <ErrorMsg
-                v-if="continueClicked && !formData.status"
+                v-if="continueClicked && formData.stockmodel == ''"
                 description="Please enter a status"
               />
             </div>
@@ -362,9 +362,9 @@ export default {
 
   data() {
     return {
+      stockmodel: '',
       productID: null,
       formData: {
-        // status: "",
         _id: "",
         name: "",
         description: "",
@@ -377,7 +377,6 @@ export default {
         category: "",
         createdAt: "",
         updatedAt: "",
-        // stockStatus: this.formData.inStock ? "in Stock" : "out of Stock",
         __v: 0,
       },
       clickedImage: null,
@@ -386,10 +385,10 @@ export default {
       slashError: false,
       priceGreaterThanSlashError: false,
       status: [
-        { label: "In stock", value: "option1" },
-        { label: "Out of stock", value: "option2" },
+        { label: "In stock", value: true },
+        { label: "Out of stock", value: false },
       ],
-      statusValue: "",
+      
       images: [],
       maxSizeExceeded: false,
       selectedImages: [],
@@ -433,9 +432,23 @@ export default {
         return true;
       }
     },
+    stockStatus: {
+      get() {
+        return this.formData.inStock ? 'inStock' : 'out of Stock';
+      },
+      set(value) {
+        // Update the formData.inStock based on the selected status
+        this.formData.inStock = value === 'inStock';
+      },
+    },
+
   },
 
-  mounted() {},
+  mounted() {
+    if(this.formData){
+      console.log(this.stockStatus)
+    }
+  },
 
   methods: {
     handleSlashInput() {
@@ -454,6 +467,7 @@ export default {
 
     emitFunction() {
       this.continueClicked = true;
+      this.formData.inStock = this.stockmodel;
       if (!this.allFieldsValid) {
         return;
       }
@@ -499,7 +513,10 @@ export default {
         console.log("responsesssss", response);
         this.formData = response?.data?.data?.product;
         this.formData.weight = this.formData.unit;
-        this.status = this.formData.inStock;
+        // this.stockmodel = this.formData.inStock;
+        if (this.formData.inStock) {
+          this.stockmodel = true
+        } else this.stockmodel = false
         // this.previewImages = [...this.formData.images];
 
         this.previewImages = this.formData.images.map((image, index) => {

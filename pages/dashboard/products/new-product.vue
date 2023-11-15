@@ -98,6 +98,7 @@ export default {
       formdata.append("actualPrice", this.productData.slash);
       formdata.append("description", this.productData.description);
       formdata.append("brand", this.productData.brand);
+      // formdata.append("statusValue", this.productData.statusValue);
       formdata.append("category", this.productData.categoryValue);
       formdata.append("unit", this.productData.weight);
 

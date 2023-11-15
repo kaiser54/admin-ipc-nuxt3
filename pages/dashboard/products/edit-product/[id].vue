@@ -113,6 +113,7 @@ export default {
 
       const formData = new FormData();
       formData.append("name", this.productData.name);
+      formData.append("status", this.productData.statusValue)
       formData.append("description", this.productData.description);
       formData.append("actualPrice", this.productData.actualPrice);
       formData.append("discountPrice", this.productData.discountPrice);
