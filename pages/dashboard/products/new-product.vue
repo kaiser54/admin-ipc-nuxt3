@@ -109,7 +109,7 @@ export default {
       try {
         const response = await axios.post(`${API_URL}/products`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data", // Set the content type for FormData
+            "Content-Type": "multipart/form-data", // Set the co  ntent type for FormData
           },
         });
         console.log(response.data);

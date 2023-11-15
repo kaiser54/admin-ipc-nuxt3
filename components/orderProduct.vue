@@ -18,12 +18,12 @@
             <div class="order-id">Order ID : {{ order?._id }}</div>
             <div class="order-qty">Qty: {{ getProductQuantity(order?.products) }}</div>
           </div>
-          <div class="order-price">{{ order?.totalPrice }}</div>
+          <div class="order-price">₦ {{ formatPriceWithCommas(order?.totalPrice) }}</div>
           <DynamicTags :tagText="tagText" :size="size" :type="type" />
         </div>
 
         <div class="price-qty">
-          <div class="order-price">{{ order?.totalPrice }}</div>
+          <div class="order-price">₦ {{ formatPriceWithCommas(order?.totalPrice) }}</div>
           <div class="order-qty">Qty: {{ getProductQuantity(order?.products) }}</div>
         </div>
       </div>
@@ -76,6 +76,10 @@ export default {
     },
   },
   methods: {
+    formatPriceWithCommas(price) {
+      // Use the toLocaleString method with appropriate options to add commas
+      return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    },
     userRoute(value) {
       this.$router.push(`/dashboard/orders/${value}`);
     },
@@ -253,6 +257,7 @@ a {
   font-size: 16px;
   line-height: 24px;
   /* identical to box height, or 150% */
+  white-space: nowrap;
 
   text-align: right;
 

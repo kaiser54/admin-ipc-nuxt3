@@ -1,5 +1,5 @@
 <template>
-  <div class="random-avatar" :style="avatarStyle">
+  <div class="random-avatar" :style="avatarStyle" style="background-color:#FFEA96; color: #B38F00;">
     {{ initials }}
   </div>
 </template>

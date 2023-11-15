@@ -134,11 +134,9 @@ export default {
       tableHeaders: [
         "Name",
         "Email",
-        "Date",
-        // "Orders",
+        // "Amount",
+        // "Date joined",
         "Account Type",
-        "Price",
-        "Status",
         "Use Credit",
       ],
     };
