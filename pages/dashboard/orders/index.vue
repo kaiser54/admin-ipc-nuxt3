@@ -202,8 +202,8 @@ export default {
       tableHeaders: [
         "Product’s name",
         "Date",
-        "Order Id",
-        // "Business Name",
+        // "Order Id",
+        "Business Name",
         "Quantity",
         "Price",
         "Status",

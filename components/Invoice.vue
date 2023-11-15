@@ -114,7 +114,7 @@
                   <p>Pcs</p>
                 </div>
               </td>
-              <td class="text-[#565C69] text-center td-img"># {{ formatPriceWithCommas(order?.product?.actualPrice) }}</td>
+              <td class="text-[#565C69] text-center td-img"># {{ formatPriceWithCommas(order?.product?.discountPrice) }}</td>
               <td class="text-[#303237] text-right font-medium td-img">
                 # {{ formatPriceWithCommas(order?.totalPrice) }}
               </td>

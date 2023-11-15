@@ -74,8 +74,8 @@
               </div>
             </td>
             <td>{{ formatDate(order.createdAt) || "22-22-22" }}</td>
-            <td>{{ order._id }}</td>
-            <!-- <td>{{ order?.businessName }}</td> -->
+            <!-- <td>{{ order._id }}</td> -->
+            <td>  {{ order?.businessName || (order?.firstName + ' ' + order?.lastName) }} </td>
             <td>{{ order.products.length }}</td>
             <td>{{ formatPriceWithCommas(order.totalPrice) }}</td>
             <td style="text-align: -webkit-right">
