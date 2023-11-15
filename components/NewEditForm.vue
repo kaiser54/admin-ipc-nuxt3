@@ -243,7 +243,7 @@
               />
             </div>
 
-            <!-- <div class="form__field">
+            <div class="form__field">
               <label for="status">Status</label>
               <select
                 class="input"
@@ -267,7 +267,7 @@
                 v-if="continueClicked && !formData.status"
                 description="Please enter a status"
               />
-            </div> -->
+            </div>
 
             <div class="form__field">
               <div class="input-field">
@@ -364,7 +364,7 @@ export default {
     return {
       productID: null,
       formData: {
-        status: "",
+        // status: "",
         _id: "",
         name: "",
         description: "",

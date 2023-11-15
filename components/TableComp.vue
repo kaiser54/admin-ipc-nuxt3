@@ -75,8 +75,9 @@
             </td>
             <td>{{ formatDate(order.createdAt) || "22-22-22" }}</td>
             <td>{{ order._id }}</td>
+            <!-- <td>{{ order?.businessName }}</td> -->
             <td>{{ order.products.length }}</td>
-            <td>{{ order.totalPrice }}</td>
+            <td><span class="naira">₦</span>{{ Math.round(order.totalPrice) }}</td>
             <td style="text-align: -webkit-right">
               <!-- <span
                 v-if="item.status === 'Pending'"

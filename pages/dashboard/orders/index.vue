@@ -202,7 +202,8 @@ export default {
       tableHeaders: [
         "Product’s name",
         "Date",
-        "Order ID",
+        "Order Id",
+        // "Business Name",
         "Quantity",
         "Price",
         "Status",
@@ -241,7 +242,7 @@ export default {
       try {
         const response = await this.$devInstance.get("/orders");
         this.orders = response?.data?.data?.orders;
-        // console.log("all orders", this.orders);
+        console.log("all orders", this.orders);
         console.log("all orders products", this.orders[0].products);
       } catch (error) {
         console.error("Error fetching all orders:", error);

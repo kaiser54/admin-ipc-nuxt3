@@ -53,13 +53,19 @@
           >₦ {{ formatPriceWithCommas(data?.deliveryFee) }}</span
         >
       </div>
+      <div class="client-frame">
+        <span>Service charge</span
+        ><span class="bold"
+          >₦ {{ formatPriceWithCommas(data?.serviceCharge) }}</span
+        >
+      </div>
       <div class="client-frame total">
         <span>Total</span
         ><span class="bold"
           >₦
           {{
             formatPriceWithCommas(
-              getTotalProductPrice(data?.products) + data?.deliveryFee
+              getTotalProductPrice(data?.products) + data?.deliveryFee + data?.serviceCharge
             )
           }}</span
         >

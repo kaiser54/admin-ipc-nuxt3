@@ -22,7 +22,6 @@ export default {
       const firstName = nameArray[0].charAt(0).toUpperCase();
       const lastName =
         nameArray.length > 1 ? nameArray[nameArray.length - 1].charAt(0).toUpperCase() : '';
-      
       const initial = firstName + lastName;
       return initial;
     },

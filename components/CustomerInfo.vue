@@ -5,12 +5,6 @@
   >
     <div class="customer__info">
       <div class="group">
-        <div class="title">Account name</div>
-        <div class="subject">
-          {{ customer?.firstName }} {{ customer?.lastName }}
-        </div>
-      </div>
-      <div class="group">
         <div class="title">Business name</div>
         <div
           class="subject"
@@ -18,6 +12,13 @@
           {{ customer?.businessName }}
         </div>
       </div>
+      <div class="group">
+        <div class="title">Account name</div>
+        <div class="subject">
+          {{ customer?.firstName }} {{ customer?.lastName }}
+        </div>
+      </div>
+
       <!-- <div class="group">
         <div class="title">Phone Number</div>
         <div
@@ -53,14 +54,14 @@
       </div>
     </div>
     <div class="customer__info" v-if="showMore">
-      <div class="group">
+      <!-- <div class="group">
         <div class="title">Business name</div>
         <div
           class="subject"
         >
           {{ customer?.businessName }}
         </div>
-      </div>
+      </div> -->
       <div class="group">
         <div class="title">Email verification</div>
         <DynamicTags
