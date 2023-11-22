@@ -36,11 +36,11 @@
     <section class="dashboard-profile">
       <div class="profile-content">
         <div class="profile-image">
-          <img src="../assets/images/avatar.png" alt="" />
+          <RandomAvatar name="IPC Africa"/>
         </div>
         <div class="profile-details">
-          <p class="name">Chicken republic</p>
-          <p class="email truncate">adminchickenrepublic@gmail.com</p>
+          <p class="name">IPC Africa</p>
+          <p class="email truncate">ipcadmin@ipc-africa.com</p>
         </div>
       </div>
     </section>
