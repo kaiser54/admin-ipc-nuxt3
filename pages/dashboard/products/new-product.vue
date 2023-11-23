@@ -1,11 +1,7 @@
 <template>
   <MainLayout>
     <div>
-      <AlertPrompt
-        ref="alertPrompt"
-        :message="alertMessage"
-        :alertType="alertType"
-      />
+      <AlertPrompt ref="alertPrompt" :message="alertMessage" :alertType="alertType" />
       <NewProductForm
         @nextEvent="nextEvent"
         v-show="!passed"
@@ -101,6 +97,7 @@ export default {
       // formdata.append("statusValue", this.productData.statusValue);
       formdata.append("category", this.productData.categoryValue);
       formdata.append("unit", this.productData.weight);
+      formdata.append("inStock", this.productData.statusValue);
 
       this.productData.selectedImages.forEach((image, index) => {
         formdata.append("image", image);
@@ -114,7 +111,7 @@ export default {
         });
         console.log(response.data);
         if (response.data.status === "success") {
-          this.alertType = 'success';
+          this.alertType = "success";
           this.alertMessage = "Product successfully uploaded";
           this.$refs.alertPrompt.showAlert(
             "Product data updated successfully",
@@ -122,15 +119,15 @@ export default {
           );
           this.$router.push("/dashboard/products/");
         } else {
-          this.alertType = 'error';
+          this.alertType = "error";
           this.alertMessage = "Error uploading product";
           this.$refs.alertPrompt.showAlert("Error uploading product", "error");
         }
       } catch (error) {
         console.error("Error:", error);
-        this.alertType = 'error';
-          this.alertMessage = "Error uploading product";
-          this.$refs.alertPrompt.showAlert("Error uploading product", "error");
+        this.alertType = "error";
+        this.alertMessage = "Error uploading product";
+        this.$refs.alertPrompt.showAlert("Error uploading product", "error");
       } finally {
         this.loading = false;
       }
@@ -143,7 +140,7 @@ export default {
 };
 </script>
 
-<style  scoped></style>
+<style scoped></style>
 <style>
 .innerProduct .desktop-nav {
   background: var(--primary-p300);

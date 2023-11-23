@@ -326,8 +326,8 @@ export default {
       continueClicked: false,
 
       status: [
-        { label: "In stock", value: "option1" },
-        { label: "Out of stock", value: "option2" },
+        { label: "In stock", value: true },
+        { label: "Out of stock", value: false },
       ],
       statusValue: "",
 
