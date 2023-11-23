@@ -1,5 +1,5 @@
 <template>
-  <div class="dash__wrapper">
+  <div class="dash__wrapper" :class="{ 'dashboard': dashboard }">
     <div class="icon__name">
       <div class="circle">
         <slot name="svg"></slot>
@@ -9,6 +9,7 @@
     <div class="dash__counter">
       <div class="name__active">
         <h2>
+          <span v-if="price">₦</span> 
           {{ counterName }}
         </h2>
         <div class="active" v-if="active"></div>
@@ -30,6 +31,14 @@ export default {
       required: true,
     },
     active: {
+      type: Boolean,
+      default: false,
+    },
+    dashboard: {
+      type: Boolean,
+      default: false,
+    },
+    price: {
       type: Boolean,
       default: false,
     },
@@ -112,5 +121,9 @@ h2 {
 
   border-radius: 50%;
   background: var(--positive-p300, #20af0b);
+}
+
+.dashboard {
+  max-width: fit-content;
 }
 </style>

@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="dash__container">
       <div class="dash__card">
-        <DynamicDashCard cardName="Total sales" counterName="0">
+        <DynamicDashCard :dashboard="true" :price="true" cardName="Total sales" :counterName="formatPriceWithCommas(totalSales)">
           <template v-slot:svg>
             <svg
               width="20"
@@ -40,7 +40,7 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard
+        <DynamicDashCard :dashboard="true"
           cardName="New orders"
           :counterName="NewOrder?.pendingOrder"
           :active="true"
@@ -74,7 +74,7 @@
             </svg>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Customers" :counterName="showCustomersCount">
+        <DynamicDashCard :dashboard="true" cardName="Customers" :counterName="showCustomersCount">
           <template v-slot:svg>
             <svg
               width="20"
@@ -170,7 +170,7 @@
             </div>
           </template>
         </DynamicDashCard>
-        <DynamicDashCard cardName="Total products" :counterName="productsCount">
+        <DynamicDashCard :dashboard="true" cardName="Total products" :counterName="productsCount">
           <template v-slot:svg>
             <svg
               width="20"
@@ -245,6 +245,7 @@ export default {
       tableData: [],
       customersCount: 0,
       productsCount: 0,
+      totalSales: 0,
       NewOrder: 0,
       individualCustomersCount: 0,
       businessCustomersCount: 0,
@@ -254,6 +255,7 @@ export default {
   created() {
     this.fetchCustomersCount();
     this.fetchProductsCount();
+    this.fetchTotalSales();
     this.fetchNewOrder();
   },
 
@@ -268,6 +270,10 @@ export default {
   },
 
   methods: {
+    formatPriceWithCommas(price) {
+      // Use the toLocaleString method with appropriate options to add commas
+      return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    },
     fetchCustomersCount() {
       this.loading = true; // Set loading to true
 
@@ -291,7 +297,21 @@ export default {
         .then((res) => (this.productsCount = res?.data?.data?.productsCount))
         .catch((err) => console.log(err));
     },
-
+    fetchTotalSales() {
+      this.loading = true; // Set loading to true
+      this.$devInstance
+        .get("/orders/orders-prices")
+        .then((res) => {
+          this.totalSales = res?.data?.data?.totalOrdersPrice;
+          // console.log(res); // Moved inside the .then() block
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.loading = false; // Set loading to false in either case (success or error)
+        });
+    },
     fetchNewOrder() {
       this.$devInstance
         .get("/orders/orders-summary/")
@@ -331,6 +351,10 @@ export default {
 </script>
 
 <style scoped>
+.dash__card {
+  justify-content: flex-start;
+  gap: 16px;
+}
 .dropdown-menu {
   cursor: pointer;
   margin-top: 8px;
