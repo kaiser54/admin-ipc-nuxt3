@@ -1,6 +1,5 @@
 <template>
     <div class="con">
-        <Approved/>
         <ApprovedTable/>
     </div>
 </template>

@@ -102,6 +102,7 @@
               </svg>
             </template>
           </DynamicDashCard>
+          <Waitlist-UserCard/>
         </div>
 
         <NewTable

@@ -26,6 +26,7 @@
   --grey-grey3: #7e8494;
   --grey-grey2: #565c69;
   --grey-grey1: #303237;
+  --grey-grey1-base: #101928;
 
   --accent-a50: #fffae6;
   --accent-a75: #ffea96;
@@ -58,6 +59,10 @@
   --warning-w300: #ffc22e;
   --warning-w400: #b38820;
   --warning-w500: #9c761c;
+  --secondary-s-300-base: #E54120;
+  --secondary-s50: #FCECE9;
+  --negative-n-300-base: #D42620;
+
 }
 
 /* text styles from ipc typography system */

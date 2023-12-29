@@ -13,7 +13,11 @@ export default defineNuxtConfig({
       ],
       link: [
         // <link rel="stylesheet" href="https://myawesome-lib.css">
-        { rel: 'stylesheet', href: 'https://awesome-lib.css' }
+        { rel: 'stylesheet', href: 'https://awesome-lib.css' },
+        {
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+        }
       ],
       // please note that this is an area that is likely to change
       style: [
@@ -24,6 +28,7 @@ export default defineNuxtConfig({
         // <noscript>JavaScript is required</noscript>
         { children: 'JavaScript is required' }
       ],
+
     }
   },
   modules: [

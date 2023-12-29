@@ -3,32 +3,13 @@
     <div class="table__header">
       <h3>{{ heading }}</h3>
 
-      <DynamicButton
-        v-if="showBtn"
-        class="d__btn"
-        buttonText="View all"
-        icon="icon-right"
-        size="small"
-        type="neutral"
-        @clickButton="goToRoutePage"
-      >
+      <DynamicButton v-if="showBtn" class="d__btn" buttonText="View all" icon="icon-right" size="small" type="neutral"
+        @clickButton="goToRoutePage">
         <template v-slot:svg>
-          <svg
-            width="16"
-            height="17"
-            viewBox="0 0 16 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="chevron-right-arrow">
-              <path
-                id="Vector"
-                d="M5.3335 3.16666L10.6668 8.49999L5.3335 13.8333"
-                stroke="#303237"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+              <path id="Vector" d="M5.3335 3.16666L10.6668 8.49999L5.3335 13.8333" stroke="#303237" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
             </g>
           </svg>
         </template>
@@ -46,15 +27,12 @@
         </thead>
         <tbody>
           <tr v-for="item in tableData" :key="item.id">
-            <td
-              @click="$emit('goUserRoute', item._id)"
-              style="display: flex; align-items: center; gap: 16px"
-            >
+            <td @click="$emit('goUserRoute', item._id)" style="display: flex; align-items: center; gap: 16px">
               <RandomAvatar :name="item.businessName" />
               {{
                 item.businessName
-                  ? item.businessName
-                  : `${item?.firstName} ${item?.lastName}`
+                ? item.businessName
+                : `${item?.firstName} ${item?.lastName}`
               }}
             </td>
             <td @click="$emit('goUserRoute', item._id)">{{ item.email }}</td>
@@ -66,13 +44,7 @@
               {{ item?.orders ? item?.orders : 0 }}
             </td> -->
             <td @click="$emit('goUserRoute', item._id)" class="type">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="8"
-                height="8"
-                viewBox="0 0 8 8"
-                fill="none"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
                 <circle cx="4" cy="4" r="4" fill="#07B463" />
               </svg>
               {{ convertToTitleCase(item.type) }}
@@ -84,11 +56,7 @@
               <DynamicTags tagText="Active" size="small" type="positive" />
             </td> -->
             <td>
-              <SwitchToggle
-                v-if="SwitchToggle"
-                :customerID="item._id"
-                :canBuyOnCredit="item.canBuyOnCredit"
-              />
+              <SwitchToggle v-if="SwitchToggle" :customerID="item._id" :canBuyOnCredit="item.canBuyOnCredit" />
             </td>
           </tr>
         </tbody>
@@ -97,7 +65,7 @@
   </div>
 </template>
   
-  <script>
+<script>
 export default {
   props: {
     heading: {
@@ -158,30 +126,35 @@ export default {
 };
 </script>
   
-  <style scoped>
+<style scoped>
 th:last-child,
 td:last-child {
- padding-right: 25px;
+  padding-right: 25px;
 }
+
 th:nth-child(2),
 td:nth-child(2) {
   max-width: 260px;
 }
+
 .table__container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 25px;
 }
+
 .table__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
 }
+
 .d__btn {
   width: auto;
 }
+
 .table__wrapper {
   display: flex;
   width: 100%;
@@ -195,12 +168,14 @@ td:nth-child(2) {
   border: 1px solid var(--grey-grey5, #e5e7ef);
   background: var(--white, #fff);
 }
+
 table,
 th,
 td {
   border: none;
   border-collapse: collapse;
 }
+
 th,
 td {
   padding-top: 20px;
@@ -227,6 +202,7 @@ tr:hover {
 thead tr:hover {
   background-color: none !important;
 }
+
 th:last-child {
   text-align: center;
 }
@@ -234,12 +210,14 @@ th:last-child {
 span.tag {
   width: 105px;
 }
+
 .type {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 7px;
 }
+
 .img {
   width: 32px;
   height: auto;

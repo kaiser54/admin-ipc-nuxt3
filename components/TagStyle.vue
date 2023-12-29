@@ -1,48 +1,40 @@
-<!-- CustomTag.vue -->
+
 <template>
-    <div :style="tagStyle">
-      <span :style="textStyle">{{ tagText }}</span>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, computed, onMounted } from 'vue';
-  
-  const props = defineProps(['type']);
-  
-  const tagStyle = ref({});
-  const textStyle = ref({});
-  const tagText = computed(() => (props.type === 'business' ? 'B' : 'I'));
-  
-  onMounted(() => {
-    // Set styles based on the type prop
-    if (props.type === 'business') {
-      tagStyle.value = {
-        width: '16px',
-        height: '16px',
-        background: 'green',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      };
-  
-      textStyle.value = {
-        color: 'white',
-      };
-    } else if (props.type === 'individual') {
-      tagStyle.value = {
-        width: '16px',
-        height: '16px',
-        background: 'black',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      };
-  
-      textStyle.value = {
-        color: 'white',
-      };
-    }
-  });
-  </script>
-  
+  <div :class="getTagClass()">
+  <div></div>
+  </div>
+</template>
+
+<script setup>
+const props = defineProps(['type']);
+
+const getTagClass = () => {
+  return {
+    'circular-tag': true,
+    'green-tag': props.type === 'Business',
+    'black-tag': props.type === 'Individual',
+  };
+};
+</script>
+
+<style scoped>
+.circular-tag {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.green-tag {
+  background-color: green;
+  color: white;
+}
+
+.black-tag {
+  background-color: black;
+  color: white;
+}
+</style>
