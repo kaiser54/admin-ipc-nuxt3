@@ -1,6 +1,6 @@
 
 <template>
-  <div class="contain">
+  <div class="contain" @click="closeDropdown">
     <div class="bton">
       <button :disabled="isButtonDisabled" @click="$emit('showDots', props.itemId)" class="Approval"
         :class="{ disabled: isButtonDisabled}">
@@ -86,6 +86,10 @@ const removeUser = () => {
 const showDropDown = () => {
   emit('showDropDown', props.itemId);
 };
+
+const closeDropdown = () => {
+  emit('update:showDrop', false)
+}
 </script>
   
 <style scoped>

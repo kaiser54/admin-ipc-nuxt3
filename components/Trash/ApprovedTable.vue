@@ -34,7 +34,7 @@
           v-for="(item, index) in filteredItems"
           :key="index"
           :class="{ 'selected-row': selectedItems.includes(item.id) }"
-         
+          @click="closeModal($event)"
         >
           <td>
             <input type="checkbox" v-model="selectedItems" :value="item.id" />
@@ -47,7 +47,8 @@
           <td>{{ item.date }}</td>
           <td>{{ item.activity }}</td>
           <td>
-            <Approved
+            <TrashApproved
+            class="work"
               :disabled="isButtonDisabled(item.id)"
               :buttonText="buttonText[item.id]"
               :itemId="item.id"
@@ -60,6 +61,7 @@
               @resendLink="resendLink(item.id)"
               @removeUser="removeUser(item.id)"
               @showDropDown="showDropDown(item.id)"
+              @update:showDrop="closeModal"
             />
           </td>
         </tr>
@@ -81,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive , onMounted, onUnmounted} from "vue";
 const tabs = ref(["All", "Business", "Individual"]);
 
 const items = ref([
@@ -143,7 +145,6 @@ const filteredItems = ref(items.value);
 
 const toggleTab = (index) => {
   activeTab.value = index;
-  console.log(index)
   filterItemsByType();
 };
 
@@ -204,11 +205,43 @@ const showDropDown = (itemId) => {
   });
 };
 
+// Inside your script setup tag
+const closeModal = (event) => {
+  if (!event || !event.target) {
+    return;
+  }
+
+  items.value.forEach((item) => {
+    let target = event.target;
+    let isWorkElement = false;
+
+    // Traverse up the DOM hierarchy to check if the clicked element or any of its ancestors has the 'work' class
+    while (target !== null && !isWorkElement) {
+      if (target.classList && target.classList.contains('work')) {
+        isWorkElement = true;
+      }
+      target = target.parentElement;
+    }
+
+    // Close the dropdown if the clicked element is outside the 'work' element
+    if (showDrop.value[item.id] && !isWorkElement) {
+      showDrop.value[item.id] = false;
+    }
+  });
+};
+
+
+onMounted(() => {
+  document.addEventListener('click', closeModal);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeModal);
+});
 const revokeLinked = (itemId) => {
   buttonText.value[itemId] = "Revoke Link"
   isButtonRevoked.value[itemId] = true;
   showDrop.value[itemId] = false;
-  console.log(itemId)
 };
 
 const resendLink = (itemId) => {

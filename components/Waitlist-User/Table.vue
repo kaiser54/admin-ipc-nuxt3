@@ -34,6 +34,7 @@
                 type="checkbox"
                 v-model="selectAll"
                 @change="selectAllRows"
+                @click="closeModal($event)"
               />
             </th>
             <th>Name</th>
@@ -50,7 +51,10 @@
             :class="{ 'selected-row': selectedItems.includes(item.id) }"
           >
             <td>
-              <input type="checkbox" v-model="selectedItems" :value="item.id" />
+              <input type="checkbox" v-model="selectedItems"
+               :value="item.id"
+               @change="handleCheckboxChangeLocal(item, $event)"
+               />
             </td>
             <td>
               <Waitlist-UserTag :type="item.type" />
@@ -60,7 +64,7 @@
             <td>{{ item.date }}</td>
             <td>{{ item.activity }}</td>
             <td>
-              <Waitlist-UserButton
+              <Waitlist-UserButton class="waitlist-btn"
                 :disabled="isButtonDisabled(item.id)"
                 :buttonText="buttonText[item.id]"
                 :itemId="item.id"
@@ -73,6 +77,7 @@
                 @resendLink="resendLink(item.id)"
                 @removeUser="removeUser(item.id)"
                 @showDropDown="showDropDown(item.id)"
+                @update:showDrop="closeModal"
               />
             </td>
           </tr>
@@ -81,17 +86,17 @@
     </div>
 
   </div>
-  <div class="button-container">
-    <button class="approve" :class="{ active: activeButton === 'approve' }" :disabled="selectedItems.length === 0" @click="setActiveButton('approve'); ApproveLink()">
+  <div class="button-container" v-if="selectedItems.length > 0">
+    <button class="approve" :class="{ active: activeButton === 'approve' }" @click="setActiveButton('approve'); ApproveLink()">
       Approve
     </button>
-    <button class="revuke" :class="{ active: activeButton === 'revoke' }" :disabled="selectedItems.length === 0" @click="setActiveButton('revoke'); RevokeUserLink()">
+    <button class="revuke" :class="{ active: activeButton === 'revoke' }" @click="setActiveButton('revoke'); RevokeUserLink()">
       Revoke Link
     </button>
-    <button class="resent" :class="{ active: activeButton === 'resend' }" :disabled="selectedItems.length === 0" @click="setActiveButton('resend'); resendUserLink()">
+    <button class="resent" :class="{ active: activeButton === 'resend' }" @click="setActiveButton('resend'); resendUserLink()">
       Resend Link
     </button>
-    <button class="remove" :class="{ active: activeButton === 'remove' }" :disabled="selectedItems.length === 0" @click="setActiveButton('remove'); removeUsersLink()">
+    <button class="remove" :class="{ active: activeButton === 'remove' }" @click="setActiveButton('remove'); removeUsersLink()">
       Remove User
     </button>
   </div>
@@ -114,7 +119,9 @@ import {
   revokeUserFunction,
   approveUserFunction,
   removeSelectedUsers,
-  resendUserFunction
+  resendUserFunction,
+  handleCheckboxChange,
+  closeModalHandler
 } from "/utils/myFunction.js";
 const tabs = ref(["All", "Business", "Individual"]);
 
@@ -183,24 +190,36 @@ const toggleTabLocal = (index) =>
   toggleTab(index, activeTab, filterItemsByType);
 const filterItemsByType = () =>
   filterItemsByTypes(tabs, activeTab, filteredItems, items);
-const selectAllRows = () => selectAllRowsLocal(selectAll, selectedItems, filteredItems);
+const selectAllRows = () => selectAllRowsLocal(selectAll, selectedItems, filteredItems, show);
 const showDots = (itemId) =>
   showDot(itemId,filteredItems, show, isButtonDisable, showDrop, buttonText);
 const revokeLinked = (itemId) =>
-  revokeLinkSent(itemId, buttonText, showDrop, isButtonRevoked);
+  revokeLinkSent(itemId, buttonText, showDrop, isButtonDisable, isButtonRevoked);
 const initializeButtonText = () => initializeButtonTexts(filteredItems, buttonText);
 const showDropDown = (itemId) => showDropDowns(showDrop, filteredItems, itemId);
 const resendLink = (itemId) =>
 resendLinks(isButtonDisable, buttonText, isButtonRevoked, showDrop, itemId);
 const isButtonDisabled = (itemId) => isButtonsDisabled(itemId, disabledButtons);
-const removeUser = (itemId) =>  removeUsers (itemId, filteredItems, selectedItems)
+const removeUser = (itemId) =>  removeUsers (itemId, items, filteredItems, selectedItems)
 initializeButtonText();
 const RevokeUserLink = () =>revokeUserFunction(selectedItems,  showDrop, show, buttonText, isButtonDisable, isButtonRevoked)
 const ApproveLink = () => approveUserFunction(selectedItems, showDrop, show, buttonText, isButtonDisable, isButtonRevoked);
-
-
-const removeUsersLink = () =>  removeSelectedUsers(filteredItems,  selectedItems)
+const removeUsersLink = () =>  removeSelectedUsers(filteredItems,  selectedItems, items)
 const resendUserLink = () => resendUserFunction(selectedItems,  isButtonDisable, buttonText, isButtonRevoked, showDrop)
+const handleCheckboxChangeLocal = (selectedItem, event) => {
+  handleCheckboxChange(selectedItem, event, show);
+};
+const closeModal = (event) => {
+  closeModalHandler(event, items, showDrop)
+}
+onMounted(() => {
+  document.addEventListener('click', closeModal);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeModal);
+});
+
 </script>
 
 <style scoped>
@@ -340,6 +359,7 @@ font-style: normal;
 font-weight: 400;
 line-height: 21px; 
 }
+
 tbody tr {
   transition: all 0.1s ease-in-out;
   cursor: pointer;

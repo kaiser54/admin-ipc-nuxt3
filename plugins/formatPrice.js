@@ -1,8 +1,5 @@
-//plugins/formatPrice
 
-// In your Nuxt.js component or utility file
- function formatPriceWithCommas(price) {
-    // Use the toLocaleString method with appropriate options to add commas
-    return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
-  }
+//  function formatPriceWithCommas(price) {
+//     return price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+//   }
   

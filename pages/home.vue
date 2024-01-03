@@ -1,6 +1,6 @@
 <template>
     <div class="con">
-        <ApprovedTable/>
+        <TrashApprovedTable/>
     </div>
 </template>
 <script setup>
@@ -12,3 +12,4 @@
     margin: 0px;
 }
 </style>
+

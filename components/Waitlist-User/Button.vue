@@ -1,6 +1,6 @@
 
 <template>
-    <div class="contain">
+    <div class="contain" @click="closeDropdown">
       <div class="bton">
         <button :disabled="isButtonDisabled" @click="$emit('showDots', props.itemId)" class="Approval"
           :class="{ disabled: isButtonDisabled}">
@@ -20,9 +20,8 @@
                 stroke="#344054" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
-          <div class="dropDown" v-if="showDrop">
+          <div class="dropDown" v-if="showDrop" ref="dropDownContainer">
             <div class="container">
-              <!-- <button @click="revokeLink" class="revoke">Revoked Link</button> -->
               <button @click="revokeLinked" class="revoke" :class="{revoked: isButtonRevoked }">Revoke link</button>
               <button class="resend" @click="resendLink">Resend link</button>
               <button class="remove" @click="removeUser">Remove user</button>
@@ -34,7 +33,7 @@
   </template>
     
   <script setup>
-  import { ref, defineProps, defineEmits } from "vue";
+  import { ref, defineProps, defineEmits,  onMounted, onUnmounted  } from "vue";
   const props = defineProps({
     show: {
       type: Boolean,
@@ -80,8 +79,12 @@
   };
   
   const showDropDown = () => {
-    emit('showDropDown', props.itemId);
-  };
+  emit('showDropDown', props.itemId);
+};
+
+const closeDropdown = () => {
+  emit('update:showDrop', false)
+}
   </script>
     
   <style scoped>
